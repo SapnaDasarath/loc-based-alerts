@@ -17,13 +17,14 @@ import com.sunysb.edu.R;
 
 public class Map extends MapActivity{
 
-	MapView mapView;
+	private MapView mapView;
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.loadmap);
+		
 		mapView = (MapView) findViewById(R.id.mapView);
 		
 		LinearLayout zoomLayout = (LinearLayout)findViewById(R.id.zoom);  
@@ -44,26 +45,12 @@ public class Map extends MapActivity{
 		return false;
 	}
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) 
-	{
-		MapController mc = mapView.getController(); 
-		switch (keyCode) 
-		{
-		case KeyEvent.KEYCODE_3:
-			mc.zoomIn();
-			break;
-		case KeyEvent.KEYCODE_1:
-			mc.zoomOut();
-			break;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-	
 	public void setLocation(MapView mapView, int latitude, int longitude)
 	{
 		MapController mc = mapView.getController();
 		GeoPoint p = new GeoPoint(latitude, longitude);
 		mc.animateTo(p);
 		mc.setZoom(17); 
+		System.out.print("Recieved click");
 	}
 }
