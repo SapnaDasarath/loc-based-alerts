@@ -22,6 +22,7 @@ public class MapOverlay extends com.google.android.maps.Overlay
 {
 	MapActivity map;
 	GeoPoint p;
+	
 
 	public MapOverlay(MapActivity map)
 	{
