@@ -9,38 +9,78 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class LocationBasedAlerts extends Activity{
 	
 	private String userName = "sdasarath";
 	private SimpleDbUtil dbAccess = null;
 	
-	private Button okButton;
+	private EditText usernameEditText;
+	private EditText passwordEditText;
+	 
+	private Button loginButton;
+	private Button registerButton;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		Log.e( "LBA", "Loading main screen" );        
 		
-		okButton = (Button) findViewById(R.id.ok_main_button);
+		usernameEditText = (EditText) findViewById(R.id.username_EditText);
+		passwordEditText = (EditText) findViewById(R.id.password_EditText);
 		
-		okButton.setOnClickListener(new View.OnClickListener() {
+		loginButton = (Button) findViewById(R.id.login_button);
+		registerButton = (Button) findViewById(R.id.register_button);
+		
+		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Log.e( "LBA", "Creating simple db" );      
-				dbAccess = new SimpleDbUtil(userName);
-				
-				//should be done only once..
-				//first time when the user account is created.
-				dbAccess.createDomain(userName);
-				dbAccess.createItem(userName, SimpleDbUtil.USER_INFO);
-				dbAccess.createItem(userName, SimpleDbUtil.TASK_INFO);
-				dbAccess.createItem(userName, SimpleDbUtil.FRIEND_INFO);
-				Log.e( "LBA", "Simple DB Created" );      
+			public void onClick(View v) {    
+				if(authenticate())
+				{
+					startActivity(new Intent(LocationBasedAlerts.this, UserOptionScreen.class));
+				}
+			}
+		});
+		
+		registerButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {    
 				//the assumption here is a domain for the user name is created
 				//when a user creates an account for the first time
 				startActivity(new Intent(LocationBasedAlerts.this, UserOptionScreen.class));
 			}
 		});
+	}
+	
+	private boolean authenticate()
+	{
+		String username = null;
+		String password = null;
+		
+		Object usernameObj = usernameEditText.getText();
+		if(usernameObj != null)
+		{
+			username = usernameObj.toString().trim();
+		}
+		
+		Object passwdObj = passwordEditText.getText();
+		if(passwdObj != null)
+		{
+			password = passwdObj.toString().trim();
+		}
+		
+		if(username == null || password == null)
+		{
+			return false;
+		}
+		
+		if(username.equals("")|| password.equals(""))
+		{
+			return false;
+		}
+		
+		//validate username and password in db now
+		return true;
 	}
 }
