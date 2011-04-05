@@ -6,4 +6,6 @@
         <item>Med</item>
         <item>High</item>
     </string-array>
+    <string name="search_label">Map Search</string>
+    <string name="search_hint">Stony Brook</string>
 </resources>

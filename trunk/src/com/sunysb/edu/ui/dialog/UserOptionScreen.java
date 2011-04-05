@@ -1,6 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +39,7 @@ public class UserOptionScreen extends Activity{
         editTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, Task.class));
+				startActivity(new Intent(UserOptionScreen.this, EditTask.class));
 			}
 		});
 		

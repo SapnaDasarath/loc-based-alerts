@@ -8,27 +8,65 @@
 package com.sunysb.edu;
 
 public final class R {
+    public static final class array {
+        public static final int priority_list=0x7f060000;
+    }
     public static final class attr {
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
-        public static final int pushpin=0x7f020001;
+        public static final int ic_menu_search=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int pushpin=0x7f020002;
     }
     public static final class id {
-        public static final int Button02=0x7f050005;
-        public static final int button=0x7f050004;
-        public static final int mainlayout=0x7f050000;
-        public static final int mapView=0x7f050001;
-        public static final int text=0x7f050003;
-        public static final int zoom=0x7f050002;
+        public static final int add_Task=0x7f070002;
+        public static final int add_Task_button=0x7f07001c;
+        public static final int close_Task_button=0x7f07001b;
+        public static final int close_user_button=0x7f070012;
+        public static final int description_EditText=0x7f070017;
+        public static final int description_TextView=0x7f070016;
+        public static final int edit_Profile_button=0x7f07001f;
+        public static final int edit_Task_button=0x7f07001d;
+        public static final int login_button=0x7f070008;
+        public static final int mainlayout=0x7f070000;
+        public static final int mapView=0x7f070001;
+        public static final int name_EditText=0x7f070015;
+        public static final int name_TextView=0x7f070014;
+        public static final int newpassword_EditText=0x7f07000e;
+        public static final int newpassword_TextView=0x7f07000d;
+        public static final int newusername_EditText=0x7f07000c;
+        public static final int newusername_TextView=0x7f07000b;
+        public static final int ok_Task_button=0x7f07001a;
+        public static final int ok_user_button=0x7f070011;
+        public static final int organize_Friends_button=0x7f07001e;
+        public static final int password_EditText=0x7f070007;
+        public static final int password_TextView=0x7f070006;
+        public static final int priority_Spinner=0x7f070019;
+        public static final int priority_TextView=0x7f070018;
+        public static final int register_button=0x7f070009;
+        public static final int renewpassword_EditText=0x7f070010;
+        public static final int renewpassword_TextView=0x7f07000f;
+        public static final int search_box=0x7f070013;
+        public static final int tasklayout=0x7f07000a;
+        public static final int username_EditText=0x7f070005;
+        public static final int username_TextView=0x7f070004;
+        public static final int zoom=0x7f070003;
     }
     public static final class layout {
         public static final int loadmap=0x7f030000;
         public static final int main=0x7f030001;
-        public static final int main2=0x7f030002;
+        public static final int newuser=0x7f030002;
+        public static final int search=0x7f030003;
+        public static final int task=0x7f030004;
+        public static final int taskedit=0x7f030005;
+        public static final int useraction=0x7f030006;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
+        public static final int app_name=0x7f050000;
+        public static final int search_hint=0x7f050002;
+        public static final int search_label=0x7f050001;
+    }
+    public static final class xml {
+        public static final int searchable=0x7f040000;
     }
 }
