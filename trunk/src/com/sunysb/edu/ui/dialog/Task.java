@@ -1,5 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.HashMap;
+
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
 
@@ -20,6 +22,8 @@ public class Task extends Activity{
 	 
 	 private Button okButton;
 	 private Button closeButton;
+	 
+	 SimpleDbUtil util = new SimpleDbUtil();
 	 
 	 public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +46,7 @@ public class Task extends Activity{
 	   //add to tasks domain
 		okButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-					updateDB();
+					createNewTaskInDB();
 				}
 			});
 	        
@@ -54,7 +58,7 @@ public class Task extends Activity{
 	 }
 	 
 	 
-	private void updateDB()
+	private void createNewTaskInDB()
 	{
 		Log.e( "LBA", "update DB from task" ); 
 		
@@ -80,12 +84,121 @@ public class Task extends Activity{
 			priorityStr = name.toString();
 		}
 		
-		SimpleDbUtil util = new SimpleDbUtil();
 		String domain = SimpleDbUtil.getCurrentUser();
+		String taskid = String.valueOf(System.currentTimeMillis());
 		
-		util.createAttributeForItem(domain, SimpleDbUtil.TASK_INFO, SimpleDbUtil.TASK_NAME, nameStr);
-		util.createAttributeForItem(domain, SimpleDbUtil.TASK_INFO, SimpleDbUtil.TASK_DESCRIPTION, descriptionStr);
-		util.createAttributeForItem(domain, SimpleDbUtil.TASK_INFO, SimpleDbUtil.TASK_PRIORITY, priorityStr);
+		util.createAttributeForItem(domain, taskid, SimpleDbUtil.TASK_NAME, nameStr);
+		util.createAttributeForItem(domain,taskid, SimpleDbUtil.TASK_DESCRIPTION, descriptionStr);
+		util.createAttributeForItem(domain, taskid, SimpleDbUtil.TASK_PRIORITY, priorityStr);
+	}
+	
+	private void updateExistingTaskInDB(String taskid)
+	{
+		Log.e( "LBA", "update Task from DB" ); 
 		
+		String nameStr = "";
+		String descriptionStr = "";
+		String priorityStr = "";
+		
+		Object name = nameEditText.getText();
+		if(name != null)
+		{
+			nameStr = name.toString();
+		}
+		
+		Object description = descriptionEditText.getText();
+		if(description != null)
+		{
+			descriptionStr = description.toString();
+		}
+		
+		Object priority = prioritySpinner.getSelectedItem();
+		if(priority != null)
+		{
+			priorityStr = name.toString();
+		}
+		
+		String domain = SimpleDbUtil.getCurrentUser();
+		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
+		
+		String nameStrDb = attrList.get(SimpleDbUtil.TASK_NAME);
+		String descriptionStrDb = attrList.get(SimpleDbUtil.TASK_DESCRIPTION);
+		String priorityStrDb = attrList.get(SimpleDbUtil.TASK_PRIORITY);
+		
+		HashMap<String,String> attrListToUpdate = new HashMap<String,String>();
+		if(nameStrDb != nameStr)
+		{
+			if(nameStr != null)
+			{
+				attrListToUpdate.put(SimpleDbUtil.TASK_NAME, nameStr);
+			}
+		}
+		
+		if(descriptionStrDb != descriptionStr)
+		{
+			if(descriptionStr != null)
+			{
+				attrListToUpdate.put(SimpleDbUtil.TASK_DESCRIPTION, descriptionStr);
+			}
+		}
+		
+		if(priorityStrDb != priorityStr)
+		{
+			if(priorityStr != null)
+			{
+				attrListToUpdate.put(SimpleDbUtil.TASK_PRIORITY, priorityStr);
+			}
+		}
+		
+		if(attrListToUpdate.size()>0)
+		{
+			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+		}
+	}
+	
+	private void updateUIforTask(String taskid)
+	{
+		Log.e( "LBA", "update Task from DB" ); 
+		
+		String domain = SimpleDbUtil.getCurrentUser();
+		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
+		
+		String nameStr = attrList.get(SimpleDbUtil.TASK_NAME);
+		String descriptionStr = attrList.get(SimpleDbUtil.TASK_DESCRIPTION);
+		String priorityStr = attrList.get(SimpleDbUtil.TASK_PRIORITY);
+		
+		if(nameStr != null)
+		{
+			nameEditText.setText(nameStr);
+		}
+		
+		if(descriptionStr != null)
+		{
+			descriptionEditText.setText(descriptionStr);
+		}
+		
+		if(priorityStr != null)
+		{
+			prioritySpinner.setSelection(getPosition(priorityStr));
+		}
+	}
+	
+	private int getPosition(String val)
+	{
+		int retval = 0;
+		if(val.equals(SimpleDbUtil.PRIOR_LOW))
+		{
+			retval = 0;
+		}
+		else if(val.equals(SimpleDbUtil.PRIOR_MED))
+		{
+			retval = 1;
+		}
+		else if(val.equals(SimpleDbUtil.PRIOR_HIGH))
+		{
+			retval = 2;
+		}
+		
+		return retval;
 	}
 }
