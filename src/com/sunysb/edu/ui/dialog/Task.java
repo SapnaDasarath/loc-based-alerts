@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -84,7 +85,7 @@ public class Task extends Activity{
 			priorityStr = name.toString();
 		}
 		
-		String domain = StringUtil.getCurrentUser();
+		String domain = SimpleDbUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 		
 		util.createAttributeForItem(domain, taskid, StringUtil.TASK_NAME, nameStr);

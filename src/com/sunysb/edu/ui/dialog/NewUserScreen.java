@@ -3,6 +3,7 @@ package com.sunysb.edu.ui.dialog;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -41,7 +42,7 @@ public class NewUserScreen extends Activity{
 				addUserToDB();
 				startActivity(new Intent(NewUserScreen.this, UserOptionScreen.class));
 			}
-		});
+		}});
 			
 		closeButton.setOnClickListener(new View.OnClickListener() {
 		@Override
@@ -49,7 +50,7 @@ public class NewUserScreen extends Activity{
 				startActivity(new Intent(NewUserScreen.this, LocationBasedAlerts.class));
 			}
 		});
-	}
+	 }
 	 
 	 private boolean validate()
 	 {
@@ -78,26 +79,26 @@ public class NewUserScreen extends Activity{
 			
 		if(username == null || password == null || repassword == null)
 		{
-			Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
+			//Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
 			return false;
 		}
 			
 		if(username.equals("")|| password.equals("") || repassword.equals(""))
 		{
-			Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
+			//Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
 			return false;
 		}
 		 //check if user name already exists
-		 SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
-		 if(userExists)
+		 SimpleDbUtil dbAccess = new SimpleDbUtil(username);
+		 if(userexists)
 		 {
-			 Toast.MakeText(this, "User Name Exists", ToastLength.Short).Show(); 
+			// Toast.MakeText(this, "User Name Exists", ToastLength.Short).Show(); 
 			 return false;
 		 }
 			
 		if(!password.equals(repassword))
 		{
-			Toast.MakeText(this, "Password's don't match", ToastLength.Short).Show(); 
+			//Toast.MakeText(this, "Password's don't match", ToastLength.Short).Show(); 
 			return false;
 		}	
 		 return true;
