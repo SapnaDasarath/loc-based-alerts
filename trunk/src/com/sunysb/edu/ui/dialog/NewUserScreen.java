@@ -37,10 +37,9 @@ public class NewUserScreen extends Activity{
 		@Override
 		public void onClick(View v) {    
 			if(validate())
-				{
-					addUserToDB();
-					startActivity(new Intent(NewUserScreen.this, UserOptionScreen.class));
-				}
+			{
+				addUserToDB();
+				startActivity(new Intent(NewUserScreen.this, UserOptionScreen.class));
 			}
 		});
 			
@@ -57,6 +56,7 @@ public class NewUserScreen extends Activity{
 		String username = null;
 		String password = null;
 		String repassword = null;
+		boolean userexists = false;
 			
 		Object usernameObj = newuserEditText.getText();
 		if(usernameObj != null)
@@ -78,32 +78,37 @@ public class NewUserScreen extends Activity{
 			
 		if(username == null || password == null || repassword == null)
 		{
+			Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
 			return false;
 		}
 			
 		if(username.equals("")|| password.equals("") || repassword.equals(""))
 		{
+			Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
 			return false;
 		}
-		
+		 //check if user name already exists
+		 SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
+		 if(userExists)
+		 {
+			 Toast.MakeText(this, "User Name Exists", ToastLength.Short).Show(); 
+			 return false;
+		 }
+			
 		if(!password.equals(repassword))
 		{
+			Toast.MakeText(this, "Password's don't match", ToastLength.Short).Show(); 
 			return false;
-		}
+		}	
 		 return true;
 	 }
 	 
 	 private void addUserToDB()
 	 {
-		 Log.e( "LBA", "Creating simple db" ); 
 		 String userName = newuserEditText.getText().toString();
-		 
-		 //check if user name already exists
-		 
 		 SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
 		 dbAccess.createDomain(userName);
-		 dbAccess.createItem(userName, SimpleDbUtil.USER_INFO);
-		 dbAccess.createItem(userName, SimpleDbUtil.FRIEND_INFO);
-		 Log.e( "LBA", "Simple DB Created" );   
+		 dbAccess.createItem(userName, StringUtil.USER_INFO);
+		 dbAccess.createItem(userName, StringUtil.FRIEND_INFO);
 	 }
 }
