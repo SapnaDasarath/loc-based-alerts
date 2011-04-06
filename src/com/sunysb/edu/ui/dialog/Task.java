@@ -84,12 +84,12 @@ public class Task extends Activity{
 			priorityStr = name.toString();
 		}
 		
-		String domain = SimpleDbUtil.getCurrentUser();
+		String domain = StringUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 		
-		util.createAttributeForItem(domain, taskid, SimpleDbUtil.TASK_NAME, nameStr);
-		util.createAttributeForItem(domain,taskid, SimpleDbUtil.TASK_DESCRIPTION, descriptionStr);
-		util.createAttributeForItem(domain, taskid, SimpleDbUtil.TASK_PRIORITY, priorityStr);
+		util.createAttributeForItem(domain, taskid, StringUtil.TASK_NAME, nameStr);
+		util.createAttributeForItem(domain,taskid, StringUtil.TASK_DESCRIPTION, descriptionStr);
+		util.createAttributeForItem(domain, taskid, StringUtil.TASK_PRIORITY, priorityStr);
 	}
 	
 	private void updateExistingTaskInDB(String taskid)
@@ -121,16 +121,16 @@ public class Task extends Activity{
 		String domain = SimpleDbUtil.getCurrentUser();
 		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
 		
-		String nameStrDb = attrList.get(SimpleDbUtil.TASK_NAME);
-		String descriptionStrDb = attrList.get(SimpleDbUtil.TASK_DESCRIPTION);
-		String priorityStrDb = attrList.get(SimpleDbUtil.TASK_PRIORITY);
+		String nameStrDb = attrList.get(StringUtil.TASK_NAME);
+		String descriptionStrDb = attrList.get(StringUtil.TASK_DESCRIPTION);
+		String priorityStrDb = attrList.get(StringUtil.TASK_PRIORITY);
 		
 		HashMap<String,String> attrListToUpdate = new HashMap<String,String>();
 		if(nameStrDb != nameStr)
 		{
 			if(nameStr != null)
 			{
-				attrListToUpdate.put(SimpleDbUtil.TASK_NAME, nameStr);
+				attrListToUpdate.put(StringUtil.TASK_NAME, nameStr);
 			}
 		}
 		
@@ -138,7 +138,7 @@ public class Task extends Activity{
 		{
 			if(descriptionStr != null)
 			{
-				attrListToUpdate.put(SimpleDbUtil.TASK_DESCRIPTION, descriptionStr);
+				attrListToUpdate.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
 			}
 		}
 		
@@ -146,7 +146,7 @@ public class Task extends Activity{
 		{
 			if(priorityStr != null)
 			{
-				attrListToUpdate.put(SimpleDbUtil.TASK_PRIORITY, priorityStr);
+				attrListToUpdate.put(StringUtil.TASK_PRIORITY, priorityStr);
 			}
 		}
 		
@@ -163,9 +163,9 @@ public class Task extends Activity{
 		String domain = SimpleDbUtil.getCurrentUser();
 		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
 		
-		String nameStr = attrList.get(SimpleDbUtil.TASK_NAME);
-		String descriptionStr = attrList.get(SimpleDbUtil.TASK_DESCRIPTION);
-		String priorityStr = attrList.get(SimpleDbUtil.TASK_PRIORITY);
+		String nameStr = attrList.get(StringUtil.TASK_NAME);
+		String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
+		String priorityStr = attrList.get(StringUtil.TASK_PRIORITY);
 		
 		if(nameStr != null)
 		{
@@ -186,19 +186,18 @@ public class Task extends Activity{
 	private int getPosition(String val)
 	{
 		int retval = 0;
-		if(val.equals(SimpleDbUtil.PRIOR_LOW))
+		if(val.equals(StringUtil.PRIOR_LOW))
 		{
 			retval = 0;
 		}
-		else if(val.equals(SimpleDbUtil.PRIOR_MED))
+		else if(val.equals(StringUtil.PRIOR_MED))
 		{
 			retval = 1;
 		}
-		else if(val.equals(SimpleDbUtil.PRIOR_HIGH))
+		else if(val.equals(StringUtil.PRIOR_HIGH))
 		{
 			retval = 2;
 		}
-		
 		return retval;
 	}
 }
