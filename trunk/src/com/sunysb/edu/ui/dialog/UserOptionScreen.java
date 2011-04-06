@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.ui.map.Map;
 
@@ -46,16 +45,15 @@ public class UserOptionScreen extends Activity{
         addFriendsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, Map.class));
+				startActivity(new Intent(UserOptionScreen.this, FriendListScreen.class));
 			}
 		});
         
         editProfileButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, Map.class));
+				startActivity(new Intent(UserOptionScreen.this, UserProfileScreen.class));
 			}
 		});
-	}
-	
+	}	
 }
