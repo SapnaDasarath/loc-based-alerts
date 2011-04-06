@@ -72,9 +72,13 @@ public class Map extends MapActivity{
 	private void handleIntent(Intent intent) {
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
-	     // doMySearch(query);
+	      doMySearch(query);
 	    //Use this String query to fire a HTTP map loc request. Thats the action.
 	    }
+	}
+	
+	private void doMySearch(String query){
+		 Log.i("Search String {}" , query); 
 	}
 
 	@Override

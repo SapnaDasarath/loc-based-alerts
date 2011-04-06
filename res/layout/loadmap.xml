@@ -20,14 +20,21 @@
 		android:text="AddTask"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		/>    
+		/>  
+		 
         <LinearLayout android:id="@+id/zoom" 
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
         android:layout_alignParentBottom="true" 
         android:layout_centerHorizontal="true" 
-		/> 
-        
-       
+		> 
+        <EditText 
+		android:id="@+id/search_box"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:title="Search"
+    	android:icon="@drawable/ic_menu_search"
+		/>
+       </LinearLayout>
         
 </RelativeLayout>
