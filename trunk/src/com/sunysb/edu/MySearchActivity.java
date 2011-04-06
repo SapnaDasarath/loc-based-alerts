@@ -1,6 +1,7 @@
 package com.sunysb.edu;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -19,7 +20,7 @@ public class MySearchActivity extends ListActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    //setContentView(R.layout.search);
+	    setContentView(R.layout.search);
 	    handleIntent(getIntent());
 	}
 
@@ -32,8 +33,12 @@ public class MySearchActivity extends ListActivity{
 	private void handleIntent(Intent intent) {
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	      String query = intent.getStringExtra(SearchManager.QUERY);
-	     // doMySearch(query);
+	      doMySearch(query);
 	    }
+	}
+	
+	private void doMySearch(String query){
+		 Log.i("Search String {}" , query); 
 	}
 	
 	public boolean onSearchRequested (){
