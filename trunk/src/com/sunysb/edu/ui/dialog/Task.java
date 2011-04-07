@@ -24,8 +24,6 @@ public class Task extends Activity{
 	 private Button okButton;
 	 private Button closeButton;
 	 
-	 SimpleDbUtil util = new SimpleDbUtil();
-	 
 	 public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task);
@@ -88,9 +86,17 @@ public class Task extends Activity{
 		String domain = SimpleDbUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 		
-		util.createAttributeForItem(domain, taskid, StringUtil.TASK_NAME, nameStr);
-		util.createAttributeForItem(domain,taskid, StringUtil.TASK_DESCRIPTION, descriptionStr);
-		util.createAttributeForItem(domain, taskid, StringUtil.TASK_PRIORITY, priorityStr);
+		SimpleDbUtil util;
+		try {
+			util = new SimpleDbUtil();
+			util.createAttributeForItem(domain, taskid, StringUtil.TASK_NAME, nameStr);
+			util.createAttributeForItem(domain,taskid, StringUtil.TASK_DESCRIPTION, descriptionStr);
+			util.createAttributeForItem(domain, taskid, StringUtil.TASK_PRIORITY, priorityStr);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void updateExistingTaskInDB(String taskid)
@@ -120,41 +126,48 @@ public class Task extends Activity{
 		}
 		
 		String domain = SimpleDbUtil.getCurrentUser();
-		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
-		
-		String nameStrDb = attrList.get(StringUtil.TASK_NAME);
-		String descriptionStrDb = attrList.get(StringUtil.TASK_DESCRIPTION);
-		String priorityStrDb = attrList.get(StringUtil.TASK_PRIORITY);
-		
-		HashMap<String,String> attrListToUpdate = new HashMap<String,String>();
-		if(nameStrDb != nameStr)
-		{
-			if(nameStr != null)
+		try {
+			SimpleDbUtil util = new SimpleDbUtil();
+			HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
+			
+			String nameStrDb = attrList.get(StringUtil.TASK_NAME);
+			String descriptionStrDb = attrList.get(StringUtil.TASK_DESCRIPTION);
+			String priorityStrDb = attrList.get(StringUtil.TASK_PRIORITY);
+			
+			HashMap<String,String> attrListToUpdate = new HashMap<String,String>();
+			if(nameStrDb != nameStr)
 			{
-				attrListToUpdate.put(StringUtil.TASK_NAME, nameStr);
+				if(nameStr != null)
+				{
+					attrListToUpdate.put(StringUtil.TASK_NAME, nameStr);
+				}
 			}
-		}
-		
-		if(descriptionStrDb != descriptionStr)
-		{
-			if(descriptionStr != null)
+			
+			if(descriptionStrDb != descriptionStr)
 			{
-				attrListToUpdate.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
+				if(descriptionStr != null)
+				{
+					attrListToUpdate.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
+				}
 			}
-		}
-		
-		if(priorityStrDb != priorityStr)
-		{
-			if(priorityStr != null)
+			
+			if(priorityStrDb != priorityStr)
 			{
-				attrListToUpdate.put(StringUtil.TASK_PRIORITY, priorityStr);
+				if(priorityStr != null)
+				{
+					attrListToUpdate.put(StringUtil.TASK_PRIORITY, priorityStr);
+				}
 			}
+			
+			if(attrListToUpdate.size()>0)
+			{
+				util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		if(attrListToUpdate.size()>0)
-		{
-			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
-		}
 	}
 	
 	private void updateUIforTask(String taskid)
@@ -162,25 +175,31 @@ public class Task extends Activity{
 		Log.e( "LBA", "update Task from DB" ); 
 		
 		String domain = SimpleDbUtil.getCurrentUser();
-		HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
-		
-		String nameStr = attrList.get(StringUtil.TASK_NAME);
-		String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
-		String priorityStr = attrList.get(StringUtil.TASK_PRIORITY);
-		
-		if(nameStr != null)
-		{
-			nameEditText.setText(nameStr);
-		}
-		
-		if(descriptionStr != null)
-		{
-			descriptionEditText.setText(descriptionStr);
-		}
-		
-		if(priorityStr != null)
-		{
-			prioritySpinner.setSelection(getPosition(priorityStr));
+		try {
+			SimpleDbUtil util = new SimpleDbUtil();
+			HashMap<String,String> attrList = util.getAttributesForItem(domain, taskid);
+			
+			String nameStr = attrList.get(StringUtil.TASK_NAME);
+			String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
+			String priorityStr = attrList.get(StringUtil.TASK_PRIORITY);
+			
+			if(nameStr != null)
+			{
+				nameEditText.setText(nameStr);
+			}
+			
+			if(descriptionStr != null)
+			{
+				descriptionEditText.setText(descriptionStr);
+			}
+			
+			if(priorityStr != null)
+			{
+				prioritySpinner.setSelection(getPosition(priorityStr));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

@@ -1,5 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.HashMap;
+
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class NewUserScreen extends Activity{
 
@@ -57,7 +60,6 @@ public class NewUserScreen extends Activity{
 		String username = null;
 		String password = null;
 		String repassword = null;
-		boolean userexists = false;
 			
 		Object usernameObj = newuserEditText.getText();
 		if(usernameObj != null)
@@ -79,37 +81,57 @@ public class NewUserScreen extends Activity{
 			
 		if(username == null || password == null || repassword == null)
 		{
-			//Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
+			Toast.makeText(this, "Enter valid username and password", Toast.LENGTH_SHORT).show(); 
 			return false;
 		}
 			
 		if(username.equals("")|| password.equals("") || repassword.equals(""))
 		{
-			//Toast.MakeText(this, "Enter valid username and password", ToastLength.Short).Show(); 
+			Toast.makeText(this, "Enter valid username and password", Toast.LENGTH_SHORT).show(); 
 			return false;
 		}
 		 //check if user name already exists
-		 SimpleDbUtil dbAccess = new SimpleDbUtil(username);
-		 if(userexists)
-		 {
-			// Toast.MakeText(this, "User Name Exists", ToastLength.Short).Show(); 
-			 return false;
-		 }
-			
-		if(!password.equals(repassword))
-		{
-			//Toast.MakeText(this, "Password's don't match", ToastLength.Short).Show(); 
-			return false;
-		}	
+		try {
+			SimpleDbUtil dbAccess = new SimpleDbUtil(username);
+			 HashMap<String,String> userinfo = dbAccess.getAttributesForItem(username, StringUtil.USER_ID);
+			 if(userinfo.size()>0)
+			 {
+				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT).show(); 
+				 return false;
+			 }
+				
+			if(!password.equals(repassword))
+			{
+				Toast.makeText(this, "Password's don't match", Toast.LENGTH_SHORT).show(); 
+				return false;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 		 return true;
 	 }
 	 
 	 private void addUserToDB()
 	 {
-		 String userName = newuserEditText.getText().toString();
-		 SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
-		 dbAccess.createDomain(userName);
-		 dbAccess.createItem(userName, StringUtil.USER_INFO);
-		 dbAccess.createItem(userName, StringUtil.FRIEND_INFO);
+		String userName = newuserEditText.getText().toString();
+		String passwd = newuserEditText.getText().toString();
+		try {
+			SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
+			
+			dbAccess.createDomain(userName);
+			dbAccess.createItem(userName, StringUtil.USER_ID);
+			dbAccess.createAttributeForItem(userName, StringUtil.USER_ID, StringUtil.USRNAME, userName);
+			
+			dbAccess.createItem(userName, StringUtil.USER_INFO);
+			 //TODO add hashed password to db
+			dbAccess.createAttributeForItem(userName, StringUtil.USER_INFO, StringUtil.PASSWD, passwd);
+			
+			dbAccess.createItem(userName, StringUtil.FRIEND_INFO);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	 }
 }

@@ -19,12 +19,13 @@ public class SimpleDbUtil {
 
 	private SimpleDbInterface dbInterface = null;
 
-	public SimpleDbUtil()
+
+	public SimpleDbUtil() throws Exception
 	{
 		dbInterface =  new SimpleDbInterface();
 	}
 	
-	public SimpleDbUtil(String userName)
+	public SimpleDbUtil(String userName) throws Exception
 	{
 		dbInterface =  new SimpleDbInterface(userName);
 	}
@@ -41,6 +42,10 @@ public class SimpleDbUtil {
     //delete an existing domain
 	public void deleteDomain( String domainName ) {
 		dbInterface.getDB().deleteDomain(new DeleteDomainRequest( domainName ));
+	}
+	
+	public List<String> getDomainNames() {
+		return dbInterface.getDB().listDomains().getDomainNames();
 	}
 	
 	//to an existing domain add an item

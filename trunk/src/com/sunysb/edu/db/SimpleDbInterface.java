@@ -16,9 +16,9 @@ public class SimpleDbInterface {
 	
 	//this method is called when a db instance
 	//is instantiated for the first time
-	public SimpleDbInterface(String userName)
+	public SimpleDbInterface(String uname)
 	{
-		this.userName = userName;
+		userName = uname;
 		if(credentials == null)
 		{
 			getCredentials();
@@ -27,9 +27,13 @@ public class SimpleDbInterface {
 	}
 	
 	//this method is called later by all accessors
-	public SimpleDbInterface()
+	public SimpleDbInterface() throws Exception
 	{
-
+		if(credentials == null)
+		{
+			Log.e("LBA", "credentials value =" + credentials);
+			throw new Exception();
+		}
 	}
 	
 	public AmazonSimpleDB getDB()
