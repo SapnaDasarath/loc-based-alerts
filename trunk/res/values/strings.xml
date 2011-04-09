@@ -8,4 +8,5 @@
     </string-array>
     <string name="search_label">Map Search</string>
     <string name="search_hint">Stony Brook</string>
+    <string name="map_search">Search Map</string>
 </resources>
