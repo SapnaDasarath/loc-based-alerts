@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.ui.map.Map;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ public class Task extends Activity{
 	 private Spinner  prioritySpinner;
 	 
 	 private Button okButton;
+	 private Button sendToFriendButton;
 	 private Button closeButton;
 	 
 	 public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class Task extends Activity{
 		prioritySpinner = (Spinner) findViewById(R.id.priority_Spinner);
 			
 		okButton = (Button) findViewById(R.id.ok_Task_button);
+		sendToFriendButton = (Button) findViewById(R.id.send_To_Friend_button);
 		closeButton = (Button) findViewById(R.id.close_Task_button);
 			
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -48,10 +52,16 @@ public class Task extends Activity{
 					createNewTaskInDB();
 				}
 			});
+		
+		sendToFriendButton.setOnClickListener(new View.OnClickListener(){
+			public void onClick(View v){
+				//createNewTaskInDB(); and send to friend()
+			}
+		});
 	        
 		closeButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-					//close current intent
+					startActivity(new Intent(Task.this, Map.class));
 				}
 			});
 	 }

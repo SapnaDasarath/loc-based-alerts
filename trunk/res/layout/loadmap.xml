@@ -15,42 +15,36 @@
         android:apiKey="0c6LaqK3rUWIjkvTmCh7VNEDa0-XwHd2HgSoa9g"
     	/>
     
-
-    
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-	android:background="#FFFFFF"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content"
-	android:layout_gravity="center_vertical" 
-	android:stretchColumns="2" 
-	android:orientation="horizontal">
-<TableRow>
-   <TextView android:layout_column="1" 
-   android:text="Search " 
-   android:textColor="#000000"
-    android:gravity="left" 
-	android:padding="3dip" 
-	android:layout_height="40px" />
+				android:background="#FFFFFF"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical" 
+				android:stretchColumns="2" 
+				android:orientation="horizontal">
+	<TableRow>
+   		<TextView android:layout_column="1" 
+   				  android:text="Search " 
+   				  android:textColor="#000000"
+    			  android:gravity="left" 
+				  android:padding="3dip" 
+				  android:layout_height="40px" />
     
-   <EditText android:id="@+id/search_box" 
-    android:layout_column="2" 
-    android:gravity="left" 
-      />
+   		<EditText android:id="@+id/search_box" 
+    			  android:layout_column="2" 
+    			  android:gravity="left" />
      
      
      
-    <Button android:id="@+id/search_icon" 
-	android:text="Search" 
-	android:layout_column="3"
-    android:gravity="left" 
-	android:layout_height="40px"
-    android:padding="10dip"
-     android:icon="@drawable/ic_menu_search"
-      />
-  </TableRow>
-</TableLayout> 
-    
-    
+    	<Button android:id="@+id/search_icon" 
+				android:text="Search" 
+				android:layout_column="3"
+    			android:gravity="left" 
+				android:layout_height="40px"
+    			android:padding="10dip"
+     			android:icon="@drawable/ic_menu_search"/>
+  		</TableRow>
+	</TableLayout> 
     
     	<Button 
 		android:id="@+id/add_Task"
@@ -61,19 +55,9 @@
 		/>  
 		 
          <LinearLayout android:id="@+id/zoom" 
+         android:gravity="left"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
         android:layout_alignParentBottom="true" 
 		/> 
-        <!-- <EditText 
-		android:id="@+id/search_box"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:title="Search"
-    	android:icon="@drawable/ic_menu_search"
-		/>
-       </LinearLayout> -->
-       
-       
-        
 </RelativeLayout>
