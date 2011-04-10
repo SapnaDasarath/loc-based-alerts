@@ -41,9 +41,16 @@
 	<Button 
 		android:id="@+id/ok_Task_button"
 		android:text="Ok"
-		android:layout_width="fill_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		/>		   
+		/>		
+	<Button 
+		android:id="@+id/send_To_Friend_button"
+		android:text="SendToFriend"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		/>	
+		   
 	<Button 
 		android:id="@+id/close_Task_button"
 		android:text="Close"
