@@ -8,72 +8,68 @@ import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 
 public class SimpleDbInterface {
-	
+
 	private static AmazonSimpleDB sdb = null;
 	private static BasicAWSCredentials credentials = null;
 	private static String userName = null;
 	private static String currentUser = null;
-	
-	//this method is called when a db instance
-	//is instantiated for the first time
-	public SimpleDbInterface(String uname)
-	{
+
+	// this method is called when a db instance
+	// is instantiated for the first time
+	public SimpleDbInterface(String uname) {
 		userName = uname;
-		if(credentials == null)
-		{
+		if (credentials == null) {
 			getCredentials();
 		}
-		//if credentials is still null error
+		// if credentials is still null error
 	}
-	
-	//this method is called later by all accessors
-	public SimpleDbInterface() throws Exception
-	{
-		if(credentials == null)
-		{
+
+	// this method is called later by all accessors
+	public SimpleDbInterface() throws Exception {
+		if (credentials == null) {
 			Log.e("LBA", "credentials value =" + credentials);
 			throw new Exception();
 		}
 	}
-	
-	public AmazonSimpleDB getDB()
-	{
+
+	public AmazonSimpleDB getDB() {
 		return getInstance();
 	}
-	
-	public static String getCurrentUser()
-	{
+
+	public static String getCurrentUser() {
 		return currentUser;
 	}
-	
+
 	private static AmazonSimpleDB getInstance() {
-        if ( sdb == null && credentials != null) 
-        {
-		    sdb = new AmazonSimpleDBClient(credentials);
-            sdb.setEndpoint( "https://sdb.amazonaws.com:443" );  	
-            currentUser = userName;
-        }
-        return sdb;
+		if (sdb == null && credentials != null) {
+			sdb = new AmazonSimpleDBClient(credentials);
+			sdb.setEndpoint("https://sdb.amazonaws.com:443");
+			currentUser = userName;
+		}
+		return sdb;
 	}
-	
-    private  void getCredentials() {
-    	 Properties properties = new Properties();
-         try {
-			properties.load( getClass().getResourceAsStream( "AwsCredentials.properties" ) );
+
+	private void getCredentials() {
+		Properties properties = new Properties();
+		try {
+			properties.load(getClass().getResourceAsStream(
+					"AwsCredentials.properties"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-         
-         String accessKeyId = properties.getProperty( "accessKey" );
-         String secretKey = properties.getProperty( "secretKey" );
-         
-         if ( ( accessKeyId == null ) || ( accessKeyId.equals( "" ) ) ||
-         	 ( accessKeyId.equals( "CHANGEME" ) ) ||( secretKey == null )   || 
-              ( secretKey.equals( "" ) ) || ( secretKey.equals( "CHANGEME" ) ) ) {
-             Log.e( "AWS", "Aws Credentials not configured correctly." );                                    
-         } else {
-         credentials = new BasicAWSCredentials( properties.getProperty( "accessKey" ), properties.getProperty( "secretKey" ) );
-         }
-    }
+
+		String accessKeyId = properties.getProperty("accessKey");
+		String secretKey = properties.getProperty("secretKey");
+
+		if ((accessKeyId == null) || (accessKeyId.equals(""))
+				|| (accessKeyId.equals("CHANGEME")) || (secretKey == null)
+				|| (secretKey.equals("")) || (secretKey.equals("CHANGEME"))) {
+			Log.e("AWS", "Aws Credentials not configured correctly.");
+		} else {
+			credentials = new BasicAWSCredentials(
+					properties.getProperty("accessKey"),
+					properties.getProperty("secretKey"));
+		}
+	}
 }
