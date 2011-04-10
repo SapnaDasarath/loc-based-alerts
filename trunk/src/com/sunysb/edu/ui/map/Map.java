@@ -29,7 +29,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
-import com.sunysb.edu.ui.dialog.Task;
+import com.sunysb.edu.ui.dialog.TaskScreen;
 import com.sunysb.edu.ui.dialog.UserOptionScreen;
 
 
@@ -127,7 +127,7 @@ public class Map extends MapActivity{
 		addTaskButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					Log.e( "LBA", "Add Task dialog launched" );
-					startActivity(new Intent(Map.this, Task.class));
+					startActivity(new Intent(Map.this, TaskScreen.class));
 				}
 			});
 	}

@@ -58,7 +58,7 @@
          <activity android:name=".ui.dialog.UserProfileScreen"></activity>
          <activity android:name=".ui.dialog.FriendListScreen"></activity>
          <activity android:name=".ui.dialog.NewFriendScreen"></activity>
-         <activity android:name=".ui.dialog.Task"></activity>
+         <activity android:name="ui.dialog.TaskScreen"></activity>
     </application> 
     
     
