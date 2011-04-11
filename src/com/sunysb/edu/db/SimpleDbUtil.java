@@ -41,16 +41,14 @@ public class SimpleDbUtil {
 		dbInterface.getDB().deleteDomain(new DeleteDomainRequest(domainName));
 	}
 
+	// get all domain names in the db
 	public List<String> getDomainNames() {
 		return dbInterface.getDB().listDomains().getDomainNames();
 	}
 
 	// to an existing domain add an item
 	public void createItem(String domainName, String itemName) {
-		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>(
-				1);
-		attributes.add(new ReplaceableAttribute().withName("Name").withValue(
-				"Value"));
+		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName, attributes));
 	}
@@ -60,7 +58,7 @@ public class SimpleDbUtil {
 		SelectRequest selectRequest = new SelectRequest(
 				"select itemName() from `" + domainName + "`")
 				.withConsistentRead(true);
-		List items = dbInterface.getDB().select(selectRequest).getItems();
+		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
 
 		String[] itemNames = new String[items.size()];
 		for (int i = 0; i < items.size(); i++) {
@@ -129,5 +127,14 @@ public class SimpleDbUtil {
 				new DeleteAttributesRequest(domainName, itemName)
 						.withAttributes(new Attribute[] { new Attribute()
 								.withName(attributeName) }));
+	}
+	
+	public boolean doesDomainExist(String username)
+	{
+		List<String> domainNames = getDomainNames();
+		if (domainNames.contains(username)) {
+			return true;
+		}
+		return false;
 	}
 }

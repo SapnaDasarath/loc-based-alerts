@@ -1,6 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
-import java.util.HashMap;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
@@ -88,50 +89,67 @@ public class NewUserScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}
+
+		if (!password.equals(repassword)) {
+			Toast.makeText(this, "Password's don't match", Toast.LENGTH_SHORT)
+					.show();
+			return false;
+		}
+
 		// check if user name already exists
 		try {
 			SimpleDbUtil dbAccess = new SimpleDbUtil(username);
-			HashMap<String, String> userinfo = dbAccess.getAttributesForItem(
-					username, StringUtil.USER_ID);
-			if (userinfo.size() > 0) {
+			if (dbAccess.doesDomainExist(username)) {
 				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
 						.show();
 				return false;
 			}
 
-			if (!password.equals(repassword)) {
-				Toast.makeText(this, "Password's don't match",
-						Toast.LENGTH_SHORT).show();
-				return false;
-			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
 		}
 
 		return true;
 	}
 
-	private void addUserToDB() {
+	private boolean addUserToDB() {
 		String userName = newuserEditText.getText().toString();
 		String passwd = newuserEditText.getText().toString();
+		String pwd = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(passwd.getBytes());
+			byte byteData[] = md.digest();
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < byteData.length; i++) {
+				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16)
+						.substring(1));
+			}
+			pwd = sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			Toast.makeText(this, "Not able to add user, Try again..",
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
+	
 		try {
 			SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
 
 			dbAccess.createDomain(userName);
-			dbAccess.createItem(userName, StringUtil.USER_ID);
-			dbAccess.createAttributeForItem(userName, StringUtil.USER_ID,
-					StringUtil.USRNAME, userName);
-
+			
 			dbAccess.createItem(userName, StringUtil.USER_INFO);
-			// TODO add hashed password to db
 			dbAccess.createAttributeForItem(userName, StringUtil.USER_INFO,
-					StringUtil.PASSWD, passwd);
-
+					StringUtil.USRNAME, userName);
+			dbAccess.createAttributeForItem(userName, StringUtil.USER_INFO,
+					StringUtil.PASSWD, pwd);
+			
 			dbAccess.createItem(userName, StringUtil.FRIEND_INFO);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
+			return false;
 		}
+		return true;
 	}
 }

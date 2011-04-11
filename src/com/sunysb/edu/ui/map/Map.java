@@ -35,8 +35,6 @@ public class Map extends MapActivity {
 	private Button addTaskButton;
 	private Button btnSearch;
 
-	// Button btnSearch=(Button) findViewById(R.id.search);
-
 	public void changeMap(String area) {
 
 		mapView = (MapView) findViewById(R.id.mapView);
@@ -72,8 +70,6 @@ public class Map extends MapActivity {
 		}
 		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 
-		// Drawable drawable =
-		// this.getResources().getDrawable(R.drawable.androidmarker);
 		mc.animateTo(myLocation);
 		mc.setZoom(10);
 		mapView.invalidate();
@@ -84,8 +80,6 @@ public class Map extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.loadmap);
-		// startSearch("test search string", false, SEARCHABLE_ACTIVITY, null,
-		// false);
 
 		btnSearch = (Button) findViewById(R.id.search_icon);
 
@@ -96,13 +90,9 @@ public class Map extends MapActivity {
 
 				EditText txtSearch = (EditText) findViewById(R.id.search_box);
 				String area = txtSearch.getText().toString();
-				// Toast.makeText(GoogleMap.this, "Click-" +
-				// String.valueOf(area), Toast.LENGTH_SHORT).show();
 				Map.this.changeMap(area);
 			}
 		});
-
-		// handleIntent(getIntent());
 
 		mapView = (MapView) findViewById(R.id.mapView);
 
@@ -155,18 +145,6 @@ public class Map extends MapActivity {
 	}
 
 	public boolean onSearchRequested() {
-		/*
-		 * Bundle appDataBundle = null; final String queryAppDataString =
-		 * mQueryAppData.getText().toString(); if (queryAppDataString != null) {
-		 * appDataBundle = new Bundle(); appDataBundle.putString("demo_key",
-		 * queryAppDataString); }
-		 * 
-		 * // Now call the Activity member function that invokes the //Search
-		 * Manager UI. startSearch("Stony Brook", true, appDataBundle, true);
-		 * 
-		 * // Returning true indicates that we did launch the search,instead of
-		 * blocking it.
-		 */
 		Log.e("LBA", "Inside onSearchRequested()");
 		return true;
 	}
@@ -199,5 +177,4 @@ public class Map extends MapActivity {
 			return false;
 		}
 	}
-
 }

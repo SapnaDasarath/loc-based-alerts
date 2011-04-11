@@ -14,30 +14,35 @@ public class SimpleDbInterface {
 	private static String userName = null;
 	private static String currentUser = null;
 
-	// this method is called when a db instance
-	// is instantiated for the first time
+	/**
+	 * This method is called when a db instance is instantiated for the first time
+	 * @param uname current user name
+	 */ 
 	public SimpleDbInterface(String uname) {
 		userName = uname;
 		if (credentials == null) {
 			getCredentials();
 		}
-		// if credentials is still null error
 	}
 
-	// this method is called later by all accessors
+	/**
+	 * This method is called later by all other db users.
+	 * @throws Exception credentials not found
+	 * TODO: change exception to show more details.
+	 */
 	public SimpleDbInterface() throws Exception {
 		if (credentials == null) {
-			Log.e("LBA", "credentials value =" + credentials);
+			Log.e("LBA", "Credentials not found for DB");
 			throw new Exception();
 		}
 	}
 
+	/**
+	 * 
+	 * @return AmazonSimpleDB instance. this is a singleton
+	 */
 	public AmazonSimpleDB getDB() {
 		return getInstance();
-	}
-
-	public static String getCurrentUser() {
-		return currentUser;
 	}
 
 	private static AmazonSimpleDB getInstance() {
@@ -49,23 +54,33 @@ public class SimpleDbInterface {
 		return sdb;
 	}
 
+	/**
+	 * 
+	 * @return return the current user name as a string
+	 */
+	public static String getCurrentUser() {
+		return currentUser;
+	}
+
+	/**
+	 * load the file with access key
+	 * use it to authenticate with server
+	 */
 	private void getCredentials() {
 		Properties properties = new Properties();
 		try {
 			properties.load(getClass().getResourceAsStream(
 					"AwsCredentials.properties"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("LBA", "Not able to access key files");
 		}
 
 		String accessKeyId = properties.getProperty("accessKey");
 		String secretKey = properties.getProperty("secretKey");
 
-		if ((accessKeyId == null) || (accessKeyId.equals(""))
-				|| (accessKeyId.equals("CHANGEME")) || (secretKey == null)
-				|| (secretKey.equals("")) || (secretKey.equals("CHANGEME"))) {
-			Log.e("AWS", "Aws Credentials not configured correctly.");
+		if ((accessKeyId == null) || (accessKeyId.equals(""))|| (accessKeyId.equals("CHANGEME")) 
+				|| (secretKey == null)|| (secretKey.equals("")) || (secretKey.equals("CHANGEME"))) {
+			Log.e("LBA", "Aws Credentials not configured correctly.");
 		} else {
 			credentials = new BasicAWSCredentials(
 					properties.getProperty("accessKey"),
