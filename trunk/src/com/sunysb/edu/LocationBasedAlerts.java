@@ -1,5 +1,7 @@
 package com.sunysb.edu;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import com.sunysb.edu.db.SimpleDbUtil;
@@ -41,13 +43,11 @@ public class LocationBasedAlerts extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO remove authenticate commented out once it works
-				// if(authenticate())
-				{
-					if (setupDB()) {
-						registerApp();
-						startLocationManagerServices();
-						startActivity(new Intent(LocationBasedAlerts.this,UserOptionScreen.class));
-					}
+				if (authenticate()) {
+					registerApp();
+					startLocationManagerServices();
+					startActivity(new Intent(LocationBasedAlerts.this,
+							UserOptionScreen.class));
 				}
 			}
 		});
@@ -90,41 +90,43 @@ public class LocationBasedAlerts extends Activity {
 		}
 
 		// validate username and password in db now
-		SimpleDbUtil util;
+		SimpleDbUtil util = null;
 		try {
-			util = new SimpleDbUtil();
-			HashMap<String, String> map = util.getAttributesForItem(
-					SimpleDbUtil.getCurrentUser(), StringUtil.USER_INFO);
-			if (map == null || map.size() == 0) {
-				Toast.makeText(this, "Enter valid username and password",
-						Toast.LENGTH_SHORT).show();
-				return false;
-			}
-
-			String pwd = map.get(StringUtil.PASSWD);
-			if (!password.equals(pwd)) {
-				// TODO hash password and compare
-				Toast.makeText(this, "Enter valid username and password",
-						Toast.LENGTH_SHORT).show();
-				return false;
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private boolean setupDB() {
-		try {
-			SimpleDbUtil dbAccess = new SimpleDbUtil(usernameEditText.getText()
-					.toString());
+			util = new SimpleDbUtil(username);
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 			return false;
 		}
+
+		HashMap<String, String> userinfo = util.getAttributesForItem(username,
+				StringUtil.USER_INFO);
+		if (userinfo == null || userinfo.size() == 0) {
+			Toast.makeText(this, "Enter valid username and password",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		String pwd = userinfo.get(StringUtil.PASSWD);
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(pwd.getBytes());
+			byte byteData[] = md.digest();
+	        StringBuffer sb = new StringBuffer();
+	        for (int i = 0; i < byteData.length; i++) {
+	         sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+	        }
+			if (!password.equals(sb.toString())) {
+				Toast.makeText(this, "Enter valid username and password",
+						Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		} catch (NoSuchAlgorithmException e) {
+			Toast.makeText(this, "Enter valid username and password",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
 		return true;
 	}
 

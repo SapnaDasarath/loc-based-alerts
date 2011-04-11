@@ -1,10 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
-import java.util.HashMap;
-
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
-import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -41,32 +38,32 @@ public class NewFriendScreen extends Activity {
 
 	private boolean validateFriend() {
 		String username = null;
+		
 		Object usernameObj = newfriendEditText.getText();
 		if (usernameObj != null) {
 			username = usernameObj.toString().trim();
 		}
 
 		if (username == null || username.equals("")) {
-			Toast.makeText(this, "Enter non null username", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
 					.show();
 			return false;
 		}
 
-		// check if username of the friend exists in DB
+		// check if user name already exists
 		try {
 			SimpleDbUtil dbAccess = new SimpleDbUtil(username);
-			HashMap<String, String> userinfo = dbAccess.getAttributesForItem(
-					username, StringUtil.USER_ID);
-			if (userinfo.size() > 0) {
+			if (dbAccess.doesDomainExist(username)) {
 				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
 						.show();
-				return true;
+				return false;
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
+			return false;
 		}
-		return false;
+		return true;
 	}
-
 }
