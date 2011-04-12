@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class TaskScreen extends Activity{
 	
@@ -104,8 +105,8 @@ public class TaskScreen extends Activity{
 			util.createAttributeForItem(domain, taskid, StringUtil.TASK_PRIORITY, priorityStr);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
 		}
 	}
 	
@@ -174,8 +175,8 @@ public class TaskScreen extends Activity{
 				util.updateAttributesForItem(domain, taskid, attrListToUpdate);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
 		}
 		
 	}
@@ -208,8 +209,8 @@ public class TaskScreen extends Activity{
 				prioritySpinner.setSelection(getPosition(priorityStr));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
 		}
 	}
 	

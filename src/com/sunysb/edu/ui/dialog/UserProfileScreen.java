@@ -1,6 +1,10 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.HashMap;
+
 import com.sunysb.edu.R;
+import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class UserProfileScreen extends Activity {
 
@@ -75,6 +80,17 @@ public class UserProfileScreen extends Activity {
 
 	private void resetpasswdOnDb() {
 
+		try {
+			//TODO find out if this updates or resets other attributes.
+			SimpleDbUtil util = new SimpleDbUtil();
+			HashMap<String, String> newattrset = new HashMap<String, String> ();
+			newattrset.put(StringUtil.PASSWD, passwdEditText.getText().toString());
+			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(), StringUtil.USER_INFO, newattrset);
+		} catch (Exception e) {
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
+		}
+		
 	}
 
 }
