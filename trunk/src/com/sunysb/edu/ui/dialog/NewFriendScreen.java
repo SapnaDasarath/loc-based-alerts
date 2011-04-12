@@ -1,7 +1,10 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.HashMap;
+
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,7 +32,7 @@ public class NewFriendScreen extends Activity {
 			public void onClick(View v) {
 				// Check DB if the username is a valid username.
 				if (validateFriend()) {
-					// To-do: add this friend to my friendlist in DB
+					addNewFriend();
 				}
 			}
 		});
@@ -38,7 +41,7 @@ public class NewFriendScreen extends Activity {
 
 	private boolean validateFriend() {
 		String username = null;
-		
+
 		Object usernameObj = newfriendEditText.getText();
 		if (usernameObj != null) {
 			username = usernameObj.toString().trim();
@@ -65,5 +68,19 @@ public class NewFriendScreen extends Activity {
 			return false;
 		}
 		return true;
+	}
+
+	private void addNewFriend() {
+		try {
+			SimpleDbUtil util = new SimpleDbUtil();
+			HashMap<String, String> friendmap = new HashMap<String, String>();
+			friendmap.put(newfriendEditText.getText().toString(),
+					StringUtil.FRIEND_PENDING);
+			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+					StringUtil.USER_INFO, friendmap);
+		} catch (Exception e) {
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
+		}
 	}
 }

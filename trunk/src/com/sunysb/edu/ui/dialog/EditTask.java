@@ -34,7 +34,7 @@ public class EditTask extends Activity implements OnTouchListener {
 			SimpleDbUtil util = new SimpleDbUtil();
 			for(String id : taskids)
 			{
-				HashMap<String, String> taskattributes = util.getAttributesForItem(util.getCurrentUser(), id);
+				HashMap<String, String> taskattributes = util.getAttributesForItem(SimpleDbUtil.getCurrentUser(), id);
 				TableRow tr = new TableRow(this);
 				tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 						LayoutParams.WRAP_CONTENT));
@@ -78,7 +78,6 @@ public class EditTask extends Activity implements OnTouchListener {
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
-
 		return domain;
 	}
 
