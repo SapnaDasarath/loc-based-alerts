@@ -42,7 +42,7 @@ public class LocationBasedAlerts extends Activity {
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (authenticate()) {
+				 if (authenticate()) {
 					registerApp();
 					startLocationManagerServices();
 					startActivity(new Intent(LocationBasedAlerts.this,

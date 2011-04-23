@@ -43,7 +43,7 @@ public class FriendListScreen extends Activity {
 		TableLayout table = (TableLayout) findViewById(R.id.friendTableList);
 		table.removeAllViews();
 		
-		List<String> friendlist = getFriendsForUser();
+		List<String> friendlist = new ArrayList<String>(getFriendsForUser());
 		for (String namestr : friendlist) {
 
 			TableRow tr = new TableRow(this);
@@ -72,9 +72,7 @@ public class FriendListScreen extends Activity {
 	}
 
 	private List<String> getFriendsForUser() {
-		List<String> friends = new ArrayList<String>();
-		friends = util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
-		return friends;
+		return util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
 	}
 
 	// Remove friend from your list and the other user list also
