@@ -55,8 +55,8 @@ public class NewFriendScreen extends Activity {
 
 		// check if user name already exists
 		try {
-			SimpleDbUtil dbAccess = new SimpleDbUtil(username);
-			if (dbAccess.doesDomainExist(username)) {
+			SimpleDbUtil dbAccess = new SimpleDbUtil();
+			if (dbAccess.doesDomainExist(StringUtil.FRIEND_INFO+username)) {
 				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
 						.show();
 				return false;
@@ -73,11 +73,13 @@ public class NewFriendScreen extends Activity {
 	private void addNewFriend() {
 		try {
 			SimpleDbUtil util = new SimpleDbUtil();
-			HashMap<String, String> friendmap = new HashMap<String, String>();
-			friendmap.put(newfriendEditText.getText().toString(),
-					StringUtil.FRIEND_PENDING);
-			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
-					StringUtil.USER_INFO, friendmap);
+			String username = newfriendEditText.getText().toString();
+			
+			HashMap<String,String> friendmap = new HashMap<String,String>();
+			friendmap.put(StringUtil.FRIEND_NAME, username);
+			friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_PENDING);
+			util.createItem(SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO+username, friendmap);
+
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();

@@ -1,7 +1,5 @@
 package com.sunysb.edu;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.sunysb.edu.db.SimpleDbUtil;
@@ -80,9 +78,7 @@ public class LocationAlert extends Activity implements LocationListener {
 					+ StringUtil.TASK_LONG + " is " + "`"
 					+ Double.toString(longitude) + "`";
 
-			String[] matchingitems = util.getItemNamesForQuery(matchingQuery);
-			List<String> taskids = new ArrayList<String>();
-			Collections.addAll(taskids, matchingitems); 
+			List<String> taskids = util.getItemNamesForQuery(matchingQuery);
 			showTaskAndUpdate(taskids);
 
 		} catch (Exception e) {

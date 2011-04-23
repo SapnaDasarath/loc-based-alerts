@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.util.Log;
+
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.DeleteAttributesRequest;
@@ -14,6 +16,7 @@ import com.amazonaws.services.simpledb.model.Item;
 import com.amazonaws.services.simpledb.model.PutAttributesRequest;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 import com.amazonaws.services.simpledb.model.SelectRequest;
+import com.sunysb.edu.util.StringUtil;
 
 public class SimpleDbUtil {
 
@@ -64,30 +67,63 @@ public class SimpleDbUtil {
 	}
 
 	// get all items as part of a given domain
-	public String[] getItemNamesForDomain(String domainName) {
+	public List<String> getItemNamesForDomain(String domainName) {
 		SelectRequest selectRequest = new SelectRequest(
 				"select itemName() from `" + domainName + "`")
 				.withConsistentRead(true);
 		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
 
-		String[] itemNames = new String[items.size()];
+		List<String> itemNames = new ArrayList<String>();
 		for (int i = 0; i < items.size(); i++) {
-			itemNames[i] = ((Item) items.get(i)).getName();
+			itemNames.add(((Item) items.get(i)).getName());
 		}
-
 		return itemNames;
 	}
 	
+	public List<String> getTasksForUser(String domainName) {
+		List<String> domain = new ArrayList<String>();
+		List<String> taskidlist =  getItemNamesForDomain(domainName);
+		if (taskidlist != null && taskidlist.size() > 0) 
+		{
+			for(String taskname: taskidlist)
+			{
+				if(!taskname.equals(StringUtil.USER_INFO))
+				{
+					if(!taskname.startsWith(StringUtil.FRIEND_INFO))
+					{
+						domain.add(taskname);
+					}
+				}
+			}	
+		}
+		return domain;
+	}
+	
+	public List<String> getFriendsForUser(String domainName) {
+		List<String> domain = new ArrayList<String>();
+		List<String> friendList =  getItemNamesForDomain(domainName);
+		if (friendList != null && friendList.size() > 0) 
+		{
+			for(String taskname: friendList)
+			{
+				if(taskname.startsWith(StringUtil.FRIEND_INFO))
+				{
+					domain.add(taskname);
+				}
+			}	
+		}
+		return domain;
+	}
+	
 	// get all items as part of a given query
-	public String[] getItemNamesForQuery(String query) {
+	public List<String> getItemNamesForQuery(String query) {
 		SelectRequest selectRequest = new SelectRequest().withConsistentRead(true);
 		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
 
-		String[] itemNames = new String[items.size()];
+		List<String> itemNames = new ArrayList<String>();
 		for (int i = 0; i < items.size(); i++) {
-			itemNames[i] = ((Item) items.get(i)).getName();
+			itemNames.add( ((Item) items.get(i)).getName());
 		}
-
 		return itemNames;
 	}
 

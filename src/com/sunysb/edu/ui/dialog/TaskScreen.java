@@ -56,7 +56,7 @@ public class TaskScreen extends Activity{
 		
 		sendToFriendButton.setOnClickListener(new View.OnClickListener(){
 			public void onClick(View v){
-				//createNewTaskInDB(); and send to friend()
+				sendTaskToFriend(); 
 			}
 		});
 	        
@@ -108,6 +108,7 @@ public class TaskScreen extends Activity{
 			taskInfoMap.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
 			taskInfoMap.put(StringUtil.TASK_PRIORITY, priorityStr);
 			taskInfoMap.put(StringUtil.TASK_OWNER, SimpleDbUtil.getCurrentUser());
+			taskInfoMap.put(StringUtil.TASK_OWNER_ID,taskid);
 			taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 			taskInfoMap.put(StringUtil.TASK_LONG, longitude);
 			
@@ -242,5 +243,17 @@ public class TaskScreen extends Activity{
 			retval = 2;
 		}
 		return retval;
+	}
+	
+	private void sendTaskToFriend()
+	{
+		//TODO add a screen to get all friends of this user and show in drop down
+		//select one/multiple friends and do a send action.
+		//with this action we have to get domains of those users and send (owner domain, taskid) in notification
+		//on notification to user if user accepts task retrieve the task from original owner
+		//insert into current users task list
+		//when the task is completed check if current owner matched task owner
+		//if it does not find the task in original owner list and update task id.
+		//slso if you ahve shared the task with other ppl update their status also.
 	}
 }
