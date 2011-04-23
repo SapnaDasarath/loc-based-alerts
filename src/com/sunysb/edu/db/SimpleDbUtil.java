@@ -3,8 +3,7 @@ package com.sunysb.edu.db;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import android.util.Log;
+import java.util.StringTokenizer;
 
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
@@ -34,8 +33,8 @@ public class SimpleDbUtil {
 		return SimpleDbInterface.getCurrentUser();
 	}
 
-	//Domain operations
-	
+	// Domain operations
+
 	// create a new domain
 	public void createDomain(String domainName) {
 		dbInterface.getDB().createDomain(new CreateDomainRequest(domainName));
@@ -52,7 +51,8 @@ public class SimpleDbUtil {
 	}
 
 	// to an existing domain add an item
-	public void createItem(String domainName, String itemName,HashMap<String, String> attributes ) {
+	public void createItem(String domainName, String itemName,
+			HashMap<String, String> attributes) {
 		List<ReplaceableAttribute> replaceableAttributes = new ArrayList<ReplaceableAttribute>(
 				attributes.size());
 
@@ -63,7 +63,8 @@ public class SimpleDbUtil {
 							.withReplace(true));
 		}
 		dbInterface.getDB().putAttributes(
-				new PutAttributesRequest(domainName, itemName, replaceableAttributes));
+				new PutAttributesRequest(domainName, itemName,
+						replaceableAttributes));
 	}
 
 	// get all items as part of a given domain
@@ -79,54 +80,47 @@ public class SimpleDbUtil {
 		}
 		return itemNames;
 	}
-	
+
 	public List<String> getTasksForUser(String domainName) {
 		List<String> domain = new ArrayList<String>();
-		List<String> taskidlist =  getItemNamesForDomain(domainName);
-		if (taskidlist != null && taskidlist.size() > 0) 
-		{
-			for(String taskname: taskidlist)
-			{
-				if(!taskname.equals(StringUtil.USER_INFO))
-				{
-					if(!taskname.startsWith(StringUtil.FRIEND_INFO))
-					{
+		List<String> taskidlist = getItemNamesForDomain(domainName);
+		if (taskidlist != null && taskidlist.size() > 0) {
+			for (String taskname : taskidlist) {
+				if (!taskname.equals(StringUtil.USER_INFO)) {
+					if (!taskname.startsWith(StringUtil.FRIEND_INFO)) {
 						domain.add(taskname);
 					}
 				}
-			}	
+			}
 		}
 		return domain;
 	}
-	
+
 	public List<String> getFriendsForUser(String domainName) {
 		List<String> domain = new ArrayList<String>();
-		List<String> friendList =  getItemNamesForDomain(domainName);
-		if (friendList != null && friendList.size() > 0) 
-		{
-			for(String taskname: friendList)
-			{
-				if(taskname.startsWith(StringUtil.FRIEND_INFO))
-				{
+		List<String> friendList = getItemNamesForDomain(domainName);
+		if (friendList != null && friendList.size() > 0) {
+			for (String taskname : friendList) {
+				if (taskname.startsWith(StringUtil.FRIEND_INFO)) {
 					domain.add(taskname);
 				}
-			}	
+			}
 		}
 		return domain;
 	}
-	
+
 	// get all items as part of a given query
 	public List<String> getItemNamesForQuery(String query) {
-		SelectRequest selectRequest = new SelectRequest().withConsistentRead(true);
+		SelectRequest selectRequest = new SelectRequest()
+				.withConsistentRead(true);
 		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
 
 		List<String> itemNames = new ArrayList<String>();
 		for (int i = 0; i < items.size(); i++) {
-			itemNames.add( ((Item) items.get(i)).getName());
+			itemNames.add(((Item) items.get(i)).getName());
 		}
 		return itemNames;
 	}
-
 
 	// to delete an item from a given domain
 	public void deleteItem(String domainName, String itemName) {
@@ -143,7 +137,7 @@ public class SimpleDbUtil {
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName, attributes));
 	}
-	
+
 	// for a give item replace all attributes with new attributes
 	public void updateAttributesForItem(String domainName, String itemName,
 			HashMap<String, String> attributes) {
@@ -178,6 +172,22 @@ public class SimpleDbUtil {
 		return attributes;
 	}
 
+	public List<String> getTaskAcceptedFriends(String taskid) {
+		List<String> username = new ArrayList<String>();
+
+		HashMap<String, String> attr = getAttributesForItem(
+				SimpleDbUtil.getCurrentUser(), taskid);
+		String taskOwner = attr.get(StringUtil.TASK_SHARED_NAME);
+		StringTokenizer token = new StringTokenizer(taskOwner, ",");
+
+		// iterate through tokens
+		while (token.hasMoreTokens())
+		{
+			username.add(token.nextToken());
+		}	
+		return username;
+	}
+
 	// to delete an attribute in a given item in a given domain
 	public void deleteItemAttribute(String domainName, String itemName,
 			String attributeName) {
@@ -186,9 +196,8 @@ public class SimpleDbUtil {
 						.withAttributes(new Attribute[] { new Attribute()
 								.withName(attributeName) }));
 	}
-	
-	public boolean doesDomainExist(String username)
-	{
+
+	public boolean doesDomainExist(String username) {
 		List<String> domainNames = getDomainNames();
 		if (domainNames.contains(username)) {
 			return true;

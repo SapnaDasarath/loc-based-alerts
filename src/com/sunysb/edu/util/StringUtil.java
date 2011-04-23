@@ -27,7 +27,7 @@ public class StringUtil {
 	
 	public static final String TASK_OWNER = "Owner";
 	public static final String TASK_OWNER_ID = "OwnerTaskID";
-	public static final String TASK_SHARED_ID = "OwnerSharedID";
+	public static final String TASK_SHARED_NAME = "OwnerSharedID";
 	
 	//This is a domain containing friend name as a list
 	public static final String FRIEND_INFO = "friendinfo";

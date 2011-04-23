@@ -17,9 +17,11 @@ import android.widget.TextView;
 
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.StringUtil;
 
 public class FriendListScreen extends Activity {
 
+	SimpleDbUtil util;
 	private Button addFriendButton;
 
 	@Override
@@ -27,7 +29,20 @@ public class FriendListScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.friendlist);
 
+		try {
+			util = new SimpleDbUtil();
+
+		} catch (Exception e) {
+			Log.e("LBA", "Unable to connect to server");
+		}
+		drawUI();
+	}
+
+	private void drawUI() {
+
 		TableLayout table = (TableLayout) findViewById(R.id.friendTableList);
+		table.removeAllViews();
+		
 		List<String> friendlist = getFriendsForUser();
 		for (String namestr : friendlist) {
 
@@ -58,20 +73,26 @@ public class FriendListScreen extends Activity {
 
 	private List<String> getFriendsForUser() {
 		List<String> friends = new ArrayList<String>();
-		try {
-			SimpleDbUtil util = new SimpleDbUtil();
-			friends = util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
-
-		} catch (Exception e) {
-			Log.e("LBA", "Unable to connect to server");
-		}
+		friends = util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
 		return friends;
 	}
-	
-	//Remove friend from your list and the other user list also
-	//remove all shared tasks.
-	private void removeFriend()
-	{
+
+	// Remove friend from your list and the other user list also
+	// remove all shared tasks.
+	private void removeFriend(String name) {
+		//TODO
+		//get all shared tasks between these two ppl.
+		//there must be some query way of doing this.
 		
+		//go tru this guys tasks list to see if there is a task with owner as friend to remove
+		
+		//go tru friend to remove's task list to see if there is a task with owner as current user
+		//remove both.
+		
+		//send alert to remove this user from the friend list.
+		
+		//remove from current user
+		util.deleteItem(SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO+name);
+		drawUI();
 	}
 }
