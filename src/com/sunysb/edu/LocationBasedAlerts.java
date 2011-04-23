@@ -110,13 +110,13 @@ public class LocationBasedAlerts extends Activity {
 		String pwd = userinfo.get(StringUtil.PASSWD);
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			md.update(pwd.getBytes());
+			md.update(password.getBytes());
 			byte byteData[] = md.digest();
 	        StringBuffer sb = new StringBuffer();
 	        for (int i = 0; i < byteData.length; i++) {
 	         sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 	        }
-			if (!password.equals(sb.toString())) {
+			if (!pwd.equals(sb.toString())) {
 				Toast.makeText(this, "Enter valid username and password",
 						Toast.LENGTH_SHORT).show();
 				return false;

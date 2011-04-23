@@ -40,12 +40,12 @@ public class EditTask extends Activity implements OnTouchListener {
 						LayoutParams.WRAP_CONTENT));
 				
 				TextView name = new TextView(this);
-				name.setText(taskattributes.get(StringUtil.TASK_NAME));
+				name.setText(taskattributes.get(StringUtil.TASK_NAME)+ "--");
 				name.setTextColor(Color.YELLOW);
 				tr.addView(name);
 				
 				TextView prior = new TextView(this);
-				prior.setText(taskattributes.get(StringUtil.TASK_NAME));
+				prior.setText(taskattributes.get(StringUtil.TASK_PRIORITY));
 				prior.setTextColor(Color.YELLOW);
 				tr.addView(prior);
 				
@@ -63,15 +63,17 @@ public class EditTask extends Activity implements OnTouchListener {
 			SimpleDbUtil util = new SimpleDbUtil();
 			String[] items = util.getItemNamesForDomain(util.getCurrentUser());
 			if (items != null) {
-				List<String> taskidlist = Arrays.asList(items);
-				if (taskidlist != null && taskidlist.size() > 0) {
-					taskidlist.remove(StringUtil.FRIEND_INFO);
-					taskidlist.remove(StringUtil.USER_INFO);
-				}
-				
+				List<String> taskidlist = new ArrayList<String>();
+				taskidlist.addAll(Arrays.asList(items));
 				if (taskidlist != null && taskidlist.size() > 0) 
 				{
-					domain.addAll(taskidlist);
+					for(String taskname: taskidlist)
+					{
+						if(!taskname.equals(StringUtil.USER_INFO))
+						{
+							domain.add(taskname);
+						}
+					}	
 				}
 			}
 

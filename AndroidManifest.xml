@@ -1,83 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.sunysb.edu"
-      android:versionCode="1"
-      android:versionName="1.0.0">
-    <uses-permission android:name="android.permission.INTERNET"> </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"> </uses-permission>
-    <uses-permission android:name="ACCESS_COARSE_LOCATION"> </uses-permission>  
-        
-	<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission> 
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"></uses-permission> 
-    
-	<permission android:name="com.sunysb.edu.permission.C2D_MESSAGE" android:protectionLevel="signature" /> 
-	<uses-permission android:name="com.sunysb.edu.permission.C2D_MESSAGE"></uses-permission> 
-	
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"></uses-permission> 
-		
-	<receiver android:permission="com.google.android.c2dm.permission.SEND" android:name=".c2dm.NotificationsReceiver"> 
- 	<!-- Get the registration ID --> 
-		<intent-filter> 
-			<action android:name="com.google.android.c2dm.intent.REGISTRATION"></action> 
-			<category android:name="com.sunysb.edu"></category> 
-		</intent-filter> 
-	<!-- Get the messages --> 
-		<intent-filter> 
-			<action android:name="com.google.android.c2dm.intent.RECEIVE"></action> 
-			<category android:name="com.sunysb.edu"></category> 
-		</intent-filter> 
-	</receiver> 
+	package="com.sunysb.edu" android:versionCode="1" android:versionName="1.0.0">
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <uses-library android:name="com.google.android.maps" />
-        <activity android:name=".LocationBasedAlerts" android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-       <!--   <activity android:name=".ui.map.Map"
-                  android:label="Search"
-                  android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity> -->
-        
-        <activity android:name=".ui.map.Map"
-                  android:theme="@android:style/Theme.NoTitleBar">
+	<uses-permission android:name="android.permission.INTERNET">
+	</uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
+	</uses-permission>
+	<uses-permission android:name="ACCESS_COARSE_LOCATION">
+	</uses-permission>
 
-             <!-- Receives the search request. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-                <!-- No category needed, because the Intent will specify this class component-->
-            </intent-filter>
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
+	<uses-permission android:name="android.permission.USE_CREDENTIALS"></uses-permission>
 
-            <!-- Points to searchable meta data. -->
-            <meta-data android:name="android.app.searchable"
-                       android:resource="@xml/searchable" />
+	<permission android:name="com.sunysb.edu.permission.C2D_MESSAGE"
+		android:protectionLevel="signature" />
+	<uses-permission android:name="com.sunysb.edu.permission.C2D_MESSAGE"></uses-permission>
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"></uses-permission>
 
-        </activity>
-        
-       <!--   <activity android:name=".MySearchActivity"   android:launchMode="singleTop" >
-    	<intent-filter>
-       		<action android:name="android.intent.action.SEARCH" />
-    	</intent-filter>
-    	<meta-data android:name="android.app.searchable"
-                      android:resource="@xml/searchable"/>
-  		</activity>-->
-        
-        <!--  <activity android:name=".ui.map.Map"></activity> -->
-         <activity android:name=".ui.dialog.EditTask"></activity>
-         <activity android:name=".ui.dialog.NewUserScreen"></activity>
-         <activity android:name=".ui.dialog.UserOptionScreen"></activity>
-         <activity android:name=".ui.dialog.NewUserScreen"></activity>
-         <activity android:name=".ui.dialog.UserProfileScreen"></activity>
-         <activity android:name=".ui.dialog.FriendListScreen"></activity>
-         <activity android:name=".ui.dialog.NewFriendScreen"></activity>
-         <activity android:name="ui.dialog.TaskScreen"></activity>
-    </application> 
-    
-    
+	<receiver android:permission="com.google.android.c2dm.permission.SEND"
+		android:name=".c2dm.NotificationsReceiver">
+		<!-- Get the registration ID -->
+		<intent-filter>
+			<action android:name="com.google.android.c2dm.intent.REGISTRATION"></action>
+			<category android:name="com.sunysb.edu"></category>
+		</intent-filter>
+		<!-- Get the messages -->
+		<intent-filter>
+			<action android:name="com.google.android.c2dm.intent.RECEIVE"></action>
+			<category android:name="com.sunysb.edu"></category>
+		</intent-filter>
+	</receiver>
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<uses-library android:name="com.google.android.maps" />
+
+		<activity android:name=".LocationBasedAlerts" android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".ui.map.Map" android:theme="@android:style/Theme.NoTitleBar">
+
+			<!-- Receives the search request. -->
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+				<!-- No category needed, because the Intent will specify this class component -->
+			</intent-filter>
+
+			<!-- Points to searchable meta data. -->
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
+		</activity>
+
+		<!-- <activity android:name=".ui.map.Map"></activity> -->
+		<activity android:name=".ui.dialog.EditTask"></activity>
+		<activity android:name=".ui.dialog.NewUserScreen"></activity>
+		<activity android:name=".ui.dialog.UserOptionScreen"></activity>
+		<activity android:name=".ui.dialog.NewUserScreen"></activity>
+		<activity android:name=".ui.dialog.UserProfileScreen"></activity>
+		<activity android:name=".ui.dialog.FriendListScreen"></activity>
+		<activity android:name=".ui.dialog.NewFriendScreen"></activity>
+		<activity android:name=".ui.dialog.TaskScreen"></activity>
+	</application>
+
 </manifest> 

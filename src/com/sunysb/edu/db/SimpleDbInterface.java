@@ -23,6 +23,10 @@ public class SimpleDbInterface {
 		if (credentials == null) {
 			getCredentials();
 		}
+		else
+		{
+			currentUser = userName;
+		}
 	}
 
 	/**

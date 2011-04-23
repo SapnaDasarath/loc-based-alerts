@@ -21,6 +21,11 @@ public class StringUtil {
 	public static final String PRIOR_MED = "med";
 	public static final String PRIOR_HIGH = "high";
 	
+	public static final String TASK_LAT = "latitude";
+	public static final String TASK_LONG = "longitude";
+	
+	public static final String TASK_OWNER = "Owner";
+	
 	//This is a domain containing friend name as a list
 	public static final String FRIEND_INFO = "friendinfo";
 	//key will be friend name. value will be status of friend request.

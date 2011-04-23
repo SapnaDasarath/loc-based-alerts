@@ -31,6 +31,8 @@ public class SimpleDbUtil {
 		return SimpleDbInterface.getCurrentUser();
 	}
 
+	//Domain operations
+	
 	// create a new domain
 	public void createDomain(String domainName) {
 		dbInterface.getDB().createDomain(new CreateDomainRequest(domainName));
@@ -47,10 +49,18 @@ public class SimpleDbUtil {
 	}
 
 	// to an existing domain add an item
-	public void createItem(String domainName, String itemName) {
-		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
+	public void createItem(String domainName, String itemName,HashMap<String, String> attributes ) {
+		List<ReplaceableAttribute> replaceableAttributes = new ArrayList<ReplaceableAttribute>(
+				attributes.size());
+
+		for (String attributeName : attributes.keySet()) {
+			replaceableAttributes
+					.add(new ReplaceableAttribute().withName(attributeName)
+							.withValue(attributes.get(attributeName))
+							.withReplace(true));
+		}
 		dbInterface.getDB().putAttributes(
-				new PutAttributesRequest(domainName, itemName, attributes));
+				new PutAttributesRequest(domainName, itemName, replaceableAttributes));
 	}
 
 	// get all items as part of a given domain
@@ -77,32 +87,13 @@ public class SimpleDbUtil {
 	// to an existing domain and item add key value pairs
 	public void createAttributeForItem(String domainName, String itemName,
 			String attributeName, String attributeValue) {
-		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>(
-				1);
+		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 		attributes.add(new ReplaceableAttribute().withName(attributeName)
 				.withValue(attributeValue).withReplace(true));
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName, attributes));
 	}
-
-	// for a given domain name and item get all attributes
-	public HashMap<String, String> getAttributesForItem(String domainName,
-			String itemName) {
-		GetAttributesRequest getRequest = new GetAttributesRequest(domainName,
-				itemName).withConsistentRead(true);
-		GetAttributesResult getResult = dbInterface.getDB().getAttributes(
-				getRequest);
-
-		HashMap<String, String> attributes = new HashMap<String, String>(30);
-		for (Object attribute : getResult.getAttributes()) {
-			String name = ((Attribute) attribute).getName();
-			String value = ((Attribute) attribute).getValue();
-
-			attributes.put(name, value);
-		}
-		return attributes;
-	}
-
+	
 	// for a give item replace all attributes with new attributes
 	public void updateAttributesForItem(String domainName, String itemName,
 			HashMap<String, String> attributes) {
@@ -118,6 +109,23 @@ public class SimpleDbUtil {
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName,
 						replaceableAttributes));
+	}
+
+	// for a given domain name and item get all attributes
+	public HashMap<String, String> getAttributesForItem(String domainName,
+			String itemName) {
+		GetAttributesRequest getRequest = new GetAttributesRequest(domainName,
+				itemName).withConsistentRead(true);
+		GetAttributesResult getResult = dbInterface.getDB().getAttributes(
+				getRequest);
+
+		HashMap<String, String> attributes = new HashMap<String, String>(30);
+		for (Object attribute : getResult.getAttributes()) {
+			String name = ((Attribute) attribute).getName();
+			String value = ((Attribute) attribute).getValue();
+			attributes.put(name, value);
+		}
+		return attributes;
 	}
 
 	// to delete an attribute in a given item in a given domain
