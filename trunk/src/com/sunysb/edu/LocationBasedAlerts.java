@@ -157,6 +157,6 @@ public class LocationBasedAlerts extends Activity {
 	}
 
 	private void startLocationManagerServices() {
-		startActivity(new Intent(LocationBasedAlerts.this, LocationAlert.class));
+		//startActivity(new Intent(LocationBasedAlerts.this, LocationAlert.class));
 	}
 }

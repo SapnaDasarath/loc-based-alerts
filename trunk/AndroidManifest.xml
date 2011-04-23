@@ -63,6 +63,7 @@
 		<activity android:name=".ui.dialog.FriendListScreen"></activity>
 		<activity android:name=".ui.dialog.NewFriendScreen"></activity>
 		<activity android:name=".ui.dialog.TaskScreen"></activity>
+		<activity android:name=".LocationAlert"></activity>
 	</application>
 
 </manifest> 
