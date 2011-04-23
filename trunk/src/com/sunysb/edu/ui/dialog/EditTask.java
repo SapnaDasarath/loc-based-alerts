@@ -39,8 +39,8 @@ public class EditTask extends Activity implements OnTouchListener {
 
 	private void drawUI() {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
-		table.removeAllViews();
-		List<String> taskids = getTasksForUser();
+		//table.removeAllViews();
+		List<String> taskids = new ArrayList<String>(getTasksForUser());
 		for (String id : taskids) {
 			HashMap<String, String> taskattributes = util.getAttributesForItem(
 					SimpleDbUtil.getCurrentUser(), id);
@@ -63,10 +63,8 @@ public class EditTask extends Activity implements OnTouchListener {
 		}
 	}
 
-	private List<String> getTasksForUser() {
-		List<String> domain = new ArrayList<String>();
-		util.getTasksForUser(SimpleDbUtil.getCurrentUser());
-		return domain;
+	private List<String> getTasksForUser() {	
+		return util.getTasksForUser(SimpleDbUtil.getCurrentUser());
 	}
 
 	// TODO When user selects a task open the edit view for that task
