@@ -13,6 +13,8 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +44,6 @@ public class LocationBasedAlerts extends Activity {
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO remove authenticate commented out once it works
 				if (authenticate()) {
 					registerApp();
 					startLocationManagerServices();
@@ -158,7 +159,6 @@ public class LocationBasedAlerts extends Activity {
 	}
 
 	private void startLocationManagerServices() {
-		// TODO Auto-generated method stub
-
+		startActivity(new Intent(LocationBasedAlerts.this, LocationAlert.class));
 	}
 }

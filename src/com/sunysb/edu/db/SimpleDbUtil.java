@@ -77,6 +77,20 @@ public class SimpleDbUtil {
 
 		return itemNames;
 	}
+	
+	// get all items as part of a given query
+	public String[] getItemNamesForQuery(String query) {
+		SelectRequest selectRequest = new SelectRequest().withConsistentRead(true);
+		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
+
+		String[] itemNames = new String[items.size()];
+		for (int i = 0; i < items.size(); i++) {
+			itemNames[i] = ((Item) items.get(i)).getName();
+		}
+
+		return itemNames;
+	}
+
 
 	// to delete an item from a given domain
 	public void deleteItem(String domainName, String itemName) {
