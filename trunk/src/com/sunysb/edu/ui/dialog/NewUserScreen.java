@@ -2,6 +2,7 @@ package com.sunysb.edu.ui.dialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
@@ -136,15 +137,16 @@ public class NewUserScreen extends Activity {
 		try {
 			SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
 
+			//Create a new domain with the user name
 			dbAccess.createDomain(userName);
 			
-			dbAccess.createItem(userName, StringUtil.USER_INFO);
-			dbAccess.createAttributeForItem(userName, StringUtil.USER_INFO,
-					StringUtil.USRNAME, userName);
-			dbAccess.createAttributeForItem(userName, StringUtil.USER_INFO,
-					StringUtil.PASSWD, pwd);
+			//create items to contain name value pairs for user info and friend info.
+			//task info will be added as items for each task.
+			HashMap<String,String> userInfoMap = new HashMap<String,String>();
+			userInfoMap.put(StringUtil.USRNAME, userName);
+			userInfoMap.put(StringUtil.PASSWD, pwd);
+			dbAccess.createItem(userName, StringUtil.USER_INFO,userInfoMap);
 			
-			dbAccess.createItem(userName, StringUtil.FRIEND_INFO);
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();

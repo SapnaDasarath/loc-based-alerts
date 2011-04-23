@@ -75,6 +75,9 @@ public class TaskScreen extends Activity{
 		String nameStr = "";
 		String descriptionStr = "";
 		String priorityStr = "";
+		//TODO: poo set the values
+		String latitude ="";
+		String longitude ="";
 		
 		Object name = nameEditText.getText();
 		if(name != null)
@@ -94,15 +97,21 @@ public class TaskScreen extends Activity{
 			priorityStr = name.toString();
 		}
 		
-		String domain = SimpleDbUtil.getCurrentUser();
-		String taskid = String.valueOf(System.currentTimeMillis());
-		
-		SimpleDbUtil util;
 		try {
-			util = new SimpleDbUtil();
-			util.createAttributeForItem(domain, taskid, StringUtil.TASK_NAME, nameStr);
-			util.createAttributeForItem(domain,taskid, StringUtil.TASK_DESCRIPTION, descriptionStr);
-			util.createAttributeForItem(domain, taskid, StringUtil.TASK_PRIORITY, priorityStr);
+			SimpleDbUtil util = new SimpleDbUtil();
+			
+			String domain = SimpleDbUtil.getCurrentUser();
+			String taskid = String.valueOf(System.currentTimeMillis());
+			
+			HashMap<String,String> taskInfoMap = new HashMap<String,String>();
+			taskInfoMap.put(StringUtil.TASK_NAME, nameStr);
+			taskInfoMap.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
+			taskInfoMap.put(StringUtil.TASK_PRIORITY, priorityStr);
+			taskInfoMap.put(StringUtil.TASK_OWNER, SimpleDbUtil.getCurrentUser());
+			taskInfoMap.put(StringUtil.TASK_LAT, latitude);
+			taskInfoMap.put(StringUtil.TASK_LONG, longitude);
+			
+			util.createItem(domain, taskid, taskInfoMap);
 
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
@@ -180,7 +189,10 @@ public class TaskScreen extends Activity{
 		}
 		
 	}
-	
+	/**
+	 * This method should be called when user selects a task in teh table
+	 * @param taskid
+	 */
 	private void updateUIforTask(String taskid)
 	{
 		Log.e( "LBA", "update Task from DB" ); 
