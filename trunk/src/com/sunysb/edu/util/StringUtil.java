@@ -11,6 +11,7 @@ public class StringUtil {
 	public static final String PASSWD = "password";
 	
 	//This is a domain that contains name value pair with task info.
+	public static final String TASK_INFO = "taskinfo";
 	//key with task name
 	public static final String TASK_NAME = "taskname";
 	//key with task description
@@ -25,9 +26,16 @@ public class StringUtil {
 	public static final String TASK_LONG = "longitude";
 	
 	public static final String TASK_OWNER = "Owner";
+	public static final String TASK_OWNER_ID = "OwnerTaskID";
+	public static final String TASK_SHARED_ID = "OwnerSharedID";
 	
 	//This is a domain containing friend name as a list
 	public static final String FRIEND_INFO = "friendinfo";
+	
+	public static final String FRIEND_NAME = "friendname";
+	
+	public static final String FRIEND_STATUS = "status";
+	
 	//key will be friend name. value will be status of friend request.
 	public static final String FRIEND_PENDING = "pending";
 	public static final String FRIEND_CONFIRMED = "confirmed";

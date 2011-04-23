@@ -1,7 +1,6 @@
 package com.sunysb.edu.ui.dialog;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,21 +60,7 @@ public class EditTask extends Activity implements OnTouchListener {
 		List<String> domain = new ArrayList<String>();
 		try {
 			SimpleDbUtil util = new SimpleDbUtil();
-			String[] items = util.getItemNamesForDomain(util.getCurrentUser());
-			if (items != null) {
-				List<String> taskidlist = new ArrayList<String>();
-				taskidlist.addAll(Arrays.asList(items));
-				if (taskidlist != null && taskidlist.size() > 0) 
-				{
-					for(String taskname: taskidlist)
-					{
-						if(!taskname.equals(StringUtil.USER_INFO))
-						{
-							domain.add(taskname);
-						}
-					}	
-				}
-			}
+			util.getTasksForUser(SimpleDbUtil.getCurrentUser());
 
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
@@ -83,9 +68,19 @@ public class EditTask extends Activity implements OnTouchListener {
 		return domain;
 	}
 
+	//TODO When user selects a task open the edit view for that task
+	//send the task id to open the edit view to get only that task from the db and show it on UI
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		// startActivity(new Intent(EditTask.this, Task.class));
 		return false;
+	}
+	
+	//If user selects delete task remove it from UI and DB and if the task is a shared task
+	//remove it from the person who has the task too
+	public boolean removeTask(String taskId)
+	{
+		
+		return true;
 	}
 }

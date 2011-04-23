@@ -1,10 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,7 +17,6 @@ import android.widget.TextView;
 
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
-import com.sunysb.edu.util.StringUtil;
 
 public class FriendListScreen extends Activity {
 
@@ -64,20 +60,18 @@ public class FriendListScreen extends Activity {
 		List<String> friends = new ArrayList<String>();
 		try {
 			SimpleDbUtil util = new SimpleDbUtil();
-			HashMap<String, String> friendmap = util.getAttributesForItem(
-					SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO);
-			if (friendmap != null) {
-				Set<String> friendnames = friendmap.keySet();
-				if (friendnames != null && friendnames.size() > 0) {
-					friends.addAll(friendnames);
-					Collections.sort(friends);
-				}
-			}
+			friends = util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
 
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
-
 		return friends;
+	}
+	
+	//Remove friend from your list and the other user list also
+	//remove all shared tasks.
+	private void removeFriend()
+	{
+		
 	}
 }
