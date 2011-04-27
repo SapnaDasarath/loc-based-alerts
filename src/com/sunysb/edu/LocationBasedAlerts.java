@@ -10,8 +10,6 @@ import com.sunysb.edu.ui.dialog.UserOptionScreen;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +41,6 @@ public class LocationBasedAlerts extends Activity {
 			@Override
 			public void onClick(View v) {
 				 if (authenticate()) {
-					registerApp();
 					startLocationManagerServices();
 					startActivity(new Intent(LocationBasedAlerts.this,
 							UserOptionScreen.class));
@@ -127,33 +124,6 @@ public class LocationBasedAlerts extends Activity {
 		}
 
 		return true;
-	}
-
-	private void registerApp() {
-		Intent registrationIntent = new Intent(
-				"com.google.android.c2dm.intent.REGISTER");
-		registrationIntent.putExtra("lba",
-				PendingIntent.getBroadcast(this, 0, new Intent(), 0));
-		registrationIntent.putExtra("sender", "androidcse591@gmail.com");
-		startService(registrationIntent);
-	}
-
-	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals(
-				"com.google.android.c2dm.intent.REGISTRATION")) {
-			String registration = intent.getStringExtra("registration_id");
-			if (intent.getStringExtra("error") != null) {
-				Toast.makeText(this, "Device registration failed..",
-						Toast.LENGTH_SHORT).show();
-			} else if (registration != null) {
-				// store the registration id of this app in the db.
-				// when you want to send an alert to thise user
-				// get this id from db and send alert.
-			}
-		} else if (intent.getAction().equals(
-				"com.google.android.c2dm.intent.RECEIVE")) {
-
-		}
 	}
 
 	private void startLocationManagerServices() {

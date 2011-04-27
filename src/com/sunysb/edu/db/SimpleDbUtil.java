@@ -33,6 +33,10 @@ public class SimpleDbUtil {
 		return SimpleDbInterface.getCurrentUser();
 	}
 
+	public static void setCurrentUser(String user) {
+		SimpleDbInterface.setCurrentUser(user);
+	}
+
 	// Domain operations
 
 	// create a new domain
@@ -173,19 +177,28 @@ public class SimpleDbUtil {
 	}
 
 	public List<String> getTaskAcceptedFriends(String taskid) {
-		List<String> username = new ArrayList<String>();
-
 		HashMap<String, String> attr = getAttributesForItem(
 				SimpleDbUtil.getCurrentUser(), taskid);
-		String taskOwner = attr.get(StringUtil.TASK_SHARED_NAME);
-		StringTokenizer token = new StringTokenizer(taskOwner, ",");
+		String taskOwner = attr.get(StringUtil.TASK_FRIENDS_NAMES);
+		return getFriendsFromString(taskOwner);
+	}
 
+	public List<String> getFriendsFromString(String taskOwner) {
+		List<String> username = new ArrayList<String>();
+		StringTokenizer token = new StringTokenizer(taskOwner, ",");
 		// iterate through tokens
-		while (token.hasMoreTokens())
-		{
+		while (token.hasMoreTokens()) {
 			username.add(token.nextToken());
-		}	
+		}
 		return username;
+	}
+
+	public String getStringFromList(List<String> names) {
+		StringBuffer sb = new StringBuffer();
+		for (String name : names) {
+			sb.append(name).append(",");
+		}
+		return sb.toString();
 	}
 
 	// to delete an attribute in a given item in a given domain

@@ -13,6 +13,7 @@ public class UserOptionScreen extends Activity {
 
 	private Button addTaskButton;
 	private Button editTaskButton;
+	private Button notificationButton;
 	private Button organizeFriendsButton;
 	private Button editProfileButton;
 
@@ -24,6 +25,7 @@ public class UserOptionScreen extends Activity {
 
 		addTaskButton = (Button) findViewById(R.id.add_Task_button);
 		editTaskButton = (Button) findViewById(R.id.edit_Task_button);
+		notificationButton = (Button) findViewById(R.id.notifications_button);
 		organizeFriendsButton = (Button) findViewById(R.id.organize_Friends_button);
 		editProfileButton = (Button) findViewById(R.id.edit_Profile_button);
 
@@ -38,6 +40,13 @@ public class UserOptionScreen extends Activity {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(UserOptionScreen.this, EditTask.class));
+			}
+		});
+		
+		notificationButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(UserOptionScreen.this, NotificationScreen.class));
 			}
 		});
 
