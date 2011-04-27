@@ -2,6 +2,7 @@ package com.sunysb.edu.ui.dialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
@@ -17,6 +18,7 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.sunysb.edu.R;
+import com.sunysb.edu.db.AWSEmail;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
@@ -39,7 +41,7 @@ public class EditTask extends Activity implements OnTouchListener {
 
 	private void drawUI() {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
-		//table.removeAllViews();
+		// table.removeAllViews();
 		List<String> taskids = new ArrayList<String>(getTasksForUser());
 		for (String id : taskids) {
 			HashMap<String, String> taskattributes = util.getAttributesForItem(
@@ -63,7 +65,7 @@ public class EditTask extends Activity implements OnTouchListener {
 		}
 	}
 
-	private List<String> getTasksForUser() {	
+	private List<String> getTasksForUser() {
 		return util.getTasksForUser(SimpleDbUtil.getCurrentUser());
 	}
 
@@ -80,12 +82,52 @@ public class EditTask extends Activity implements OnTouchListener {
 	// shared task
 	// remove it from the person who has the task too
 	public boolean removeTask(String taskId) {
-		List<String> tasks = util.getTaskAcceptedFriends(taskId);
-		if (tasks.size() > 0) {
-			// for each user name send the task id to be deleted.
+
+		String currentuser = SimpleDbUtil.getCurrentUser();
+		HashMap<String, String> currentuserattr = util.getAttributesForItem(
+				currentuser, taskId);
+
+		StringBuffer body = new StringBuffer();
+		body.append(currentuser).append(" has removed the following task\n");
+		body.append("Task Name: ")
+				.append(currentuserattr.get(StringUtil.TASK_NAME)).append("\n");
+		body.append("Task Description: ")
+				.append(currentuserattr.get(StringUtil.TASK_DESCRIPTION))
+				.append("\n");
+		body.append("This will be removed from your task list").append("\n");
+
+		List<String> username = util.getTaskAcceptedFriends(taskId);
+		if (username.size() > 0) {
+			for (String user : username) {
+				// now that i have the domain name remove the task from the
+				// list.
+				// get every task.. check if the task shared id matches this
+				// if it foes delete it
+				// better way of doing this write query
+				String usertaskId = null;
+				//TODO get usertaskid using db query
+				util.deleteItem(user, usertaskId);
+
+				// send notification of delete.
+				HashMap<String, String> attr = util.getAttributesForItem(user,
+						StringUtil.FRIEND_INFO);
+				String sendto = attr.get(StringUtil.EMAIL);
+
+				// send notification to user
+				LinkedList<String> recipients = new LinkedList<String>();
+				recipients.add(sendto);
+
+				StringBuffer msg = new StringBuffer();
+				msg.append("Hi ").append(attr.get(StringUtil.USRNAME))
+						.append(",\n");
+				msg.append(body.toString());
+
+				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+						StringUtil.SUBJECT_TASK_DELETE, msg.toString());
+			}
 		}
 		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-		
+
 		drawUI();
 		return true;
 	}

@@ -3,6 +3,8 @@ package com.sunysb.edu.ui.dialog;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 
 public class NewUserScreen extends Activity {
 
+	SimpleDbUtil util;
 	private EditText newuserEditText;
+	private EditText emailEditText;
 	private EditText passwdEditText;
 	private EditText reenterpwdEditText;
 
@@ -31,8 +35,17 @@ public class NewUserScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.newuser);
 		Log.e("LBA", "Loading New user screen");
+		
+		try {
+			 util = new SimpleDbUtil();		
+
+		} catch (Exception e) {
+			Toast.makeText(this, "Not able to connect to server, Try again..",
+					Toast.LENGTH_LONG).show();
+		}
 
 		newuserEditText = (EditText) findViewById(R.id.newusername_EditText);
+		emailEditText = (EditText) findViewById(R.id.newuseremail_EditText);
 		passwdEditText = (EditText) findViewById(R.id.newpassword_EditText);
 		reenterpwdEditText = (EditText) findViewById(R.id.renewpassword_EditText);
 
@@ -61,12 +74,18 @@ public class NewUserScreen extends Activity {
 
 	private boolean validate() {
 		String username = null;
+		String email = null;
 		String password = null;
 		String repassword = null;
 
 		Object usernameObj = newuserEditText.getText();
 		if (usernameObj != null) {
 			username = usernameObj.toString().trim();
+		}
+
+		Object emailObj = emailEditText.getText();
+		if (emailObj != null) {
+			email = emailObj.toString().trim();
 		}
 
 		Object passwdObj = passwdEditText.getText();
@@ -85,9 +104,31 @@ public class NewUserScreen extends Activity {
 			return false;
 		}
 
+		if (email == null) {
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+					.show();
+			return false;
+		}
+
 		if (username.equals("") || password.equals("") || repassword.equals("")) {
 			Toast.makeText(this, "Enter valid username and password",
 					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		if (email.equals("")) {
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+					.show();
+			return false;
+		}
+
+		// check if email format is valid
+		Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+		Matcher m = p.matcher(email);
+
+		if (!m.matches()) {
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+					.show();
 			return false;
 		}
 
@@ -98,24 +139,17 @@ public class NewUserScreen extends Activity {
 		}
 
 		// check if user name already exists
-		try {
-			SimpleDbUtil dbAccess = new SimpleDbUtil(username);
-			if (dbAccess.doesDomainExist(username)) {
-				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
-						.show();
-				return false;
-			}
-
-		} catch (Exception e) {
-			Toast.makeText(this, "Not able to connect to server, Try again..",
-					Toast.LENGTH_LONG).show();
+		if (util.doesDomainExist(username)) {
+			Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
+					.show();
+			return false;
 		}
-
 		return true;
 	}
 
 	private boolean addUserToDB() {
 		String userName = newuserEditText.getText().toString();
+		String email = emailEditText.getText().toString();
 		String passwd = newuserEditText.getText().toString();
 		String pwd = null;
 		try {
@@ -133,25 +167,19 @@ public class NewUserScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 			return false;
 		}
-	
-		try {
-			SimpleDbUtil dbAccess = new SimpleDbUtil(userName);
 
-			//Create a new domain with the user name
-			dbAccess.createDomain(userName);
-			
-			//create items to contain name value pairs for user info and friend info.
-			//task info will be added as items for each task.
-			HashMap<String,String> userInfoMap = new HashMap<String,String>();
-			userInfoMap.put(StringUtil.USRNAME, userName);
-			userInfoMap.put(StringUtil.PASSWD, pwd);
-			dbAccess.createItem(userName, StringUtil.USER_INFO,userInfoMap);
-			
-		} catch (Exception e) {
-			Toast.makeText(this, "Not able to connect to server, Try again..",
-					Toast.LENGTH_LONG).show();
-			return false;
-		}
+		// Create a new domain with the user name
+		SimpleDbUtil.setCurrentUser(userName);
+		util.createDomain(userName);
+
+		// create items to contain name value pairs for user info and friend
+		// info.
+		// task info will be added as items for each task.
+		HashMap<String, String> userInfoMap = new HashMap<String, String>();
+		userInfoMap.put(StringUtil.USRNAME, userName);
+		userInfoMap.put(StringUtil.PASSWD, pwd);
+		userInfoMap.put(StringUtil.EMAIL, email);
+		util.createItem(userName, StringUtil.USER_INFO, userInfoMap);
 		return true;
 	}
 }

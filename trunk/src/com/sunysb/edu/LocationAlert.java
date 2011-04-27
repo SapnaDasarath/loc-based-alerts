@@ -90,6 +90,8 @@ public class LocationAlert extends Activity implements LocationListener {
 	public void showTaskAndUpdate(List<String> taskids)
 	{
 		//show tasks to users
+		//if you are not the owner send mail to owner that task complete
+		
 	}
 
 	@Override

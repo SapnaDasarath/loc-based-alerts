@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/addFriend"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-    <TextView 
-		android:id="@+id/newfriend_TextView"
-		android:text="Enter user name"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>	
-	<EditText 
-		android:id="@+id/newfriend_EditText"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>	
-	<Button 
-		android:id="@+id/validate_button"
-		android:text="Validate"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>
-    
+	android:id="@+id/addFriend" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	
+	<TextView android:id="@+id/newfriend_TextView" android:text="Enter user name"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		
+	<EditText android:id="@+id/newfriend_EditText"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		
+	<Button android:id="@+id/validate_button" android:text="Validate"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+
 </LinearLayout>
