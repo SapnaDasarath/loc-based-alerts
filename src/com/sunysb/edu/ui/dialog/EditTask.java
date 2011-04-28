@@ -2,10 +2,10 @@ package com.sunysb.edu.ui.dialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,13 +18,13 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.sunysb.edu.R;
-import com.sunysb.edu.db.AWSEmail;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 public class EditTask extends Activity implements OnTouchListener {
 
-	SimpleDbUtil util;
+	private SimpleDbUtil util;
+	private int transition;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,13 +36,35 @@ public class EditTask extends Activity implements OnTouchListener {
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
-		drawUI();
+
+		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		List<String> taskids = new ArrayList<String>();
+
+		switch (transition) {
+		case StringUtil.CREATE:
+			break;
+
+		case StringUtil.EDIT:
+			taskids.addAll(util.getTasksForUser(SimpleDbUtil.getCurrentUser()));
+			break;
+
+		case StringUtil.VIEW:
+			break;
+
+		case StringUtil.NOTIFY:
+			taskids.addAll(this.getIntent().getExtras()
+					.getStringArrayList(StringUtil.TASK_INFO));
+			break;
+
+		case StringUtil.DELETE:
+			break;
+		}
+		drawUI(taskids);
 	}
 
-	private void drawUI() {
+	private void drawUI(List<String> taskids) {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
-		// table.removeAllViews();
-		List<String> taskids = new ArrayList<String>(getTasksForUser());
+		table.removeAllViews();
 		for (String id : taskids) {
 			HashMap<String, String> taskattributes = util.getAttributesForItem(
 					SimpleDbUtil.getCurrentUser(), id);
@@ -65,70 +87,15 @@ public class EditTask extends Activity implements OnTouchListener {
 		}
 	}
 
-	private List<String> getTasksForUser() {
-		return util.getTasksForUser(SimpleDbUtil.getCurrentUser());
-	}
-
 	// TODO When user selects a task open the edit view for that task
 	// send the task id to open the edit view to get only that task from the db
 	// and show it on UI
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		// startActivity(new Intent(EditTask.this, Task.class));
+		Intent intent = new Intent(EditTask.this, TaskScreen.class);
+		intent.getExtras().putInt(StringUtil.TRANSITION, transition);
+		//TODO add task id in extras
+		startActivity(intent);
 		return false;
-	}
-
-	// If user selects delete task remove it from UI and DB and if the task is a
-	// shared task
-	// remove it from the person who has the task too
-	public boolean removeTask(String taskId) {
-
-		String currentuser = SimpleDbUtil.getCurrentUser();
-		HashMap<String, String> currentuserattr = util.getAttributesForItem(
-				currentuser, taskId);
-
-		StringBuffer body = new StringBuffer();
-		body.append(currentuser).append(" has removed the following task\n");
-		body.append("Task Name: ")
-				.append(currentuserattr.get(StringUtil.TASK_NAME)).append("\n");
-		body.append("Task Description: ")
-				.append(currentuserattr.get(StringUtil.TASK_DESCRIPTION))
-				.append("\n");
-		body.append("This will be removed from your task list").append("\n");
-
-		List<String> username = util.getTaskAcceptedFriends(taskId);
-		if (username.size() > 0) {
-			for (String user : username) {
-				// now that i have the domain name remove the task from the
-				// list.
-				// get every task.. check if the task shared id matches this
-				// if it foes delete it
-				// better way of doing this write query
-				String usertaskId = null;
-				//TODO get usertaskid using db query
-				util.deleteItem(user, usertaskId);
-
-				// send notification of delete.
-				HashMap<String, String> attr = util.getAttributesForItem(user,
-						StringUtil.FRIEND_INFO);
-				String sendto = attr.get(StringUtil.EMAIL);
-
-				// send notification to user
-				LinkedList<String> recipients = new LinkedList<String>();
-				recipients.add(sendto);
-
-				StringBuffer msg = new StringBuffer();
-				msg.append("Hi ").append(attr.get(StringUtil.USRNAME))
-						.append(",\n");
-				msg.append(body.toString());
-
-				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-						StringUtil.SUBJECT_TASK_DELETE, msg.toString());
-			}
-		}
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-
-		drawUI();
-		return true;
 	}
 }

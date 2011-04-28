@@ -21,7 +21,9 @@ import com.sunysb.edu.util.StringUtil;
 
 public class FriendListScreen extends Activity {
 
-	SimpleDbUtil util;
+	private SimpleDbUtil util;
+	private int transition = -1;
+	
 	private Button addFriendButton;
 
 	@Override
@@ -35,15 +37,37 @@ public class FriendListScreen extends Activity {
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
-		drawUI();
+		
+		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		List<String> friendlist = new ArrayList<String>();
+
+		switch (transition) {
+		case StringUtil.CREATE:
+			break;
+
+		case StringUtil.EDIT:
+			friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
+			break;
+
+		case StringUtil.VIEW:
+			break;
+
+		case StringUtil.NOTIFY:
+			friendlist.addAll(this.getIntent().getExtras()
+					.getStringArrayList(StringUtil.FRIEND_INFO));
+			break;
+
+		case StringUtil.DELETE:
+			break;
+		}
+		drawUI(friendlist);
 	}
 
-	private void drawUI() {
+	private void drawUI(List<String> friendlist) {
 
 		TableLayout table = (TableLayout) findViewById(R.id.friendTableList);
 		table.removeAllViews();
 		
-		List<String> friendlist = new ArrayList<String>(getFriendsForUser());
 		for (String namestr : friendlist) {
 
 			TableRow tr = new TableRow(this);
@@ -63,34 +87,11 @@ public class FriendListScreen extends Activity {
 		addFriendButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(FriendListScreen.this,
-						NewFriendScreen.class));
+				Intent intent = new Intent(FriendListScreen.this,NewFriendScreen.class);
+				intent.getExtras().putInt(StringUtil.TRANSITION, transition);
+				//TODO add friend name
+				startActivity(intent);
 			}
 		});
-
-		// TODO add remove friend request
-	}
-
-	private List<String> getFriendsForUser() {
-		return util.getFriendsForUser(SimpleDbUtil.getCurrentUser());
-	}
-
-	// Remove friend from your list and the other user list also
-	// remove all shared tasks.
-	private void removeFriend(String name) {
-		//TODO
-		//get all shared tasks between these two ppl.
-		//there must be some query way of doing this.
-		
-		//go tru this guys tasks list to see if there is a task with owner as friend to remove
-		
-		//go tru friend to remove's task list to see if there is a task with owner as current user
-		//remove both.
-		
-		//send alert to remove this user from the friend list.
-		
-		//remove from current user
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO+name);
-		drawUI();
 	}
 }
