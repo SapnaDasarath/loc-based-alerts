@@ -14,6 +14,8 @@ public class StringUtil {
 	public static final String SUBJECT_FRDREQ = "New Friend request";
 	public static final String BODY_FRDREQ = "You have a new friend request. Check notifications to accept request.";
 
+	public static final String TEMP_USER = "tempUser";
+	
 	public static final String SUBJECT_TASK_NOTICE = "Task Recieved";
 	public static final String SUBJECT_TASK_DELETE = "Task Deleted";
 
@@ -54,7 +56,6 @@ public class StringUtil {
 	
 	public static final String TRANSITION = "transition";
 
-	public static final int VIEW = 0;
 	public static final int EDIT = 1;
 	public static final int CREATE = 2;
 	public static final int NOTIFY = 3;

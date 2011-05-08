@@ -38,7 +38,7 @@ public class FriendListScreen extends Activity {
 			Log.e("LBA", "Unable to connect to server");
 		}
 		
-		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
 		List<String> friendlist = new ArrayList<String>();
 
 		switch (transition) {
@@ -47,9 +47,6 @@ public class FriendListScreen extends Activity {
 
 		case StringUtil.EDIT:
 			friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
-			break;
-
-		case StringUtil.VIEW:
 			break;
 
 		case StringUtil.NOTIFY:
@@ -88,7 +85,7 @@ public class FriendListScreen extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(FriendListScreen.this,NewFriendScreen.class);
-				intent.getExtras().putInt(StringUtil.TRANSITION, transition);
+				intent.putExtra(StringUtil.TRANSITION, transition);
 				//TODO add friend name
 				startActivity(intent);
 			}

@@ -31,12 +31,12 @@ public class FriendScreen extends Activity{
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 		}
-		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
 	}
 
 	public boolean onTouch(View v, MotionEvent event) {
 		Intent intent = new Intent(FriendScreen.this, NewFriendScreen.class);
-		intent.getExtras().putInt(StringUtil.TRANSITION, transition);
+		intent.putExtra(StringUtil.TRANSITION, transition);
 		//TODO add friend id in list
 		startActivity(intent);
 		return false;

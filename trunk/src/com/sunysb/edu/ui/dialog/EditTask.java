@@ -37,7 +37,7 @@ public class EditTask extends Activity implements OnTouchListener {
 			Log.e("LBA", "Unable to connect to server");
 		}
 
-		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
 		List<String> taskids = new ArrayList<String>();
 
 		switch (transition) {
@@ -46,9 +46,6 @@ public class EditTask extends Activity implements OnTouchListener {
 
 		case StringUtil.EDIT:
 			taskids.addAll(util.getTasksForUser(SimpleDbUtil.getCurrentUser()));
-			break;
-
-		case StringUtil.VIEW:
 			break;
 
 		case StringUtil.NOTIFY:
@@ -93,7 +90,7 @@ public class EditTask extends Activity implements OnTouchListener {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		Intent intent = new Intent(EditTask.this, TaskScreen.class);
-		intent.getExtras().putInt(StringUtil.TRANSITION, transition);
+		intent.putExtra(StringUtil.TRANSITION, transition);
 		//TODO add task id in extras
 		startActivity(intent);
 		return false;

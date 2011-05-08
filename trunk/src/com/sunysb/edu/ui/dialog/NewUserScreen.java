@@ -37,7 +37,7 @@ public class NewUserScreen extends Activity {
 		Log.e("LBA", "Loading New user screen");
 		
 		try {
-			 util = new SimpleDbUtil();		
+			 util = new SimpleDbUtil(StringUtil.TEMP_USER);		
 
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",

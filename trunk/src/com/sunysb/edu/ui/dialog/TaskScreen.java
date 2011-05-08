@@ -47,7 +47,7 @@ public class TaskScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 
-		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
 		// set task id taskId=;
 
 		nameEditText = (EditText) findViewById(R.id.name_EditText);
@@ -65,10 +65,14 @@ public class TaskScreen extends Activity {
 		closeButton = (Button) findViewById(R.id.close_Task_button);
 
 		switch (transition) {
+		case StringUtil.CREATE:
+			//Do nothing
+			break;
+			
 		case StringUtil.EDIT:
-		case StringUtil.VIEW:
 			updateUIforTask(taskId);
 			break;
+			
 		case StringUtil.NOTIFY:
 			okButton.setText("Accept");
 			tempButton.setText("Decline");
@@ -85,10 +89,6 @@ public class TaskScreen extends Activity {
 					break;
 
 				case StringUtil.EDIT:
-					updateExistingTaskInDB(taskId);
-					break;
-
-				case StringUtil.VIEW:
 					updateExistingTaskInDB(taskId);
 					break;
 
@@ -116,11 +116,7 @@ public class TaskScreen extends Activity {
 				case StringUtil.EDIT:
 					sendTaskToFriend();
 					break;
-
-				case StringUtil.VIEW:
-					sendTaskToFriend();
-					break;
-
+					
 				case StringUtil.NOTIFY:
 					declineTaskFromFriend(taskId);
 					break;
@@ -141,10 +137,6 @@ public class TaskScreen extends Activity {
 					break;
 
 				case StringUtil.EDIT:
-					startActivity(new Intent(TaskScreen.this, EditTask.class));
-					break;
-
-				case StringUtil.VIEW:
 					startActivity(new Intent(TaskScreen.this, EditTask.class));
 					break;
 
