@@ -84,7 +84,7 @@ public class SimpleDbUtil {
 		}
 		return itemNames;
 	}
-
+	
 	public List<String> getTasksForUser(String domainName) {
 		List<String> domain = new ArrayList<String>();
 		List<String> taskidlist = getItemNamesForDomain(domainName);
