@@ -115,7 +115,7 @@ public class SimpleDbUtil {
 
 	// get all items as part of a given query
 	public List<String> getItemNamesForQuery(String query) {
-		SelectRequest selectRequest = new SelectRequest()
+		SelectRequest selectRequest = new SelectRequest(query)
 				.withConsistentRead(true);
 		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
 

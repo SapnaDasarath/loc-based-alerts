@@ -23,7 +23,7 @@ public class NotificationScreen extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.friendlist);
+		this.setContentView(R.layout.notification);
 
 		try {
 			util = new SimpleDbUtil();
@@ -32,16 +32,17 @@ public class NotificationScreen extends Activity {
 			Log.e("LBA", "Unable to connect to server");
 		}
 
-		taskButton = (Button) findViewById(R.id.ok_user_button);
-		friendButton = (Button) findViewById(R.id.close_user_button);
+		taskButton = (Button) findViewById(R.id.newtask_button);
+		friendButton = (Button) findViewById(R.id.newfriend_button);
 
 		String taskquery = "select * from " + SimpleDbUtil.getCurrentUser()
-				+ " where " + StringUtil.TASK_STATUS + "= '"
+				+ " where " + StringUtil.TASK_STATUS + " = '"
 				+ StringUtil.TASK_PENDING + "'";
+		System.out.println(taskquery);
 		final ArrayList<String> tasknames = (ArrayList<String>) util
 				.getItemNamesForQuery(taskquery);
 
-		taskButton.setText(friendButton.getText() + "(" + tasknames.size()
+		taskButton.setText(taskButton.getText() + " (" + tasknames.size()
 				+ ")");
 
 		taskButton.setOnClickListener(new View.OnClickListener() {
@@ -57,12 +58,12 @@ public class NotificationScreen extends Activity {
 		});
 
 		String frdquery = "select * from " + SimpleDbUtil.getCurrentUser()
-				+ " where " + StringUtil.FRIEND_STATUS + "= '"
+				+ " where " + StringUtil.FRIEND_STATUS + " = '"
 				+ StringUtil.FRIEND_PENDING + "'";
 		final ArrayList<String> friendnames = (ArrayList<String>) util
 				.getItemNamesForQuery(frdquery);
 
-		friendButton.setText(friendButton.getText() + "(" + friendnames.size()
+		friendButton.setText(friendButton.getText() + " (" + friendnames.size()
 				+ ")");
 
 		friendButton.setOnClickListener(new View.OnClickListener() {

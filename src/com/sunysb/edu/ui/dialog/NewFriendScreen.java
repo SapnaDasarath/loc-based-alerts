@@ -40,7 +40,7 @@ public class NewFriendScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 
-		transition = this.getIntent().getExtras().getInt(StringUtil.TRANSITION);
+		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
 		// set friendname id taskId=;
 
 		newfriendEditText = (EditText) findViewById(R.id.newfriend_EditText);
@@ -53,7 +53,6 @@ public class NewFriendScreen extends Activity {
 		case StringUtil.CREATE:
 			break;
 		case StringUtil.EDIT:
-		case StringUtil.VIEW:
 			acceptButton.setText("Ok");
 			declineButton.setText("Remove");
 			updateUIwithFriendInfo(friendname);

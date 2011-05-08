@@ -9,7 +9,7 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 		
 	<TextView android:id="@+id/newuseremail_TextView"
-		android:text="Enter user name" android:layout_width="fill_parent"
+		android:text="Enter email id" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 		
 	<EditText android:id="@+id/newuseremail_EditText"
