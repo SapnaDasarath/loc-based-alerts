@@ -85,7 +85,7 @@ public class FriendListScreen extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(FriendListScreen.this,NewFriendScreen.class);
-				intent.putExtra(StringUtil.TRANSITION, transition);
+				intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
 				//TODO add friend name
 				startActivity(intent);
 			}
