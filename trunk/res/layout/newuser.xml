@@ -19,14 +19,16 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 		
 	<EditText android:id="@+id/newpassword_EditText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:password="true" />
 		
 	<TextView android:id="@+id/renewpassword_TextView"
 		android:text="Re-Enter password" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" />
 		
 	<EditText android:id="@+id/renewpassword_EditText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:password="true" />
 		
 	<Button android:id="@+id/ok_user_button" android:text="Ok"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />

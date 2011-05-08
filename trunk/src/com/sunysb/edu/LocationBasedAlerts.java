@@ -42,9 +42,8 @@ public class LocationBasedAlerts extends Activity {
 			public void onClick(View v) {
 				 if (authenticate()) {
 					startLocationManagerServices();
-					startActivity(new Intent(LocationBasedAlerts.this,
-							UserOptionScreen.class));
-				}
+					startActivity(new Intent(LocationBasedAlerts.this, UserOptionScreen.class));
+				} 
 			}
 		});
 

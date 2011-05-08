@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	
-	<TextView android:id="@+id/username_TextView" android:text="User Name"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<EditText android:id="@+id/username_EditText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<TextView android:id="@+id/password_TextView" android:text="Password"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<EditText android:id="@+id/password_EditText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<Button android:id="@+id/login_button" android:text="Login"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
-	<Button android:id="@+id/register_button" android:text="Register"
-		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-		
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	  <TextView 
+		android:id="@+id/username_TextView"
+		android:text="User Name"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		/>	
+	<EditText 
+		android:id="@+id/username_EditText"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		/>	
+	<TextView 
+		android:id="@+id/password_TextView"
+		android:text="Password"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		/>			   
+	<EditText 
+		android:id="@+id/password_EditText"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:password="true"
+		/>
+	<Button 
+		android:id="@+id/login_button"
+		android:text="Login"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		/>		   
+	<Button 
+		android:id="@+id/register_button"
+		android:text="Register"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		/>  
 </LinearLayout>

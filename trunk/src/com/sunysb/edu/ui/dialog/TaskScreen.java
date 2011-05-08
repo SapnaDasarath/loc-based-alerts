@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 public class TaskScreen extends Activity {
 
-	private SimpleDbUtil util;
+	SimpleDbUtil util;
 	private int transition = -1;
 	private String taskId = null;
 
@@ -32,23 +32,38 @@ public class TaskScreen extends Activity {
 	private Spinner prioritySpinner;
 
 	private Button okButton;
-	private Button tempButton;
+	private Button sendToFriendButton;
 	private Button closeButton;
+	private Button delButton;
+	private Button tempButton;
+	String extra = null;
+
+	// String mIntentString = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task);
 
-		Log.e("LBA", "Loading task screen");
+		if (savedInstanceState != null) {
+			Log.e("LBA", "savedInstanceState not null");
+			extra = (String) savedInstanceState.get("id");
+			Log.e("LBA", extra);
+		} else {
+			Bundle extras = getIntent().getExtras();
+			extra = extras != null ? extras.getString("id")
+					: "nothing passed in";
+			Log.e("LBA", "savedInstanceState is null " + extra);
+			delButton = (Button) findViewById(R.id.del_Task_button);
+		}
+
 		try {
 			util = new SimpleDbUtil();
 		} catch (Exception e) {
-			Toast.makeText(this, "Not able to connect to server, Try again..",
+			Toast.makeText(this, "Not able to connect to server, Try again.",
 					Toast.LENGTH_LONG).show();
 		}
 
 		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
-		// set task id taskId=;
 
 		nameEditText = (EditText) findViewById(R.id.name_EditText);
 		descriptionEditText = (EditText) findViewById(R.id.description_EditText);
@@ -83,6 +98,7 @@ public class TaskScreen extends Activity {
 		// can be accept task
 		okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+			//	conditionalTaskOp();
 				switch (transition) {
 				case StringUtil.CREATE:
 					createNewTaskInDB();
@@ -129,6 +145,21 @@ public class TaskScreen extends Activity {
 		});
 
 		// close tranistion back to different screens can be different
+
+		delButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Log.e("LBA", "delButton onClick extra value is " + extra);
+				removeTask(extra);
+				startActivity(new Intent(TaskScreen.this, EditTask.class));
+			}
+		});
+
+		sendToFriendButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sendTaskToFriend();
+			}
+		});
+
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				switch (transition) {
@@ -151,6 +182,22 @@ public class TaskScreen extends Activity {
 				}
 			}
 		});
+		if (extra != null) {
+			Log.e("LBA", "extra not null. Calling updateUIforTask");
+			updateUIforTask(extra);
+		}
+
+	/*	public void conditionalTaskOp() {
+		if (extra != null) {
+			updateExistingTaskInDB(extra);
+			startActivity(new Intent(TaskScreen.this, EditTask.class));
+		} else {
+			createNewTaskInDB();
+			startActivity(new Intent(TaskScreen.this, UserOptionScreen.class));
+		}
+	} */
+
+
 	}
 
 	private void createNewTaskInDB() {
@@ -177,7 +224,6 @@ public class TaskScreen extends Activity {
 		if (priority != null) {
 			priorityStr = name.toString();
 		}
-
 		String domain = SimpleDbUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 
@@ -189,9 +235,10 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_OWNER_ID, taskid);
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
-		taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_ACCEPTED);
 
 		util.createItem(domain, taskid, taskInfoMap);
+		Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT)
+				.show();
 	}
 
 	private void updateExistingTaskInDB(String taskid) {
@@ -261,7 +308,8 @@ public class TaskScreen extends Activity {
 	}
 
 	/**
-	 * This method should be called when user selects a task in teh table
+	 * This method should be called when user selects a task in the table
+	 * 
 	 * 
 	 * @param taskid
 	 */
@@ -321,6 +369,21 @@ public class TaskScreen extends Activity {
 		String taskid = "";
 		addTaskToFriend(friendid, taskid);
 	}
+	// If user selects delete task remove it from UI and DB and if the task is a
+	// shared task
+	// remove it from the person who has the task too
+//	public boolean removeTask(String taskId) {
+//		Log.e("LBA ", "In removeTask " + taskId);
+		/*
+		 * List<String> tasks = util.getTaskAcceptedFriends(taskId);
+		 * 
+		 * if (tasks.size() > 0) { // for each user name send the task id to be
+		 * deleted. }
+		 */
+//		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+		// drawUI();
+//		return true;
+//	} 
 
 	private void addTaskToFriend(String friendname, String taskid) {
 

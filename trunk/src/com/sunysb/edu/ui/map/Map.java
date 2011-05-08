@@ -6,6 +6,10 @@ import java.util.Locale;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +28,8 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
+import com.google.android.maps.OverlayItem;
+import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.ui.dialog.TaskScreen;
 import com.sunysb.edu.util.StringUtil;
@@ -34,35 +40,65 @@ public class Map extends MapActivity {
 
 	private Button addTaskButton;
 	private Button btnSearch;
+	
+	//Button btnSearch=(Button) findViewById(R.id.search);
+	
+	public void changeMap(String area){
+		
+        mapView = (MapView) findViewById(R.id.mapView);
+        MapController mc=mapView.getController();
+        //MapOverlay mapOverlays;
+        
+        
+        GeoPoint myLocation=null;
+        double lat = 0;
+        double lng = 0;
+        try
+        {
+       	 	Geocoder g = new Geocoder(this, Locale.getDefault()); 
 
-	public void changeMap(String area) {
+            java.util.List<android.location.Address> result=g.getFromLocationName(area, 1); 
+            if(result.size()>0){
+            	Toast.makeText(Map.this, "country: " + String.valueOf(result.get(0).getCountryName()), Toast.LENGTH_SHORT).show();
+            	lat = result.get(0).getLatitude();
+            	lng = result.get(0).getLongitude();
+            }             
+            else{
+            	Toast.makeText(Map.this, "record not found", Toast.LENGTH_SHORT).show();
+            	return;
+            }
+        }
+        catch(IOException io)
+        {
+        	Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT).show();
+        }
+        myLocation = new GeoPoint(
+            (int) (lat * 1E6), 
+            (int) (lng * 1E6));
+ 
+        //moverlay = (MapOverlay) mapView.getOverlays();
+        //Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
+        //MapOverlay itemizedoverlay = new MapOverlay(drawable);
+        //drawable.draw(canvas);
+        
+        List<Overlay>mapOverlays =  mapView.getOverlays();
+        Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
+        MapItemizedOverlay itemizedOverlay = new MapItemizedOverlay(drawable);
+       // GeoPoint point = new GeoPoint((int)lat, (int)lng);
+       // OverlayItem overlayitem = new OverlayItem(point, "", "");
+        OverlayItem overlayitem = new OverlayItem(myLocation, "", "");
+        itemizedOverlay.addOverlay(overlayitem);
+        mapOverlays.add(itemizedOverlay);
 
-		mapView = (MapView) findViewById(R.id.mapView);
-		MapController mc = mapView.getController();
-
-		GeoPoint myLocation = null;
-		double lat = 0;
-		double lng = 0;
-		try {
-			Geocoder g = new Geocoder(this, Locale.getDefault());
-			java.util.List<android.location.Address> result = g.getFromLocationName(area, 1);
-			if (result.size() > 0) {
-				lat = result.get(0).getLatitude();
-				lng = result.get(0).getLongitude();
-			} else {
-				Toast.makeText(Map.this, "record not found", Toast.LENGTH_SHORT)
-						.show();
-				return;
-			}
-		} catch (IOException io) {
-			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT)
-					.show();
-		}
-		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
-
-		mc.animateTo(myLocation);
-		mc.setZoom(10);
-		mapView.invalidate();
+        
+        mc.animateTo(myLocation);
+        mc.setZoom(10); 
+        mapView.invalidate(); //is it required?
+        
+        
+        // ---add the marker---
+		//Bitmap bmp = BitmapFactory.decodeResource(getResources(),	R.drawable.pushpin);
+		//canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);
 	}
 
 	/** Called when the activity is first created. */
@@ -161,3 +197,4 @@ public class Map extends MapActivity {
 		}
 	}
 }
+
