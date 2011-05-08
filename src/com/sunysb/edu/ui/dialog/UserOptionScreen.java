@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import com.sunysb.edu.R;
 import com.sunysb.edu.ui.map.Map;
+import com.sunysb.edu.util.StringUtil;
 
 public class UserOptionScreen extends Activity {
 
@@ -39,7 +40,9 @@ public class UserOptionScreen extends Activity {
 		editTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, EditTask.class));
+				Intent intent = new Intent(UserOptionScreen.this, EditTask.class);
+				intent.putExtra(StringUtil.TRANSITION, StringUtil.EDIT);
+				startActivity(intent);
 			}
 		});
 		
@@ -53,8 +56,9 @@ public class UserOptionScreen extends Activity {
 		organizeFriendsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this,
-						FriendListScreen.class));
+				Intent intent = new Intent(UserOptionScreen.this,FriendListScreen.class);
+				intent.putExtra(StringUtil.TRANSITION, StringUtil.EDIT);
+				startActivity(intent);
 			}
 		});
 
