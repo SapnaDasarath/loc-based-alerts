@@ -36,25 +36,13 @@ public class TaskScreen extends Activity {
 	private Button closeButton;
 	private Button delButton;
 	private Button tempButton;
-	String extra = null;
+	
 
 	// String mIntentString = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task);
-
-		if (savedInstanceState != null) {
-			Log.e("LBA", "savedInstanceState not null");
-			extra = (String) savedInstanceState.get("id");
-			Log.e("LBA", extra);
-		} else {
-			Bundle extras = getIntent().getExtras();
-			extra = extras != null ? extras.getString("id")
-					: "nothing passed in";
-			Log.e("LBA", "savedInstanceState is null " + extra);
-			delButton = (Button) findViewById(R.id.del_Task_button);
-		}
 
 		try {
 			util = new SimpleDbUtil();
@@ -63,8 +51,10 @@ public class TaskScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 
-		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
-
+		transition = (Integer) this.getIntent().getExtras()
+				.get(StringUtil.TRANSITION);
+		taskId = getIntent().getExtras().getString(StringUtil.TASK_ID);
+		
 		nameEditText = (EditText) findViewById(R.id.name_EditText);
 		descriptionEditText = (EditText) findViewById(R.id.description_EditText);
 		prioritySpinner = (Spinner) findViewById(R.id.priority_Spinner);
@@ -81,13 +71,13 @@ public class TaskScreen extends Activity {
 
 		switch (transition) {
 		case StringUtil.CREATE:
-			//Do nothing
+			// Do nothing
 			break;
-			
+
 		case StringUtil.EDIT:
 			updateUIforTask(taskId);
 			break;
-			
+
 		case StringUtil.NOTIFY:
 			okButton.setText("Accept");
 			tempButton.setText("Decline");
@@ -98,7 +88,7 @@ public class TaskScreen extends Activity {
 		// can be accept task
 		okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-			//	conditionalTaskOp();
+				// conditionalTaskOp();
 				switch (transition) {
 				case StringUtil.CREATE:
 					createNewTaskInDB();
@@ -132,7 +122,7 @@ public class TaskScreen extends Activity {
 				case StringUtil.EDIT:
 					sendTaskToFriend();
 					break;
-					
+
 				case StringUtil.NOTIFY:
 					declineTaskFromFriend(taskId);
 					break;
@@ -148,8 +138,8 @@ public class TaskScreen extends Activity {
 
 		delButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.e("LBA", "delButton onClick extra value is " + extra);
-				removeTask(extra);
+				Log.e("LBA", "delButton onClick extra value is " + taskId);
+				removeTask(taskId);
 				startActivity(new Intent(TaskScreen.this, EditTask.class));
 			}
 		});
@@ -182,22 +172,10 @@ public class TaskScreen extends Activity {
 				}
 			}
 		});
-		if (extra != null) {
+		if (taskId != null) {
 			Log.e("LBA", "extra not null. Calling updateUIforTask");
-			updateUIforTask(extra);
+			updateUIforTask(taskId);
 		}
-
-	/*	public void conditionalTaskOp() {
-		if (extra != null) {
-			updateExistingTaskInDB(extra);
-			startActivity(new Intent(TaskScreen.this, EditTask.class));
-		} else {
-			createNewTaskInDB();
-			startActivity(new Intent(TaskScreen.this, UserOptionScreen.class));
-		}
-	} */
-
-
 	}
 
 	private void createNewTaskInDB() {
@@ -369,21 +347,22 @@ public class TaskScreen extends Activity {
 		String taskid = "";
 		addTaskToFriend(friendid, taskid);
 	}
+
 	// If user selects delete task remove it from UI and DB and if the task is a
 	// shared task
 	// remove it from the person who has the task too
-//	public boolean removeTask(String taskId) {
-//		Log.e("LBA ", "In removeTask " + taskId);
-		/*
-		 * List<String> tasks = util.getTaskAcceptedFriends(taskId);
-		 * 
-		 * if (tasks.size() > 0) { // for each user name send the task id to be
-		 * deleted. }
-		 */
-//		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-		// drawUI();
-//		return true;
-//	} 
+	// public boolean removeTask(String taskId) {
+	// Log.e("LBA ", "In removeTask " + taskId);
+	/*
+	 * List<String> tasks = util.getTaskAcceptedFriends(taskId);
+	 * 
+	 * if (tasks.size() > 0) { // for each user name send the task id to be
+	 * deleted. }
+	 */
+	// util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+	// drawUI();
+	// return true;
+	// }
 
 	private void addTaskToFriend(String friendname, String taskid) {
 

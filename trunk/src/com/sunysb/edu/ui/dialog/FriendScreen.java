@@ -22,7 +22,7 @@ public class FriendScreen extends Activity{
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.task);
+		setContentView(R.layout.friend);
 
 		Log.e("LBA", "Loading task screen");
 		try {
