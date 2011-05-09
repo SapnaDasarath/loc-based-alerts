@@ -108,6 +108,9 @@ public class TaskScreen extends Activity {
 					Intent intent = new Intent(TaskScreen.this,
 							NotificationScreen.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.TASK_ID, taskId);
+					intent.putExtra(StringUtil.TASK_LAT, latitude);
+					intent.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent);
 					break;
 				}
@@ -123,6 +126,8 @@ public class TaskScreen extends Activity {
 					Intent intent = new Intent(TaskScreen.this, FriendScreen.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
 					intent.putExtra(StringUtil.TASK_ID, taskId);
+					intent.putExtra(StringUtil.TASK_LAT, latitude);
+					intent.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent);
 					break;
 
@@ -131,6 +136,9 @@ public class TaskScreen extends Activity {
 					Intent intent1 = new Intent(TaskScreen.this,
 							NotificationScreen.class);
 					intent1.putExtra(StringUtil.TRANSITION, transition);
+					intent1.putExtra(StringUtil.TASK_ID, taskId);
+					intent1.putExtra(StringUtil.TASK_LAT, latitude);
+					intent1.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent1);
 					break;
 				}
@@ -143,6 +151,9 @@ public class TaskScreen extends Activity {
 				removeTask(taskId);
 				Intent intent = new Intent(TaskScreen.this, EditTask.class);
 				intent.putExtra(StringUtil.TRANSITION, transition);
+				intent.putExtra(StringUtil.TASK_ID, taskId);
+				intent.putExtra(StringUtil.TASK_LAT, latitude);
+				intent.putExtra(StringUtil.TASK_LONG, longitude);
 				startActivity(intent);
 			}
 		});
@@ -153,12 +164,18 @@ public class TaskScreen extends Activity {
 				case StringUtil.CREATE:
 					Intent intent = new Intent(TaskScreen.this, Map.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.TASK_ID, taskId);
+					intent.putExtra(StringUtil.TASK_LAT, latitude);
+					intent.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent);
 					break;
 
 				case StringUtil.EDIT:
 					Intent intent1 = new Intent(TaskScreen.this, EditTask.class);
 					intent1.putExtra(StringUtil.TRANSITION, transition);
+					intent1.putExtra(StringUtil.TASK_ID, taskId);
+					intent1.putExtra(StringUtil.TASK_LAT, latitude);
+					intent1.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent1);
 					break;
 
@@ -166,6 +183,9 @@ public class TaskScreen extends Activity {
 					Intent intent2 = new Intent(TaskScreen.this,
 							NotificationScreen.class);
 					intent2.putExtra(StringUtil.TRANSITION, transition);
+					intent2.putExtra(StringUtil.TASK_ID, taskId);
+					intent2.putExtra(StringUtil.TASK_LAT, latitude);
+					intent2.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent2);
 					break;
 				}
