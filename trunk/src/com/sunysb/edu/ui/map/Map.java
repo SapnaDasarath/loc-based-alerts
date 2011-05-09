@@ -68,10 +68,12 @@ public class Map extends MapActivity {
 		Log.e("LBA", "Zoom control display");
 
 		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-				.getLatitude();
-		lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-				.getLongitude();
+		if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
+			lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+					.getLatitude();
+			lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+					.getLongitude();
+		}
 		initGeoPoint = new GeoPoint((int) (lat * 1000000),
 				(int) (lng * 1000000));
 

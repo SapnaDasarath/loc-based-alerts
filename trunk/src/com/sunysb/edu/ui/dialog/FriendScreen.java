@@ -1,5 +1,6 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,15 +90,26 @@ public class FriendScreen extends Activity {
 
 		HashMap<String, String> oldattr = util.getAttributesForItem(
 				currentuser, taskid);
-		String friendnames = oldattr.get(StringUtil.TASK_FRIENDS_NAMES);
-		List<String> friends = util.getFriendsFromString(friendnames);
-		if (friends.contains(friendname)) {
-			return;
+		String existingFrndNames = oldattr.get(StringUtil.TASK_FRIENDS_NAMES);
+		
+		List<String> friendsList = new ArrayList<String>();
+		if(existingFrndNames == null)
+		{
+			friendsList.add(friendname);
 		}
-		friends.add(friendname);
-		String friendsstr = util.getStringFromList(friends);
+		else
+		{
+			friendsList.addAll(util.getFriendsFromString(existingFrndNames));
+			if (friendsList.contains(friendname)) {
+				return;
+			}
+			friendsList.add(friendname);
+		}
+
+		String friendsstr = util.getStringFromList(friendsList);
 		HashMap<String, String> attributes = new HashMap<String, String>();
 		attributes.put(StringUtil.TASK_FRIENDS_NAMES, friendsstr);
+		
 		util.updateAttributesForItem(currentuser, taskid, attributes);
 
 		HashMap<String, String> taskInfoMap = new HashMap<String, String>();
