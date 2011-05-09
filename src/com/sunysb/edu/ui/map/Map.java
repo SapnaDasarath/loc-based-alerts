@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,8 +28,6 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
-import com.google.android.maps.Projection;
-import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.ui.dialog.TaskScreen;
 import com.sunysb.edu.util.StringUtil;
@@ -40,9 +37,10 @@ public class Map extends MapActivity {
 	private MapView mapView;
 	private Button addTaskButton;
 	private Button btnSearch;
-	
+
 	private double lat = 0;
 	private double lng = 0;
+	public GeoPoint initGeoPoint;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -69,6 +67,14 @@ public class Map extends MapActivity {
 		mapView.displayZoomControls(true);
 		Log.e("LBA", "Zoom control display");
 
+		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+				.getLatitude();
+		lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+				.getLongitude();
+		initGeoPoint = new GeoPoint((int) (lat * 1000000),
+				(int) (lng * 1000000));
+
 		MapOverlay mapOverlay = new MapOverlay(this);
 		List<Overlay> listOfOverlays = mapView.getOverlays();
 		listOfOverlays.clear();
@@ -80,16 +86,19 @@ public class Map extends MapActivity {
 
 		addTaskButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.e("LBA", "Add Task dialog launched");
-				Intent intent = new Intent(Map.this, TaskScreen.class);
-				intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
-				intent.putExtra(StringUtil.TASK_LAT, lat);
-				intent.putExtra(StringUtil.TASK_LONG, lng);
-				startActivity(intent);
+				callAddTask();
 			}
 		});
 	}
-	
+
+	private void callAddTask() {
+		Log.e("LBA", "Add Task dialog launched");
+		Intent intent = new Intent(Map.this, TaskScreen.class);
+		intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
+		intent.putExtra(StringUtil.TASK_LAT, String.valueOf(lat));
+		intent.putExtra(StringUtil.TASK_LONG, String.valueOf(lng));
+		startActivity(intent);
+	}
 
 	public void changeMap(String area) {
 
@@ -100,7 +109,8 @@ public class Map extends MapActivity {
 		try {
 			Geocoder g = new Geocoder(this, Locale.getDefault());
 
-			java.util.List<android.location.Address> result = g.getFromLocationName(area, 1);
+			java.util.List<android.location.Address> result = g
+					.getFromLocationName(area, 1);
 			if (result.size() > 0) {
 				lat = result.get(0).getLatitude();
 				lng = result.get(0).getLongitude();
