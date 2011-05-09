@@ -42,8 +42,6 @@ public class FriendListScreen extends Activity {
 		List<String> friendlist = new ArrayList<String>();
 
 		switch (transition) {
-		case StringUtil.CREATE:
-			break;
 
 		case StringUtil.EDIT:
 			friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
@@ -52,9 +50,6 @@ public class FriendListScreen extends Activity {
 		case StringUtil.NOTIFY:
 			friendlist.addAll(this.getIntent().getExtras()
 					.getStringArrayList(StringUtil.FRIEND_INFO));
-			break;
-
-		case StringUtil.DELETE:
 			break;
 		}
 		drawUI(friendlist);

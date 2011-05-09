@@ -1,25 +1,35 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sunysb.edu.R;
+import com.sunysb.edu.db.AWSEmail;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
-public class FriendScreen extends Activity{
-	
+public class FriendScreen extends Activity {
+
 	private SimpleDbUtil util;
 	private int transition;
-	//contains friend name
-	//remove friend button
-	//or accept/decline friend request button
-	
+	private String taskId;
+	// contains add friend name
+	// send button and close button
+
+	private EditText nameEditText;
+	private Button sendButton;
+	private Button closeButton;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.friend);
@@ -31,14 +41,98 @@ public class FriendScreen extends Activity{
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 		}
-		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
+		transition = (Integer) this.getIntent().getExtras()
+				.get(StringUtil.TRANSITION);
+		taskId = (String) this.getIntent().getExtras().get(StringUtil.TASK_ID);
+
+		nameEditText = (EditText) findViewById(R.id.frndname_EditText);
+		sendButton = (Button) findViewById(R.id.frndsend_To_Friend_button);
+		closeButton = (Button) findViewById(R.id.frndclose_Task_button);
+
+		sendButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sendtask();
+			}
+		});
+
+		closeButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(FriendScreen.this, TaskScreen.class);
+				intent.putExtra(StringUtil.TRANSITION, transition);
+				startActivity(intent);
+			}
+		});
 	}
 
-	public boolean onTouch(View v, MotionEvent event) {
-		Intent intent = new Intent(FriendScreen.this, NewFriendScreen.class);
+	private void sendtask() {
+		if (nameEditText.getText() == null) {
+			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
+					.show();
+			return;
+		}
+		if (!util.doesDomainExist(nameEditText.getText().toString())) {
+			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
+					.show();
+			return;
+		}
+		addTaskToFriend(nameEditText.getText().toString(), taskId);
+		Intent intent = new Intent(FriendScreen.this, TaskScreen.class);
 		intent.putExtra(StringUtil.TRANSITION, transition);
-		//TODO add friend id in list
 		startActivity(intent);
-		return false;
+	}
+
+	private void addTaskToFriend(String friendname, String taskid) {
+
+		String currentuser = SimpleDbUtil.getCurrentUser();
+		String domain = friendname;
+		String newtaskid = String.valueOf(System.currentTimeMillis());
+
+		HashMap<String, String> oldattr = util.getAttributesForItem(
+				currentuser, taskid);
+		String friendnames = oldattr.get(StringUtil.TASK_FRIENDS_NAMES);
+		List<String> friends = util.getFriendsFromString(friendnames);
+		if (friends.contains(friendname)) {
+			return;
+		}
+		friends.add(friendname);
+		String friendsstr = util.getStringFromList(friends);
+		HashMap<String, String> attributes = new HashMap<String, String>();
+		attributes.put(StringUtil.TASK_FRIENDS_NAMES, friendsstr);
+		util.updateAttributesForItem(currentuser, taskid, attributes);
+
+		HashMap<String, String> taskInfoMap = new HashMap<String, String>();
+		taskInfoMap
+				.put(StringUtil.TASK_NAME, oldattr.get(StringUtil.TASK_NAME));
+		taskInfoMap.put(StringUtil.TASK_DESCRIPTION,
+				oldattr.get(StringUtil.TASK_DESCRIPTION));
+		taskInfoMap.put(StringUtil.TASK_PRIORITY,
+				oldattr.get(StringUtil.TASK_PRIORITY));
+		taskInfoMap.put(StringUtil.TASK_OWNER,
+				oldattr.get(StringUtil.TASK_NAME));
+		taskInfoMap.put(StringUtil.TASK_OWNER_ID, newtaskid);
+		taskInfoMap.put(StringUtil.TASK_LAT, oldattr.get(StringUtil.TASK_LAT));
+		taskInfoMap
+				.put(StringUtil.TASK_LONG, oldattr.get(StringUtil.TASK_LONG));
+		taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
+		util.createItem(domain, taskid, taskInfoMap);
+
+		HashMap<String, String> attr = util.getAttributesForItem(friendname,
+				StringUtil.FRIEND_INFO);
+		String sendto = attr.get(StringUtil.EMAIL);
+		LinkedList<String> recipients = new LinkedList<String>();
+		recipients.add(sendto);
+
+		StringBuffer body = new StringBuffer();
+		body.append("Hi ").append(friendname).append(",\n");
+		body.append(currentuser).append(" has sent the following task\n");
+		body.append("Task Name: ").append(oldattr.get(StringUtil.TASK_NAME))
+				.append("\n");
+		body.append("Task Description: ")
+				.append(oldattr.get(StringUtil.TASK_DESCRIPTION)).append("\n");
+		body.append("Please check notifications to accept or decline task")
+				.append("\n");
+
+		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+				StringUtil.SUBJECT_TASK_NOTICE, body.toString());
 	}
 }

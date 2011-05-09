@@ -23,22 +23,20 @@ import android.widget.Toast;
 
 public class TaskScreen extends Activity {
 
-	SimpleDbUtil util;
-	private int transition = -1;
-	private String taskId = null;
+	private SimpleDbUtil util;
+	private int transition;
+	private String taskId;
+	private String latitude;
+	private String longitude;
 
 	private EditText nameEditText;
 	private EditText descriptionEditText;
 	private Spinner prioritySpinner;
 
 	private Button okButton;
-	private Button sendToFriendButton;
+	private Button tempButton;
 	private Button closeButton;
 	private Button delButton;
-	private Button tempButton;
-	
-
-	// String mIntentString = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,7 +52,9 @@ public class TaskScreen extends Activity {
 		transition = (Integer) this.getIntent().getExtras()
 				.get(StringUtil.TRANSITION);
 		taskId = getIntent().getExtras().getString(StringUtil.TASK_ID);
-		
+		latitude = getIntent().getExtras().getString(StringUtil.TASK_LAT);
+		longitude = getIntent().getExtras().getString(StringUtil.TASK_LONG);
+
 		nameEditText = (EditText) findViewById(R.id.name_EditText);
 		descriptionEditText = (EditText) findViewById(R.id.description_EditText);
 		prioritySpinner = (Spinner) findViewById(R.id.priority_Spinner);
@@ -66,9 +66,11 @@ public class TaskScreen extends Activity {
 		prioritySpinner.setAdapter(adapter);
 
 		okButton = (Button) findViewById(R.id.ok_Task_button);
+		delButton = (Button) findViewById(R.id.del_Task_button);
 		tempButton = (Button) findViewById(R.id.send_To_Friend_button);
 		closeButton = (Button) findViewById(R.id.close_Task_button);
 
+		// Set UI appropriately
 		switch (transition) {
 		case StringUtil.CREATE:
 			// Do nothing
@@ -79,16 +81,19 @@ public class TaskScreen extends Activity {
 			break;
 
 		case StringUtil.NOTIFY:
+			updateUIforTask(taskId);
 			okButton.setText("Accept");
 			tempButton.setText("Decline");
+			delButton.setVisibility(View.INVISIBLE);
 			break;
 		}
 
-		// can be add to tasks domain
-		// can be accept task
+		// There will be 4 buttons - ok/accept task, send to friend/decline ,
+		// remove, close
+		// can be add to tasks domain - ok
+		// can be accept task - accept
 		okButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// conditionalTaskOp();
 				switch (transition) {
 				case StringUtil.CREATE:
 					createNewTaskInDB();
@@ -100,53 +105,45 @@ public class TaskScreen extends Activity {
 
 				case StringUtil.NOTIFY:
 					acceptTaskFromFriend(taskId);
+					Intent intent = new Intent(TaskScreen.this,
+							NotificationScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent);
 					break;
-
-				case StringUtil.DELETE:
-					break;
-
 				}
 			}
 		});
 
 		// can be send to friend
-		// can be remove
 		// can be decline task
 		tempButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				switch (transition) {
-				case StringUtil.CREATE:
-					sendTaskToFriend();
-					break;
-
 				case StringUtil.EDIT:
-					sendTaskToFriend();
+					Intent intent = new Intent(TaskScreen.this, FriendScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.TASK_ID, taskId);
+					startActivity(intent);
 					break;
 
 				case StringUtil.NOTIFY:
 					declineTaskFromFriend(taskId);
-					break;
-
-				case StringUtil.DELETE:
-					removeTask(taskId);
+					Intent intent1 = new Intent(TaskScreen.this,
+							NotificationScreen.class);
+					intent1.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent1);
 					break;
 				}
 			}
 		});
 
 		// close tranistion back to different screens can be different
-
 		delButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Log.e("LBA", "delButton onClick extra value is " + taskId);
 				removeTask(taskId);
-				startActivity(new Intent(TaskScreen.this, EditTask.class));
-			}
-		});
-
-		sendToFriendButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				sendTaskToFriend();
+				Intent intent = new Intent(TaskScreen.this, EditTask.class);
+				intent.putExtra(StringUtil.TRANSITION, transition);
+				startActivity(intent);
 			}
 		});
 
@@ -154,28 +151,26 @@ public class TaskScreen extends Activity {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.CREATE:
-					startActivity(new Intent(TaskScreen.this, Map.class));
+					Intent intent = new Intent(TaskScreen.this, Map.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent);
 					break;
 
 				case StringUtil.EDIT:
-					startActivity(new Intent(TaskScreen.this, EditTask.class));
+					Intent intent1 = new Intent(TaskScreen.this, EditTask.class);
+					intent1.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent1);
 					break;
 
 				case StringUtil.NOTIFY:
-					startActivity(new Intent(TaskScreen.this,
-							NotificationScreen.class));
-					break;
-
-				case StringUtil.DELETE:
-					startActivity(new Intent(TaskScreen.this, EditTask.class));
+					Intent intent2 = new Intent(TaskScreen.this,
+							NotificationScreen.class);
+					intent2.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent2);
 					break;
 				}
 			}
 		});
-		if (taskId != null) {
-			Log.e("LBA", "extra not null. Calling updateUIforTask");
-			updateUIforTask(taskId);
-		}
 	}
 
 	private void createNewTaskInDB() {
@@ -184,9 +179,6 @@ public class TaskScreen extends Activity {
 		String nameStr = "";
 		String descriptionStr = "";
 		String priorityStr = "";
-		// TODO: poo set the values
-		String latitude = "";
-		String longitude = "";
 
 		Object name = nameEditText.getText();
 		if (name != null) {
@@ -202,6 +194,7 @@ public class TaskScreen extends Activity {
 		if (priority != null) {
 			priorityStr = name.toString();
 		}
+		
 		String domain = SimpleDbUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 
@@ -275,13 +268,14 @@ public class TaskScreen extends Activity {
 		}
 	}
 
-	protected void acceptTaskFromFriend(String taskId2) {
-		// TODO Auto-generated method stub
+	protected void acceptTaskFromFriend(String taskid) {
+		// change task state to accepted in your list and the other persons list
+		HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+		attrListToUpdate.put(StringUtil.TASK_STATUS, StringUtil.TASK_ACCEPTED);
 
-	}
-
-	protected void declineTaskFromFriend(String taskId2) {
-		// TODO Auto-generated method stub
+		// put this in current user list and put this in friend list
+		String domain = SimpleDbUtil.getCurrentUser();
+		util.updateAttributesForItem(domain, taskid, attrListToUpdate);
 
 	}
 
@@ -328,25 +322,6 @@ public class TaskScreen extends Activity {
 		return retval;
 	}
 
-	private void sendTaskToFriend() {
-		// TODO add a screen to get all friends of this user and show in drop
-		// down
-		// select one/multiple friends and do a send action.
-		// with this action we have to get domains of those users and send
-		// (owner domain, taskid) in notification
-		// on notification to user if user accepts task retrieve the task from
-		// original owner
-		// insert into current users task list
-		// when the task is completed check if current owner matched task owner
-		// if it does not find the task in original owner list and update task
-		// id.
-		// slso if you ahve shared the task with other ppl update their status
-		// also.
-
-		String friendid = "";
-		String taskid = "";
-		addTaskToFriend(friendid, taskid);
-	}
 
 	// If user selects delete task remove it from UI and DB and if the task is a
 	// shared task
@@ -364,59 +339,11 @@ public class TaskScreen extends Activity {
 	// return true;
 	// }
 
-	private void addTaskToFriend(String friendname, String taskid) {
+	
 
-		String currentuser = SimpleDbUtil.getCurrentUser();
-		String domain = friendname;
-		String newtaskid = String.valueOf(System.currentTimeMillis());
-
-		HashMap<String, String> oldattr = util.getAttributesForItem(
-				currentuser, taskid);
-		String friendnames = oldattr.get(StringUtil.TASK_FRIENDS_NAMES);
-		List<String> friends = util.getFriendsFromString(friendnames);
-		if (friends.contains(friendname)) {
-			return;
-		}
-		friends.add(friendname);
-		String friendsstr = util.getStringFromList(friends);
-		HashMap<String, String> attributes = new HashMap<String, String>();
-		attributes.put(StringUtil.TASK_FRIENDS_NAMES, friendsstr);
-		util.updateAttributesForItem(currentuser, taskid, attributes);
-
-		HashMap<String, String> taskInfoMap = new HashMap<String, String>();
-		taskInfoMap
-				.put(StringUtil.TASK_NAME, oldattr.get(StringUtil.TASK_NAME));
-		taskInfoMap.put(StringUtil.TASK_DESCRIPTION,
-				oldattr.get(StringUtil.TASK_DESCRIPTION));
-		taskInfoMap.put(StringUtil.TASK_PRIORITY,
-				oldattr.get(StringUtil.TASK_PRIORITY));
-		taskInfoMap.put(StringUtil.TASK_OWNER,
-				oldattr.get(StringUtil.TASK_NAME));
-		taskInfoMap.put(StringUtil.TASK_OWNER_ID, newtaskid);
-		taskInfoMap.put(StringUtil.TASK_LAT, oldattr.get(StringUtil.TASK_LAT));
-		taskInfoMap
-				.put(StringUtil.TASK_LONG, oldattr.get(StringUtil.TASK_LONG));
-		taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
-		util.createItem(domain, taskid, taskInfoMap);
-
-		HashMap<String, String> attr = util.getAttributesForItem(friendname,
-				StringUtil.FRIEND_INFO);
-		String sendto = attr.get(StringUtil.EMAIL);
-		LinkedList<String> recipients = new LinkedList<String>();
-		recipients.add(sendto);
-
-		StringBuffer body = new StringBuffer();
-		body.append("Hi ").append(friendname).append(",\n");
-		body.append(currentuser).append(" has sent the following task\n");
-		body.append("Task Name: ").append(oldattr.get(StringUtil.TASK_NAME))
-				.append("\n");
-		body.append("Task Description: ")
-				.append(oldattr.get(StringUtil.TASK_DESCRIPTION)).append("\n");
-		body.append("Please check notifications to accept or decline task")
-				.append("\n");
-
-		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-				StringUtil.SUBJECT_TASK_NOTICE, body.toString());
+	protected void declineTaskFromFriend(String taskId) {
+		// remove task from your list
+		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
 	}
 
 	// If user selects delete task remove it from UI and DB and if the task is a

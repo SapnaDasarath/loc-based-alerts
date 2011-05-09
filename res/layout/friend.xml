@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-
-	<Button android:id="@+id/accept_button" android:text="Accept"
+	<TextView android:id="@+id/frndname_TextView" android:text="Name"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
-	<Button android:id="@+id/decline_button" android:text="Decline"
+	<EditText android:id="@+id/frndname_EditText"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Button android:id="@+id/frndsend_To_Friend_button" android:text="Send"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	<Button android:id="@+id/frndclose_Task_button" android:text="Close"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
 </LinearLayout>
