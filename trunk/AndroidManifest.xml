@@ -43,6 +43,7 @@
 		<activity android:name=".ui.dialog.NewFriendScreen"></activity>
 		<activity android:name=".ui.dialog.TaskScreen"></activity>
 		<activity android:name=".ui.dialog.NotificationScreen"></activity>
+		<activity android:name=".ui.dialog.FriendScreen"></activity>
 		<activity android:name=".LocationAlert"></activity>
 	</application>
 

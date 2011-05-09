@@ -29,6 +29,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.ui.dialog.TaskScreen;
@@ -37,69 +38,11 @@ import com.sunysb.edu.util.StringUtil;
 public class Map extends MapActivity {
 
 	private MapView mapView;
-
 	private Button addTaskButton;
 	private Button btnSearch;
 	
-	//Button btnSearch=(Button) findViewById(R.id.search);
-	
-	public void changeMap(String area){
-		
-        mapView = (MapView) findViewById(R.id.mapView);
-        MapController mc=mapView.getController();
-        //MapOverlay mapOverlays;
-        
-        
-        GeoPoint myLocation=null;
-        double lat = 0;
-        double lng = 0;
-        try
-        {
-       	 	Geocoder g = new Geocoder(this, Locale.getDefault()); 
-
-            java.util.List<android.location.Address> result=g.getFromLocationName(area, 1); 
-            if(result.size()>0){
-            	Toast.makeText(Map.this, "country: " + String.valueOf(result.get(0).getCountryName()), Toast.LENGTH_SHORT).show();
-            	lat = result.get(0).getLatitude();
-            	lng = result.get(0).getLongitude();
-            }             
-            else{
-            	Toast.makeText(Map.this, "record not found", Toast.LENGTH_SHORT).show();
-            	return;
-            }
-        }
-        catch(IOException io)
-        {
-        	Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT).show();
-        }
-        myLocation = new GeoPoint(
-            (int) (lat * 1E6), 
-            (int) (lng * 1E6));
- 
-        //moverlay = (MapOverlay) mapView.getOverlays();
-        //Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
-        //MapOverlay itemizedoverlay = new MapOverlay(drawable);
-        //drawable.draw(canvas);
-        
-        List<Overlay>mapOverlays =  mapView.getOverlays();
-        Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
-        MapItemizedOverlay itemizedOverlay = new MapItemizedOverlay(drawable);
-       // GeoPoint point = new GeoPoint((int)lat, (int)lng);
-       // OverlayItem overlayitem = new OverlayItem(point, "", "");
-        OverlayItem overlayitem = new OverlayItem(myLocation, "", "");
-        itemizedOverlay.addOverlay(overlayitem);
-        mapOverlays.add(itemizedOverlay);
-
-        
-        mc.animateTo(myLocation);
-        mc.setZoom(10); 
-        mapView.invalidate(); //is it required?
-        
-        
-        // ---add the marker---
-		//Bitmap bmp = BitmapFactory.decodeResource(getResources(),	R.drawable.pushpin);
-		//canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);
-	}
+	private double lat = 0;
+	private double lng = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -140,14 +83,49 @@ public class Map extends MapActivity {
 				Log.e("LBA", "Add Task dialog launched");
 				Intent intent = new Intent(Map.this, TaskScreen.class);
 				intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
-				//TODO poo add activity lat and long values
-				//intent.putExtra(StringUtil.TASK_LAT, value);
-				//intent.putExtra(StringUtil.TASK_LONG, value);
+				intent.putExtra(StringUtil.TASK_LAT, lat);
+				intent.putExtra(StringUtil.TASK_LONG, lng);
 				startActivity(intent);
 			}
 		});
 	}
+	
 
+	public void changeMap(String area) {
+
+		mapView = (MapView) findViewById(R.id.mapView);
+		MapController mc = mapView.getController();
+
+		GeoPoint myLocation = null;
+		try {
+			Geocoder g = new Geocoder(this, Locale.getDefault());
+
+			java.util.List<android.location.Address> result = g.getFromLocationName(area, 1);
+			if (result.size() > 0) {
+				lat = result.get(0).getLatitude();
+				lng = result.get(0).getLongitude();
+			} else {
+				return;
+			}
+		} catch (IOException io) {
+			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT)
+					.show();
+		}
+		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
+
+		List<Overlay> mapOverlays = mapView.getOverlays();
+		Drawable drawable = this.getResources().getDrawable(R.drawable.pushpin);
+		MapItemizedOverlay itemizedOverlay = new MapItemizedOverlay(drawable);
+
+		OverlayItem overlayitem = new OverlayItem(myLocation, "", "");
+		itemizedOverlay.addOverlay(overlayitem);
+		mapOverlays.add(itemizedOverlay);
+
+		mc.animateTo(myLocation);
+		mc.setZoom(10);
+		mapView.invalidate(); // is it required?
+
+	}
 
 	@Override
 	public void onNewIntent(Intent intent) {
@@ -197,4 +175,3 @@ public class Map extends MapActivity {
 		}
 	}
 }
-

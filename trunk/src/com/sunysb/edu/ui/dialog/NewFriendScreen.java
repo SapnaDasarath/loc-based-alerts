@@ -50,16 +50,10 @@ public class NewFriendScreen extends Activity {
 		declineButton = (Button) findViewById(R.id.decline_button);
 
 		switch (transition) {
-		case StringUtil.CREATE:
-			break;
 		case StringUtil.EDIT:
 			acceptButton.setText("Ok");
 			declineButton.setText("Remove");
 			updateUIwithFriendInfo(friendname);
-			break;
-		case StringUtil.NOTIFY:
-			break;
-		case StringUtil.DELETE:
 			break;
 		}
 

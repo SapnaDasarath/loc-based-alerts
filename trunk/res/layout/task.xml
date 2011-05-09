@@ -1,67 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tasklayout"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-    <TextView 
-		android:id="@+id/name_TextView"
-		android:text="Name"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>	
-	<EditText 
-		android:id="@+id/name_EditText"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>	
-	<TextView 
-		android:id="@+id/description_TextView"
-		android:text="Description"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>			   
-	<EditText 
-		android:id="@+id/description_EditText"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>		
-	<TextView 
-		android:id="@+id/priority_TextView"
-		android:text="Priority"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>			   
-	<Spinner 
-		android:id="@+id/priority_Spinner"
-		android:text="Priority"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>		   
-	<Button 
-		android:id="@+id/ok_Task_button"
-		android:text="Ok"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		/>	
-		<Button 
-		android:id="@+id/del_Task_button"
-		android:text="DelTask"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		/>
-			
-	<Button 
-		android:id="@+id/send_To_Friend_button"
-		android:text="SendToFriend"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		/>	
-		   
-	<Button 
-		android:id="@+id/close_Task_button"
-		android:text="Close"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		/>     
+	android:id="@+id/tasklayout" android:orientation="vertical"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<TextView android:id="@+id/name_TextView" android:text="Name"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<EditText android:id="@+id/name_EditText"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<TextView android:id="@+id/description_TextView" android:text="Description"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<EditText android:id="@+id/description_EditText"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<TextView android:id="@+id/priority_TextView" android:text="Priority"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Spinner android:id="@+id/priority_Spinner" android:text="Priority"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Button android:id="@+id/ok_Task_button" android:text="Ok"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	<Button android:id="@+id/del_Task_button" android:text="DelTask"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	<Button android:id="@+id/send_To_Friend_button" android:text="SendToFriend"
+		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+	<Button android:id="@+id/close_Task_button" android:text="Close"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 </LinearLayout>
