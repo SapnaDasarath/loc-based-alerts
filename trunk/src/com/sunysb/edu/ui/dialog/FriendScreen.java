@@ -129,7 +129,7 @@ public class FriendScreen extends Activity {
 		util.createItem(domain, taskid, taskInfoMap);
 
 		HashMap<String, String> attr = util.getAttributesForItem(friendname,
-				StringUtil.FRIEND_INFO);
+				StringUtil.USER_INFO);
 		String sendto = attr.get(StringUtil.EMAIL);
 		LinkedList<String> recipients = new LinkedList<String>();
 		recipients.add(sendto);
