@@ -17,14 +17,12 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 public class EditTask extends Activity implements OnTouchListener {
 
-	private final int DUMMY_CODE = 0;
 	SimpleDbUtil util;
 	TextView name = null;
 	private int transition;
@@ -40,7 +38,8 @@ public class EditTask extends Activity implements OnTouchListener {
 			Log.e("LBA", "Unable to connect to server");
 		}
 
-		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
+		transition = (Integer) this.getIntent().getExtras()
+				.get(StringUtil.TRANSITION);
 		List<String> taskids = new ArrayList<String>();
 
 		switch (transition) {
@@ -66,10 +65,12 @@ public class EditTask extends Activity implements OnTouchListener {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
 		table.removeAllViews();
 		for (String id : taskids) {
-			HashMap<String, String> taskattributes = util.getAttributesForItem(SimpleDbUtil.getCurrentUser(), id);
+			HashMap<String, String> taskattributes = util.getAttributesForItem(
+					SimpleDbUtil.getCurrentUser(), id);
 			TableRow tr = new TableRow(this);
-			tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-			
+			tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+					LayoutParams.WRAP_CONTENT));
+
 			name = new TextView(this);
 			name.setText(taskattributes.get(StringUtil.TASK_NAME) + "--");
 			name.setTextColor(Color.YELLOW);
@@ -80,45 +81,41 @@ public class EditTask extends Activity implements OnTouchListener {
 			prior.setText(taskattributes.get(StringUtil.TASK_PRIORITY));
 			prior.setTextColor(Color.YELLOW);
 			tr.addView(prior);
-			
+
 			tr.setTag(id);
 
-			table.addView(tr, new TableLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-			
-			tr.setOnClickListener(new View.OnClickListener(){
-		
-				public void onClick(View v){
-				    String id = (String)v.getTag();
+			table.addView(tr, new TableLayout.LayoutParams(
+					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+
+			tr.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					String id = (String) v.getTag();
 					Log.e("LBA", "TableRow clicked!");
-					Intent it = new Intent(EditTask.this, TaskScreen.class);
-					it.putExtra(StringUtil.TRANSITION, transition);
-					it.putExtra("id", id);
-					//startActivity(it);
-					//startActivity(new Intent(EditTask.this, TaskScreen.class));
-					startActivityForResult(it, DUMMY_CODE);
+					Intent intent = new Intent(EditTask.this, TaskScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.TASK_ID, id);
+					startActivity(intent);
 				}
 			});
 		}
 	}
-	
-	
-	
-	/*@Override
-	public boolean onTouchEvent(MotionEvent event){
-		System.out.println("LBA: onTouchEvent method event is: " + event.toString());
-		return false;
-	} */
+
+	/*
+	 * @Override public boolean onTouchEvent(MotionEvent event){
+	 * System.out.println("LBA: onTouchEvent method event is: " +
+	 * event.toString()); return false; }
+	 */
 
 	// TODO When user selects a task open the edit view for that task
 	// send the task id to open the edit view to get only that task from the db
 	// and show it on UI
-  	@Override
+	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		System.out.println("LBA: onTouch method View value is: " + v.getId());
 		// startActivity(new Intent(EditTask.this, TaskScreen.class));
 		Intent intent = new Intent(EditTask.this, TaskScreen.class);
 		intent.putExtra(StringUtil.TRANSITION, transition);
-		//TODO add task id in extras
+		// TODO add task id in extras
 		startActivity(intent);
 		return false;
 	}
@@ -126,14 +123,12 @@ public class EditTask extends Activity implements OnTouchListener {
 	// If user selects delete task remove it from UI and DB and if the task is a
 	// shared task
 	// remove it from the person who has the task too
-	/*public boolean removeTask(String taskId) {
-		List<String> tasks = util.getTaskAcceptedFriends(taskId);
-		if (tasks.size() > 0) {
-			// for each user name send the task id to be deleted.
-		}
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-		
-		drawUI();
-		return true;
-	} */
+	/*
+	 * public boolean removeTask(String taskId) { List<String> tasks =
+	 * util.getTaskAcceptedFriends(taskId); if (tasks.size() > 0) { // for each
+	 * user name send the task id to be deleted. }
+	 * util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+	 * 
+	 * drawUI(); return true; }
+	 */
 }

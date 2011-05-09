@@ -12,6 +12,7 @@ public class StringUtil {
 	public static final String EMAIL = "email";
 	public static final String SENDER = "sapnadasarath@gmail.com";
 	public static final String SUBJECT_FRDREQ = "New Friend request";
+	public static final String SUBJECT_FRDREQ_ACC = "Friend request accepted";
 	public static final String BODY_FRDREQ = "You have a new friend request. Check notifications to accept request.";
 
 	public static final String TEMP_USER = "tempUser";
@@ -25,6 +26,7 @@ public class StringUtil {
 	public static final String TASK_NAME = "taskname";
 	// key with task description
 	public static final String TASK_DESCRIPTION = "taskdesc";
+	public static final String TASK_ID = "taskID";
 	// key with task priority
 	public static final String TASK_PRIORITY = "taskpriority";
 	public static final String PRIOR_LOW = "low";

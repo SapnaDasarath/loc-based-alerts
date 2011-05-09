@@ -41,7 +41,7 @@ public class NewFriendScreen extends Activity {
 		}
 
 		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
-		// set friendname id taskId=;
+		friendname = getIntent().getExtras().getString(StringUtil.FRIEND_NAME);
 
 		newfriendEditText = (EditText) findViewById(R.id.newfriend_EditText);
 		emailEditText = (EditText) findViewById(R.id.email_EditText);
@@ -84,7 +84,7 @@ public class NewFriendScreen extends Activity {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.NOTIFY:
-					declineFriendRequest(friendname);
+					removeFriend(friendname);
 					break;
 				case StringUtil.DELETE:
 					removeFriend(friendname);
@@ -112,16 +112,6 @@ public class NewFriendScreen extends Activity {
 		if (descriptionStr != null) {
 			emailEditText.setText(descriptionStr);
 		}
-	}
-	
-	protected void declineFriendRequest(String friendname2) {
-		// TODO Auto-generated method stub
-
-	}
-
-	protected void acceptFriendRequest(String friendname2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private boolean validateFriend() {
@@ -164,17 +154,42 @@ public class NewFriendScreen extends Activity {
 				StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 				otherfriendmap);
 
+		// send notification to user
 		HashMap<String, String> attr = util.getAttributesForItem(username,
 				StringUtil.FRIEND_INFO);
 		String sendto = attr.get(StringUtil.EMAIL);
 
-		// send notification to user
 		LinkedList<String> recipients = new LinkedList<String>();
 		recipients.add(sendto);
 
 		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
 				StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
 	}
+	
+
+	protected void acceptFriendRequest(String friendname) {
+		String domain = SimpleDbUtil.getCurrentUser();
+		HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+		attrListToUpdate.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_CONFIRMED);
+		util.updateAttributesForItem(domain, friendname, attrListToUpdate);
+		
+		//update other guys friend status too..
+		util.updateAttributesForItem(friendname, domain, attrListToUpdate);
+		
+		// send notification to user
+		HashMap<String, String> attr = util.getAttributesForItem(friendname,
+				StringUtil.FRIEND_INFO);
+		String sendto = attr.get(StringUtil.EMAIL);
+		LinkedList<String> recipients = new LinkedList<String>();
+		recipients.add(sendto);
+		StringBuffer sb = new StringBuffer();
+		sb.append("Hello ").append(friendname).append(",\n");
+		sb.append(domain).append(" has accepted your friend request");
+
+		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+				StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
+	}
+
 
 	// Remove friend from your list and the other user list also
 	// remove all shared tasks.
@@ -190,10 +205,8 @@ public class NewFriendScreen extends Activity {
 		// owner as current user
 		// remove both.
 
-		// send alert to remove this user from the friend list.
-
 		// remove from current user
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO
-				+ name);
+		util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
+		util.deleteItem(name, SimpleDbUtil.getCurrentUser());
 	}
 }

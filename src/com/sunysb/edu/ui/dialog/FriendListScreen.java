@@ -22,7 +22,7 @@ import com.sunysb.edu.util.StringUtil;
 public class FriendListScreen extends Activity {
 
 	private SimpleDbUtil util;
-	private int transition = -1;
+	private int transition;
 	
 	private Button addFriendButton;
 
@@ -72,9 +72,23 @@ public class FriendListScreen extends Activity {
 					LayoutParams.WRAP_CONTENT));
 
 			TextView name = new TextView(this);
-			name.setText(namestr);
+			String newStr = namestr.replace(StringUtil.FRIEND_INFO, "");
+			name.setText(newStr);
 			name.setTextColor(Color.YELLOW);
 			tr.addView(name);
+			
+			tr.setTag(namestr);
+			
+			tr.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					String namestr = (String) v.getTag();
+					Log.e("LBA", "TableRow clicked!");
+					Intent intent = new Intent(FriendListScreen.this, NewFriendScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.FRIEND_NAME, namestr);
+					startActivity(intent);
+				}
+			});
 
 			table.addView(tr, new TableLayout.LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
@@ -86,7 +100,6 @@ public class FriendListScreen extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(FriendListScreen.this,NewFriendScreen.class);
 				intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
-				//TODO add friend name
 				startActivity(intent);
 			}
 		});
