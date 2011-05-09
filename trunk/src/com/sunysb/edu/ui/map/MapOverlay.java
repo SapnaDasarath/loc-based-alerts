@@ -19,15 +19,12 @@ import com.google.android.maps.MapView;
 import com.sunysb.edu.R;
 
 public class MapOverlay extends com.google.android.maps.Overlay {
-	MapActivity map;
-	GeoPoint p;
+	private MapActivity map;
+	private GeoPoint p;
 
-	/*public MapOverlay(){
-		
-	}*/
-	
-	public MapOverlay(MapActivity map) {
+	public MapOverlay(Map map) {
 		this.map = map;
+		p = map.initGeoPoint;
 	}
 
 	@Override
