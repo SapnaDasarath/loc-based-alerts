@@ -8,7 +8,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,8 +23,6 @@ public class FriendScreen extends Activity {
 	private SimpleDbUtil util;
 	private int transition;
 	private String taskId;
-	// contains add friend name
-	// send button and close button
 
 	private EditText nameEditText;
 	private Button sendButton;
@@ -35,7 +32,6 @@ public class FriendScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.friend);
 
-		Log.e("LBA", "Loading task screen");
 		try {
 			util = new SimpleDbUtil();
 		} catch (Exception e) {
@@ -66,11 +62,13 @@ public class FriendScreen extends Activity {
 	}
 
 	private void sendtask() {
+		
 		if (nameEditText.getText() == null) {
 			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
 					.show();
 			return;
 		}
+		
 		try {
 			if (!util.doesDomainExist(nameEditText.getText().toString())) {
 				Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
@@ -83,6 +81,7 @@ public class FriendScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+		
 		addTaskToFriend(nameEditText.getText().toString(), taskId);
 		Intent intent = new Intent(FriendScreen.this, TaskScreen.class);
 		intent.putExtra(StringUtil.TRANSITION, transition);
@@ -95,9 +94,9 @@ public class FriendScreen extends Activity {
 		String domain = friendname;
 		String newtaskid = String.valueOf(System.currentTimeMillis());
 
-		HashMap<String, String> oldattr;
+		HashMap<String, String> oldattr = new HashMap<String, String>();
 		try {
-			oldattr = util.getAttributesForItem(currentuser, taskid);
+			oldattr.putAll(util.getAttributesForItem(currentuser, taskid));
 
 			String existingFrndNames = oldattr
 					.get(StringUtil.TASK_FRIENDS_NAMES);
@@ -123,18 +122,25 @@ public class FriendScreen extends Activity {
 			HashMap<String, String> taskInfoMap = new HashMap<String, String>();
 			taskInfoMap.put(StringUtil.TASK_NAME,
 					oldattr.get(StringUtil.TASK_NAME));
+			
 			taskInfoMap.put(StringUtil.TASK_DESCRIPTION,
 					oldattr.get(StringUtil.TASK_DESCRIPTION));
+			
 			taskInfoMap.put(StringUtil.TASK_PRIORITY,
 					oldattr.get(StringUtil.TASK_PRIORITY));
+			
 			taskInfoMap.put(StringUtil.TASK_OWNER,
 					oldattr.get(StringUtil.TASK_NAME));
-			taskInfoMap.put(StringUtil.TASK_OWNER_ID, newtaskid);
+			
 			taskInfoMap.put(StringUtil.TASK_LAT,
 					oldattr.get(StringUtil.TASK_LAT));
+			
 			taskInfoMap.put(StringUtil.TASK_LONG,
 					oldattr.get(StringUtil.TASK_LONG));
+			
+			taskInfoMap.put(StringUtil.TASK_OWNER_ID, newtaskid);
 			taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
+			
 			util.createItem(domain, taskid, taskInfoMap);
 
 			HashMap<String, String> attr = util.getAttributesForItem(

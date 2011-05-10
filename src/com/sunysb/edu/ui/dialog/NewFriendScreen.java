@@ -9,6 +9,7 @@ import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,7 @@ public class NewFriendScreen extends Activity {
 
 	private Button acceptButton;
 	private Button declineButton;
+	private Button closeButton;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,8 +51,12 @@ public class NewFriendScreen extends Activity {
 
 		acceptButton = (Button) findViewById(R.id.validate_button);
 		declineButton = (Button) findViewById(R.id.decline_button);
+		closeButton = (Button) findViewById(R.id.newfrnd_close_button);
 
 		switch (transition) {
+		case StringUtil.CREATE:
+			acceptButton.setText("Send");
+			declineButton.setVisibility(View.INVISIBLE);
 		case StringUtil.EDIT:
 			acceptButton.setText("Ok");
 			declineButton.setText("Remove");
@@ -83,6 +89,25 @@ public class NewFriendScreen extends Activity {
 					break;
 				case StringUtil.DELETE:
 					removeFriend(friendname);
+					break;
+				}
+			}
+		});
+
+		closeButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				switch (transition) {
+				case StringUtil.EDIT:
+					Intent intent = new Intent(NewFriendScreen.this,
+							TaskScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent);
+					break;
+				case StringUtil.NOTIFY:
+					Intent intent1 = new Intent(NewFriendScreen.this,
+							NotificationScreen.class);
+					intent1.putExtra(StringUtil.TRANSITION, transition);
+					startActivity(intent1);
 					break;
 				}
 			}
