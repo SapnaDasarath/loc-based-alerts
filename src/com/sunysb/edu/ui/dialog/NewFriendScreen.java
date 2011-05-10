@@ -192,6 +192,9 @@ public class NewFriendScreen extends Activity {
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 					otherfriendmap);
 
+			Toast.makeText(this, "Friend request sent.", Toast.LENGTH_SHORT)
+					.show();
+
 			// send notification to user
 			HashMap<String, String> attr = util.getAttributesForItem(username,
 					StringUtil.FRIEND_INFO);
@@ -221,6 +224,9 @@ public class NewFriendScreen extends Activity {
 
 			// update other guys friend status too..
 			util.updateAttributesForItem(friendname, domain, attrListToUpdate);
+
+			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_SHORT)
+					.show();
 
 			// send notification to user
 			HashMap<String, String> attr = util.getAttributesForItem(
@@ -260,6 +266,16 @@ public class NewFriendScreen extends Activity {
 		try {
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
 			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+
+			if (transition == StringUtil.NOTIFY) {
+				Toast.makeText(this, "Friend request Declined.",
+						Toast.LENGTH_SHORT).show();
+
+			} else {
+				Toast.makeText(this, "Friend removed.", Toast.LENGTH_SHORT)
+						.show();
+			}
+
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
