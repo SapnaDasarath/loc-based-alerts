@@ -9,9 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -22,7 +20,7 @@ import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
-public class EditTask extends Activity implements OnTouchListener {
+public class EditTask extends Activity{
 
 	SimpleDbUtil util;
 	TextView name = null;
@@ -118,36 +116,4 @@ public class EditTask extends Activity implements OnTouchListener {
 			}
 		}
 	}
-
-	/*
-	 * @Override public boolean onTouchEvent(MotionEvent event){
-	 * System.out.println("LBA: onTouchEvent method event is: " +
-	 * event.toString()); return false; }
-	 */
-
-	// TODO When user selects a task open the edit view for that task
-	// send the task id to open the edit view to get only that task from the db
-	// and show it on UI
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		System.out.println("LBA: onTouch method View value is: " + v.getId());
-		// startActivity(new Intent(EditTask.this, TaskScreen.class));
-		Intent intent = new Intent(EditTask.this, TaskScreen.class);
-		intent.putExtra(StringUtil.TRANSITION, transition);
-		// TODO add task id in extras
-		startActivity(intent);
-		return false;
-	}
-
-	// If user selects delete task remove it from UI and DB and if the task is a
-	// shared task
-	// remove it from the person who has the task too
-	/*
-	 * public boolean removeTask(String taskId) { List<String> tasks =
-	 * util.getTaskAcceptedFriends(taskId); if (tasks.size() > 0) { // for each
-	 * user name send the task id to be deleted. }
-	 * util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-	 * 
-	 * drawUI(); return true; }
-	 */
 }

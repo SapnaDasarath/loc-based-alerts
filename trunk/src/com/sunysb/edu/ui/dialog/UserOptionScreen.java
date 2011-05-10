@@ -1,12 +1,16 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sunysb.edu.R;
+import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.ui.map.Map;
 import com.sunysb.edu.util.StringUtil;
 
@@ -17,6 +21,11 @@ public class UserOptionScreen extends Activity {
 	private Button notificationButton;
 	private Button organizeFriendsButton;
 	private Button editProfileButton;
+
+	private SimpleDbUtil util;
+	
+	final ArrayList<String> tasknames = new ArrayList<String>();
+	final ArrayList<String> friendnames = new ArrayList<String>();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -30,6 +39,29 @@ public class UserOptionScreen extends Activity {
 		organizeFriendsButton = (Button) findViewById(R.id.organize_Friends_button);
 		editProfileButton = (Button) findViewById(R.id.edit_Profile_button);
 
+		try {
+			util = new SimpleDbUtil();
+			String taskquery = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_STATUS + " = '"
+					+ StringUtil.TASK_PENDING + "'";		
+			tasknames.addAll(util.getItemNamesForQuery(taskquery));
+
+			String frdquery = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.FRIEND_STATUS + " = '"
+					+ StringUtil.FRIEND_PENDING + "'";
+			friendnames.addAll(util.getItemNamesForQuery(frdquery));
+
+			int size = tasknames.size() + friendnames.size();
+			notificationButton.setText(notificationButton.getText() + " ("
+					+ size + ")");
+
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
 		addTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -40,23 +72,31 @@ public class UserOptionScreen extends Activity {
 		editTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserOptionScreen.this, EditTask.class);
+				Intent intent = new Intent(UserOptionScreen.this,
+						EditTask.class);
 				intent.putExtra(StringUtil.TRANSITION, StringUtil.EDIT);
 				startActivity(intent);
 			}
 		});
-		
+
 		notificationButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, NotificationScreen.class));
+				Intent intent = new Intent(UserOptionScreen.this,
+						NotificationScreen.class);
+				intent.putExtra(StringUtil.TRANSITION, StringUtil.NOTIFY);
+				intent.putStringArrayListExtra(StringUtil.TASK_INFO, tasknames);
+				intent.putStringArrayListExtra(StringUtil.FRIEND_INFO,
+						friendnames);
+				startActivity(intent);
 			}
 		});
 
 		organizeFriendsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(UserOptionScreen.this,FriendListScreen.class);
+				Intent intent = new Intent(UserOptionScreen.this,
+						FriendListScreen.class);
 				intent.putExtra(StringUtil.TRANSITION, StringUtil.EDIT);
 				startActivity(intent);
 			}
