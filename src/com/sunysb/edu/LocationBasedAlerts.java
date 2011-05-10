@@ -12,6 +12,7 @@ import com.sunysb.edu.util.StringUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,8 +50,7 @@ public class LocationBasedAlerts extends Activity {
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(LocationBasedAlerts.this,
-						NewUserScreen.class));
+				startActivity(new Intent(LocationBasedAlerts.this, NewUserScreen.class));
 			}
 		});
 	}
@@ -142,5 +142,8 @@ public class LocationBasedAlerts extends Activity {
 	private void startLocationManagerServices() {
 		// startActivity(new Intent(LocationBasedAlerts.this,
 		// LocationAlert.class));
+		Log.e("LBA", "Entered startLocationManagerService() method");
+		Intent intent = new Intent(this, LocationAlertService.class);
+		startService(intent);
 	}
 }

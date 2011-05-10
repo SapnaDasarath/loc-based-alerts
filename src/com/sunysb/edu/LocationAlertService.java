@@ -5,7 +5,8 @@ import java.util.List;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
-import android.app.Activity;
+import android.app.IntentService;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,42 +14,40 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class LocationAlert extends Activity implements LocationListener {
+public class LocationAlertService extends IntentService implements LocationListener{
+
 	private LocationManager myManager;
+	
+	public LocationAlertService() {
+		super("LocationAlertService");
+	}
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public void onCreate(){
 		myManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		Log.e("LBA", "LocationAlertService created");
+		super.onCreate();
 	}
-
+	
+	
 	@Override
-	protected void onDestroy() {
-		stopListening();
-		super.onDestroy();
+	public int onStartCommand(Intent intent, int flags, int startId) {
+	    Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+	    return super.onStartCommand(intent,flags,startId);
 	}
-
+	
+	
 	@Override
-	protected void onPause() {
-		stopListening();
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
+	protected void onHandleIntent(Intent arg0) { //arg0?
+		// TODO Auto-generated method stub
+		Log.e("LBA", "onHandleIntent() method called");
 		startListening();
-		super.onResume();
 	}
-
+	
+	
 	private void startListening() {
 		// 50 m
-		Log.e("LBA", "Location alert listening");
-		myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 50, this);
-	}
-
-	private void stopListening() {
-		if (myManager != null)
-			myManager.removeUpdates(this);
+		Log.e("LBA", "startListening() method: Location alert listening");
+		myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000,50, this);
 	}
 
 	@Override
@@ -56,6 +55,7 @@ public class LocationAlert extends Activity implements LocationListener {
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
 		// query db to see if this location is available
+		Log.e("LBA","onLocationChanged() method called");
 		SimpleDbUtil util = null;
 		try {
 			util = new SimpleDbUtil();
@@ -85,7 +85,7 @@ public class LocationAlert extends Activity implements LocationListener {
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
-		}
+		}	
 	}
 	
 	public void showTaskAndUpdate(List<String> taskids)
@@ -97,13 +97,20 @@ public class LocationAlert extends Activity implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
 	}
+
 }
