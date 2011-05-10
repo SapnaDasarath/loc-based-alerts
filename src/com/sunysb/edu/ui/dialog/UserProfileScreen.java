@@ -86,6 +86,8 @@ public class UserProfileScreen extends Activity {
 			HashMap<String, String> newattrset = new HashMap<String, String> ();
 			newattrset.put(StringUtil.PASSWD, passwdEditText.getText().toString());
 			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(), StringUtil.USER_INFO, newattrset);
+			Toast.makeText(this, "Password updated successfully",
+					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();

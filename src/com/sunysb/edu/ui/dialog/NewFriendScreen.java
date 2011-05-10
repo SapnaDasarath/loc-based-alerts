@@ -40,7 +40,8 @@ public class NewFriendScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 
-		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
+		transition = (Integer) this.getIntent().getExtras()
+				.get(StringUtil.TRANSITION);
 		friendname = getIntent().getExtras().getString(StringUtil.FRIEND_NAME);
 
 		newfriendEditText = (EditText) findViewById(R.id.newfriend_EditText);
@@ -72,7 +73,7 @@ public class NewFriendScreen extends Activity {
 				}
 			}
 		});
-		
+
 		declineButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -83,7 +84,7 @@ public class NewFriendScreen extends Activity {
 				case StringUtil.DELETE:
 					removeFriend(friendname);
 					break;
-				}	
+				}
 			}
 		});
 	}
@@ -93,8 +94,15 @@ public class NewFriendScreen extends Activity {
 
 		String domain = SimpleDbUtil.getCurrentUser();
 
-		HashMap<String, String> attrList = util.getAttributesForItem(domain,
-				friendname);
+		HashMap<String, String> attrList = new HashMap<String, String>();
+		try {
+			attrList.putAll(util.getAttributesForItem(domain, friendname));
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 		String nameStr = attrList.get(StringUtil.FRIEND_NAME);
 		String descriptionStr = attrList.get(StringUtil.EMAIL);
@@ -123,8 +131,16 @@ public class NewFriendScreen extends Activity {
 		}
 
 		// check if user name already exists
-		if (util.doesDomainExist(StringUtil.FRIEND_INFO + username)) {
-			Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT).show();
+		try {
+			if (util.doesDomainExist(StringUtil.FRIEND_INFO + username)) {
+				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
+						.show();
+				return false;
+			}
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		return true;
@@ -136,54 +152,70 @@ public class NewFriendScreen extends Activity {
 		HashMap<String, String> friendmap = new HashMap<String, String>();
 		friendmap.put(StringUtil.FRIEND_NAME, username);
 		friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_PENDING);
-		util.createItem(SimpleDbUtil.getCurrentUser(), StringUtil.FRIEND_INFO
-				+ username, friendmap);
 
-		// add this friend to the other user also
-		HashMap<String, String> otherfriendmap = new HashMap<String, String>();
-		otherfriendmap.put(StringUtil.FRIEND_NAME,
-				SimpleDbUtil.getCurrentUser());
-		otherfriendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_PENDING);
-		util.createItem(username,
-				StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
-				otherfriendmap);
+		try {
+			util.createItem(SimpleDbUtil.getCurrentUser(),
+					StringUtil.FRIEND_INFO + username, friendmap);
 
-		// send notification to user
-		HashMap<String, String> attr = util.getAttributesForItem(username,
-				StringUtil.FRIEND_INFO);
-		String sendto = attr.get(StringUtil.EMAIL);
+			// add this friend to the other user also
+			HashMap<String, String> otherfriendmap = new HashMap<String, String>();
+			otherfriendmap.put(StringUtil.FRIEND_NAME,
+					SimpleDbUtil.getCurrentUser());
+			otherfriendmap.put(StringUtil.FRIEND_STATUS,
+					StringUtil.FRIEND_PENDING);
+			util.createItem(username,
+					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
+					otherfriendmap);
 
-		LinkedList<String> recipients = new LinkedList<String>();
-		recipients.add(sendto);
+			// send notification to user
+			HashMap<String, String> attr = util.getAttributesForItem(username,
+					StringUtil.FRIEND_INFO);
+			String sendto = attr.get(StringUtil.EMAIL);
 
-		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-				StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
+			LinkedList<String> recipients = new LinkedList<String>();
+			recipients.add(sendto);
+
+			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+					StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 	}
-	
 
 	protected void acceptFriendRequest(String friendname) {
 		String domain = SimpleDbUtil.getCurrentUser();
 		HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
-		attrListToUpdate.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_CONFIRMED);
-		util.updateAttributesForItem(domain, friendname, attrListToUpdate);
-		
-		//update other guys friend status too..
-		util.updateAttributesForItem(friendname, domain, attrListToUpdate);
-		
-		// send notification to user
-		HashMap<String, String> attr = util.getAttributesForItem(friendname,
-				StringUtil.FRIEND_INFO);
-		String sendto = attr.get(StringUtil.EMAIL);
-		LinkedList<String> recipients = new LinkedList<String>();
-		recipients.add(sendto);
-		StringBuffer sb = new StringBuffer();
-		sb.append("Hello ").append(friendname).append(",\n");
-		sb.append(domain).append(" has accepted your friend request");
+		attrListToUpdate.put(StringUtil.FRIEND_STATUS,
+				StringUtil.FRIEND_CONFIRMED);
 
-		new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-				StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
+		try {
+			util.updateAttributesForItem(domain, friendname, attrListToUpdate);
+
+			// update other guys friend status too..
+			util.updateAttributesForItem(friendname, domain, attrListToUpdate);
+
+			// send notification to user
+			HashMap<String, String> attr = util.getAttributesForItem(
+					friendname, StringUtil.FRIEND_INFO);
+			String sendto = attr.get(StringUtil.EMAIL);
+			LinkedList<String> recipients = new LinkedList<String>();
+			recipients.add(sendto);
+			StringBuffer sb = new StringBuffer();
+			sb.append("Hello ").append(friendname).append(",\n");
+			sb.append(domain).append(" has accepted your friend request");
+
+			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+					StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 	}
-
 
 	// Remove friend from your list and the other user list also
 	// remove all shared tasks.
@@ -200,7 +232,14 @@ public class NewFriendScreen extends Activity {
 		// remove both.
 
 		// remove from current user
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
-		util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+		try {
+			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
+			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 	}
 }

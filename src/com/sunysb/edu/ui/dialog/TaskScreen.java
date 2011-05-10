@@ -74,6 +74,7 @@ public class TaskScreen extends Activity {
 		switch (transition) {
 		case StringUtil.CREATE:
 			// Do nothing
+			tempButton.setVisibility(View.INVISIBLE);
 			break;
 
 		case StringUtil.EDIT:
@@ -123,7 +124,8 @@ public class TaskScreen extends Activity {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.EDIT:
-					Intent intent = new Intent(TaskScreen.this, FriendScreen.class);
+					Intent intent = new Intent(TaskScreen.this,
+							FriendScreen.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
 					intent.putExtra(StringUtil.TASK_ID, taskId);
 					intent.putExtra(StringUtil.TASK_LAT, latitude);
@@ -214,7 +216,7 @@ public class TaskScreen extends Activity {
 		if (priority != null) {
 			priorityStr = name.toString();
 		}
-		
+
 		String domain = SimpleDbUtil.getCurrentUser();
 		String taskid = String.valueOf(System.currentTimeMillis());
 
@@ -227,7 +229,14 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
 
-		util.createItem(domain, taskid, taskInfoMap);
+		try {
+			util.createItem(domain, taskid, taskInfoMap);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 		Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT)
 				.show();
 	}
@@ -256,8 +265,15 @@ public class TaskScreen extends Activity {
 
 		String domain = SimpleDbUtil.getCurrentUser();
 
-		HashMap<String, String> attrList = util.getAttributesForItem(domain,
-				taskid);
+		HashMap<String, String> attrList;
+		try {
+			attrList = util.getAttributesForItem(domain, taskid);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 		String nameStrDb = attrList.get(StringUtil.TASK_NAME);
 		String descriptionStrDb = attrList.get(StringUtil.TASK_DESCRIPTION);
@@ -284,7 +300,14 @@ public class TaskScreen extends Activity {
 		}
 
 		if (attrListToUpdate.size() > 0) {
-			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+			try {
+				util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 	}
 
@@ -295,7 +318,14 @@ public class TaskScreen extends Activity {
 
 		// put this in current user list and put this in friend list
 		String domain = SimpleDbUtil.getCurrentUser();
-		util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+		try {
+			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 	}
 
@@ -310,8 +340,15 @@ public class TaskScreen extends Activity {
 
 		String domain = SimpleDbUtil.getCurrentUser();
 
-		HashMap<String, String> attrList = util.getAttributesForItem(domain,
-				taskid);
+		HashMap<String, String> attrList;
+		try {
+			attrList = util.getAttributesForItem(domain, taskid);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 		String nameStr = attrList.get(StringUtil.TASK_NAME);
 		String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
@@ -342,7 +379,6 @@ public class TaskScreen extends Activity {
 		return retval;
 	}
 
-
 	// If user selects delete task remove it from UI and DB and if the task is a
 	// shared task
 	// remove it from the person who has the task too
@@ -359,11 +395,16 @@ public class TaskScreen extends Activity {
 	// return true;
 	// }
 
-	
-
 	protected void declineTaskFromFriend(String taskId) {
 		// remove task from your list
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+		try {
+			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 	}
 
 	// If user selects delete task remove it from UI and DB and if the task is a
@@ -372,49 +413,60 @@ public class TaskScreen extends Activity {
 	public boolean removeTask(String taskId) {
 
 		String currentuser = SimpleDbUtil.getCurrentUser();
-		HashMap<String, String> currentuserattr = util.getAttributesForItem(
-				currentuser, taskId);
+		HashMap<String, String> currentuserattr;
+		try {
+			currentuserattr = util.getAttributesForItem(currentuser, taskId);
 
-		StringBuffer body = new StringBuffer();
-		body.append(currentuser).append(" has removed the following task\n");
-		body.append("Task Name: ")
-				.append(currentuserattr.get(StringUtil.TASK_NAME)).append("\n");
-		body.append("Task Description: ")
-				.append(currentuserattr.get(StringUtil.TASK_DESCRIPTION))
-				.append("\n");
-		body.append("This will be removed from your task list").append("\n");
+			StringBuffer body = new StringBuffer();
+			body.append(currentuser)
+					.append(" has removed the following task\n");
+			body.append("Task Name: ")
+					.append(currentuserattr.get(StringUtil.TASK_NAME))
+					.append("\n");
+			body.append("Task Description: ")
+					.append(currentuserattr.get(StringUtil.TASK_DESCRIPTION))
+					.append("\n");
+			body.append("This will be removed from your task list")
+					.append("\n");
 
-		List<String> username = util.getTaskAcceptedFriends(taskId);
-		if (username.size() > 0) {
-			for (String user : username) {
-				// now that i have the domain name remove the task from the
-				// list.
-				// get every task.. check if the task shared id matches this
-				// if it foes delete it
-				// better way of doing this write query
-				String usertaskId = null;
-				// TODO get usertaskid using db query
-				util.deleteItem(user, usertaskId);
+			List<String> username = util.getTaskAcceptedFriends(taskId);
+			if (username.size() > 0) {
+				for (String user : username) {
+					// now that i have the domain name remove the task from the
+					// list.
+					// get every task.. check if the task shared id matches this
+					// if it foes delete it
+					// better way of doing this write query
+					String usertaskId = null;
+					// TODO get usertaskid using db query
+					util.deleteItem(user, usertaskId);
 
-				// send notification of delete.
-				HashMap<String, String> attr = util.getAttributesForItem(user,
-						StringUtil.FRIEND_INFO);
-				String sendto = attr.get(StringUtil.EMAIL);
+					// send notification of delete.
+					HashMap<String, String> attr = util.getAttributesForItem(
+							user, StringUtil.FRIEND_INFO);
+					String sendto = attr.get(StringUtil.EMAIL);
 
-				// send notification to user
-				LinkedList<String> recipients = new LinkedList<String>();
-				recipients.add(sendto);
+					// send notification to user
+					LinkedList<String> recipients = new LinkedList<String>();
+					recipients.add(sendto);
 
-				StringBuffer msg = new StringBuffer();
-				msg.append("Hi ").append(attr.get(StringUtil.USRNAME))
-						.append(",\n");
-				msg.append(body.toString());
+					StringBuffer msg = new StringBuffer();
+					msg.append("Hi ").append(attr.get(StringUtil.USRNAME))
+							.append(",\n");
+					msg.append(body.toString());
 
-				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-						StringUtil.SUBJECT_TASK_DELETE, msg.toString());
+					new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+							StringUtil.SUBJECT_TASK_DELETE, msg.toString());
+				}
 			}
+			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+			return true;
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return false;
 		}
-		util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-		return true;
+
 	}
 }

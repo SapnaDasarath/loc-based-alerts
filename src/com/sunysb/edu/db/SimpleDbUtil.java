@@ -40,23 +40,23 @@ public class SimpleDbUtil {
 	// Domain operations
 
 	// create a new domain
-	public void createDomain(String domainName) {
+	public void createDomain(String domainName)throws Exception {
 		dbInterface.getDB().createDomain(new CreateDomainRequest(domainName));
 	}
 
 	// delete an existing domain
-	public void deleteDomain(String domainName) {
+	public void deleteDomain(String domainName)throws Exception {
 		dbInterface.getDB().deleteDomain(new DeleteDomainRequest(domainName));
 	}
 
 	// get all domain names in the db
-	public List<String> getDomainNames() {
+	public List<String> getDomainNames() throws Exception{
 		return dbInterface.getDB().listDomains().getDomainNames();
 	}
 
 	// to an existing domain add an item
 	public void createItem(String domainName, String itemName,
-			HashMap<String, String> attributes) {
+			HashMap<String, String> attributes)throws Exception {
 		List<ReplaceableAttribute> replaceableAttributes = new ArrayList<ReplaceableAttribute>(
 				attributes.size());
 
@@ -72,7 +72,7 @@ public class SimpleDbUtil {
 	}
 
 	// get all items as part of a given domain
-	public List<String> getItemNamesForDomain(String domainName) {
+	public List<String> getItemNamesForDomain(String domainName) throws Exception{
 		SelectRequest selectRequest = new SelectRequest(
 				"select itemName() from `" + domainName + "`")
 				.withConsistentRead(true);
@@ -85,7 +85,7 @@ public class SimpleDbUtil {
 		return itemNames;
 	}
 	
-	public List<String> getTasksForUser(String domainName) {
+	public List<String> getTasksForUser(String domainName) throws Exception{
 		List<String> domain = new ArrayList<String>();
 		List<String> taskidlist = getItemNamesForDomain(domainName);
 		if (taskidlist != null && taskidlist.size() > 0) {
@@ -100,7 +100,7 @@ public class SimpleDbUtil {
 		return domain;
 	}
 
-	public List<String> getFriendsForUser(String domainName) {
+	public List<String> getFriendsForUser(String domainName) throws Exception{
 		List<String> domain = new ArrayList<String>();
 		List<String> friendList = getItemNamesForDomain(domainName);
 		if (friendList != null && friendList.size() > 0) {
@@ -114,7 +114,7 @@ public class SimpleDbUtil {
 	}
 
 	// get all items as part of a given query
-	public List<String> getItemNamesForQuery(String query) {
+	public List<String> getItemNamesForQuery(String query) throws Exception{
 		SelectRequest selectRequest = new SelectRequest(query)
 				.withConsistentRead(true);
 		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
@@ -127,14 +127,14 @@ public class SimpleDbUtil {
 	}
 
 	// to delete an item from a given domain
-	public void deleteItem(String domainName, String itemName) {
+	public void deleteItem(String domainName, String itemName)throws Exception {
 		dbInterface.getDB().deleteAttributes(
 				new DeleteAttributesRequest(domainName, itemName));
 	}
 
 	// to an existing domain and item add key value pairs
 	public void createAttributeForItem(String domainName, String itemName,
-			String attributeName, String attributeValue) {
+			String attributeName, String attributeValue) throws Exception{
 		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 		attributes.add(new ReplaceableAttribute().withName(attributeName)
 				.withValue(attributeValue).withReplace(true));
@@ -144,7 +144,7 @@ public class SimpleDbUtil {
 
 	// for a give item replace all attributes with new attributes
 	public void updateAttributesForItem(String domainName, String itemName,
-			HashMap<String, String> attributes) {
+			HashMap<String, String> attributes) throws Exception{
 		List<ReplaceableAttribute> replaceableAttributes = new ArrayList<ReplaceableAttribute>(
 				attributes.size());
 
@@ -161,7 +161,7 @@ public class SimpleDbUtil {
 
 	// for a given domain name and item get all attributes
 	public HashMap<String, String> getAttributesForItem(String domainName,
-			String itemName) {
+			String itemName) throws Exception{
 		GetAttributesRequest getRequest = new GetAttributesRequest(domainName,
 				itemName).withConsistentRead(true);
 		GetAttributesResult getResult = dbInterface.getDB().getAttributes(
@@ -176,7 +176,7 @@ public class SimpleDbUtil {
 		return attributes;
 	}
 
-	public List<String> getTaskAcceptedFriends(String taskid) {
+	public List<String> getTaskAcceptedFriends(String taskid) throws Exception{
 		HashMap<String, String> attr = getAttributesForItem(
 				SimpleDbUtil.getCurrentUser(), taskid);
 		String taskOwner = attr.get(StringUtil.TASK_FRIENDS_NAMES);
@@ -193,7 +193,7 @@ public class SimpleDbUtil {
 		return username;
 	}
 
-	public String getStringFromList(List<String> names) {
+	public String getStringFromList(List<String> names) throws Exception{
 		StringBuffer sb = new StringBuffer();
 		for (String name : names) {
 			sb.append(name).append(",");
@@ -203,14 +203,14 @@ public class SimpleDbUtil {
 
 	// to delete an attribute in a given item in a given domain
 	public void deleteItemAttribute(String domainName, String itemName,
-			String attributeName) {
+			String attributeName) throws Exception{
 		dbInterface.getDB().deleteAttributes(
 				new DeleteAttributesRequest(domainName, itemName)
 						.withAttributes(new Attribute[] { new Attribute()
 								.withName(attributeName) }));
 	}
 
-	public boolean doesDomainExist(String username) {
+	public boolean doesDomainExist(String username)throws Exception {
 		List<String> domainNames = getDomainNames();
 		if (domainNames.contains(username)) {
 			return true;

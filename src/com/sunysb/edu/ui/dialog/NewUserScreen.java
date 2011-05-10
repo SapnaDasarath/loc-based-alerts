@@ -35,9 +35,9 @@ public class NewUserScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.newuser);
 		Log.e("LBA", "Loading New user screen");
-		
+
 		try {
-			 util = new SimpleDbUtil(StringUtil.TEMP_USER);		
+			util = new SimpleDbUtil(StringUtil.TEMP_USER);
 
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
@@ -139,9 +139,16 @@ public class NewUserScreen extends Activity {
 		}
 
 		// check if user name already exists
-		if (util.doesDomainExist(username)) {
-			Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
-					.show();
+		try {
+			if (util.doesDomainExist(username)) {
+				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
+						.show();
+				return false;
+			}
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
 			return false;
 		}
 		return true;
@@ -170,16 +177,23 @@ public class NewUserScreen extends Activity {
 
 		// Create a new domain with the user name
 		SimpleDbUtil.setCurrentUser(userName);
-		util.createDomain(userName);
+		try {
+			util.createDomain(userName);
 
-		// create items to contain name value pairs for user info and friend
-		// info.
-		// task info will be added as items for each task.
-		HashMap<String, String> userInfoMap = new HashMap<String, String>();
-		userInfoMap.put(StringUtil.USRNAME, userName);
-		userInfoMap.put(StringUtil.PASSWD, pwd);
-		userInfoMap.put(StringUtil.EMAIL, email);
-		util.createItem(userName, StringUtil.USER_INFO, userInfoMap);
+			// create items to contain name value pairs for user info and friend
+			// info.
+			// task info will be added as items for each task.
+			HashMap<String, String> userInfoMap = new HashMap<String, String>();
+			userInfoMap.put(StringUtil.USRNAME, userName);
+			userInfoMap.put(StringUtil.PASSWD, pwd);
+			userInfoMap.put(StringUtil.EMAIL, email);
+			util.createItem(userName, StringUtil.USER_INFO, userInfoMap);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
 		return true;
 	}
 }
