@@ -85,7 +85,7 @@ public class NewFriendScreen extends Activity {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.NOTIFY:
-					removeFriend(friendname);
+					declineFriendRequest(friendname);
 					break;
 				case StringUtil.DELETE:
 					removeFriend(friendname);
@@ -248,6 +248,21 @@ public class NewFriendScreen extends Activity {
 		}
 	}
 
+	private void declineFriendRequest(String name) {
+		try {
+			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
+			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+			Toast.makeText(this, "Friend request Declined.", Toast.LENGTH_SHORT)
+					.show();
+
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+	}
+
 	// Remove friend from your list and the other user list also
 	// remove all shared tasks.
 	private void removeFriend(String name) {
@@ -266,15 +281,7 @@ public class NewFriendScreen extends Activity {
 		try {
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
 			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
-
-			if (transition == StringUtil.NOTIFY) {
-				Toast.makeText(this, "Friend request Declined.",
-						Toast.LENGTH_SHORT).show();
-
-			} else {
-				Toast.makeText(this, "Friend removed.", Toast.LENGTH_SHORT)
-						.show();
-			}
+			Toast.makeText(this, "Friend deleted.", Toast.LENGTH_SHORT).show();
 
 		} catch (Exception e) {
 			Toast.makeText(this,

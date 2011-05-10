@@ -72,11 +72,6 @@ public class TaskScreen extends Activity {
 
 		// Set UI appropriately
 		switch (transition) {
-		case StringUtil.CREATE:
-			// Do nothing
-			tempButton.setVisibility(View.INVISIBLE);
-			break;
-
 		case StringUtil.EDIT:
 			updateUIforTask(taskId);
 			break;
@@ -106,13 +101,6 @@ public class TaskScreen extends Activity {
 
 				case StringUtil.NOTIFY:
 					acceptTaskFromFriend(taskId);
-					Intent intent = new Intent(TaskScreen.this,
-							NotificationScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.TASK_ID, taskId);
-					intent.putExtra(StringUtil.TASK_LAT, latitude);
-					intent.putExtra(StringUtil.TASK_LONG, longitude);
-					startActivity(intent);
 					break;
 				}
 			}
@@ -124,60 +112,49 @@ public class TaskScreen extends Activity {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.EDIT:
+					// send task to friend
+					// show send to friend screen from here.
 					Intent intent = new Intent(TaskScreen.this,
 							FriendScreen.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
 					intent.putExtra(StringUtil.TASK_ID, taskId);
-					intent.putExtra(StringUtil.TASK_LAT, latitude);
-					intent.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent);
 					break;
 
 				case StringUtil.NOTIFY:
+					// remove task from current user list
 					declineTaskFromFriend(taskId);
 					Intent intent1 = new Intent(TaskScreen.this,
 							NotificationScreen.class);
 					intent1.putExtra(StringUtil.TRANSITION, transition);
-					intent1.putExtra(StringUtil.TASK_ID, taskId);
-					intent1.putExtra(StringUtil.TASK_LAT, latitude);
-					intent1.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent1);
 					break;
 				}
 			}
 		});
 
-		// close tranistion back to different screens can be different
 		delButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				removeTask(taskId);
 				Intent intent = new Intent(TaskScreen.this, EditTask.class);
 				intent.putExtra(StringUtil.TRANSITION, transition);
-				intent.putExtra(StringUtil.TASK_ID, taskId);
-				intent.putExtra(StringUtil.TASK_LAT, latitude);
-				intent.putExtra(StringUtil.TASK_LONG, longitude);
 				startActivity(intent);
 			}
 		});
 
+		// close transition back to different screens can be different
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				switch (transition) {
 				case StringUtil.CREATE:
 					Intent intent = new Intent(TaskScreen.this, Map.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.TASK_ID, taskId);
-					intent.putExtra(StringUtil.TASK_LAT, latitude);
-					intent.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent);
 					break;
 
 				case StringUtil.EDIT:
 					Intent intent1 = new Intent(TaskScreen.this, EditTask.class);
 					intent1.putExtra(StringUtil.TRANSITION, transition);
-					intent1.putExtra(StringUtil.TASK_ID, taskId);
-					intent1.putExtra(StringUtil.TASK_LAT, latitude);
-					intent1.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent1);
 					break;
 
@@ -185,9 +162,6 @@ public class TaskScreen extends Activity {
 					Intent intent2 = new Intent(TaskScreen.this,
 							NotificationScreen.class);
 					intent2.putExtra(StringUtil.TRANSITION, transition);
-					intent2.putExtra(StringUtil.TASK_ID, taskId);
-					intent2.putExtra(StringUtil.TASK_LAT, latitude);
-					intent2.putExtra(StringUtil.TASK_LONG, longitude);
 					startActivity(intent2);
 					break;
 				}
@@ -229,6 +203,9 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
 
+		Toast.makeText(this, "New Task added successfully", Toast.LENGTH_SHORT)
+				.show();
+
 		try {
 			util.createItem(domain, taskid, taskInfoMap);
 		} catch (Exception e) {
@@ -237,8 +214,6 @@ public class TaskScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT)
-				.show();
 	}
 
 	private void updateExistingTaskInDB(String taskid) {
@@ -302,6 +277,9 @@ public class TaskScreen extends Activity {
 		if (attrListToUpdate.size() > 0) {
 			try {
 				util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+				Toast.makeText(this, "Task updated successfully",
+						Toast.LENGTH_SHORT).show();
+				return;
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
@@ -320,6 +298,9 @@ public class TaskScreen extends Activity {
 		String domain = SimpleDbUtil.getCurrentUser();
 		try {
 			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+			Toast.makeText(this, "Task Accepted.",
+					Toast.LENGTH_SHORT).show();
+			return;
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
@@ -398,6 +379,8 @@ public class TaskScreen extends Activity {
 		// remove task from your list
 		try {
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+			Toast.makeText(this, "Task Declined.",
+					Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
@@ -459,6 +442,8 @@ public class TaskScreen extends Activity {
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+			Toast.makeText(this, "Task deleted successfully",
+					Toast.LENGTH_SHORT).show();
 			return true;
 		} catch (Exception e) {
 			Toast.makeText(this,
