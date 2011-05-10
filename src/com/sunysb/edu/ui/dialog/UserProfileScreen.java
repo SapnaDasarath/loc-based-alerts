@@ -1,5 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import com.sunysb.edu.R;
@@ -81,18 +83,37 @@ public class UserProfileScreen extends Activity {
 	private void resetpasswdOnDb() {
 
 		try {
-			//TODO find out if this updates or resets other attributes.
+			// TODO find out if this updates or resets other attributes.
+			String passwd = passwdEditText.getText().toString();
+			String pwd = null;
+			try {
+				MessageDigest md = MessageDigest.getInstance("SHA-256");
+				md.update(passwd.getBytes());
+				byte byteData[] = md.digest();
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < byteData.length; i++) {
+					sb.append(Integer
+							.toString((byteData[i] & 0xff) + 0x100, 16)
+							.substring(1));
+				}
+				pwd = sb.toString();
+			} catch (NoSuchAlgorithmException e) {
+				Toast.makeText(this,
+						"Not able to change password, Try again..",
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+
 			SimpleDbUtil util = new SimpleDbUtil();
-			HashMap<String, String> newattrset = new HashMap<String, String> ();
-			newattrset.put(StringUtil.PASSWD, passwdEditText.getText().toString());
-			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(), StringUtil.USER_INFO, newattrset);
+			HashMap<String, String> newattrset = new HashMap<String, String>();
+			newattrset.put(StringUtil.PASSWD, pwd);
+			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+					StringUtil.USER_INFO, newattrset);
 			Toast.makeText(this, "Password updated successfully",
 					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 		}
-		
 	}
-
 }
