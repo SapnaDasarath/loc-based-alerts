@@ -57,9 +57,13 @@ public class NewFriendScreen extends Activity {
 		case StringUtil.CREATE:
 			acceptButton.setText("Send");
 			declineButton.setVisibility(View.INVISIBLE);
+			break;
 		case StringUtil.EDIT:
 			acceptButton.setText("Ok");
 			declineButton.setText("Remove");
+			updateUIwithFriendInfo(friendname);
+			break;
+		case StringUtil.NOTIFY:
 			updateUIwithFriendInfo(friendname);
 			break;
 		}
