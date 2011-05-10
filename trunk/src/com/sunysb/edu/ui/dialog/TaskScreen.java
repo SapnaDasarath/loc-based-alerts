@@ -326,7 +326,6 @@ public class TaskScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-
 	}
 
 	/**
@@ -467,6 +466,5 @@ public class TaskScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}
-
 	}
 }
