@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
@@ -44,7 +45,14 @@ public class FriendListScreen extends Activity {
 		switch (transition) {
 
 		case StringUtil.EDIT:
-			friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
+			try {
+				friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 			break;
 
 		case StringUtil.NOTIFY:

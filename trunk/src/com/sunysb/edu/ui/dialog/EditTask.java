@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
@@ -47,7 +48,15 @@ public class EditTask extends Activity implements OnTouchListener {
 			break;
 
 		case StringUtil.EDIT:
-			taskids.addAll(util.getTasksForUser(SimpleDbUtil.getCurrentUser()));
+			try {
+				taskids.addAll(util.getTasksForUser(SimpleDbUtil
+						.getCurrentUser()));
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 			break;
 
 		case StringUtil.NOTIFY:
@@ -65,38 +74,48 @@ public class EditTask extends Activity implements OnTouchListener {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
 		table.removeAllViews();
 		for (String id : taskids) {
-			HashMap<String, String> taskattributes = util.getAttributesForItem(
-					SimpleDbUtil.getCurrentUser(), id);
-			TableRow tr = new TableRow(this);
-			tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-					LayoutParams.WRAP_CONTENT));
+			HashMap<String, String> taskattributes;
+			try {
+				taskattributes = util.getAttributesForItem(
+						SimpleDbUtil.getCurrentUser(), id);
 
-			name = new TextView(this);
-			name.setText(taskattributes.get(StringUtil.TASK_NAME) + "--");
-			name.setTextColor(Color.YELLOW);
-			tr.addView(name);
-			tr.setClickable(true);
+				TableRow tr = new TableRow(this);
+				tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+						LayoutParams.WRAP_CONTENT));
 
-			TextView prior = new TextView(this);
-			prior.setText(taskattributes.get(StringUtil.TASK_PRIORITY));
-			prior.setTextColor(Color.YELLOW);
-			tr.addView(prior);
+				name = new TextView(this);
+				name.setText(taskattributes.get(StringUtil.TASK_NAME) + "--");
+				name.setTextColor(Color.YELLOW);
+				tr.addView(name);
+				tr.setClickable(true);
 
-			tr.setTag(id);
+				TextView prior = new TextView(this);
+				prior.setText(taskattributes.get(StringUtil.TASK_PRIORITY));
+				prior.setTextColor(Color.YELLOW);
+				tr.addView(prior);
 
-			table.addView(tr, new TableLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+				tr.setTag(id);
 
-			tr.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					String id = (String) v.getTag();
-					Log.e("LBA", "TableRow clicked!");
-					Intent intent = new Intent(EditTask.this, TaskScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.TASK_ID, id);
-					startActivity(intent);
-				}
-			});
+				table.addView(tr, new TableLayout.LayoutParams(
+						LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+
+				tr.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						String id = (String) v.getTag();
+						Log.e("LBA", "TableRow clicked!");
+						Intent intent = new Intent(EditTask.this,
+								TaskScreen.class);
+						intent.putExtra(StringUtil.TRANSITION, transition);
+						intent.putExtra(StringUtil.TASK_ID, id);
+						startActivity(intent);
+					}
+				});
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 	}
 
