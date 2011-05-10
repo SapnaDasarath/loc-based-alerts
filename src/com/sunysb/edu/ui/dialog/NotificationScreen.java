@@ -3,6 +3,7 @@ package com.sunysb.edu.ui.dialog;
 import java.util.ArrayList;
 
 import com.sunysb.edu.R;
+import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
@@ -14,21 +15,44 @@ import android.widget.Toast;
 
 public class NotificationScreen extends Activity {
 
+	private SimpleDbUtil util;
+
 	private Button taskButton;
 	private Button friendButton;
 
-	ArrayList<String> tasknames;
-	ArrayList<String> friendnames;
+	private ArrayList<String> tasknames;
+	private ArrayList<String> friendnames;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.notification);
-
-		tasknames = getIntent().getExtras().getStringArrayList(
-				StringUtil.TASK_INFO);
-		friendnames = getIntent().getExtras().getStringArrayList(
-				StringUtil.FRIEND_INFO);
+		try {
+			util = new SimpleDbUtil();
+			tasknames = getIntent().getExtras().getStringArrayList(
+					StringUtil.TASK_INFO);
+			if (tasknames == null) {
+				String taskquery = "select * from "
+						+ SimpleDbUtil.getCurrentUser() + " where "
+						+ StringUtil.TASK_STATUS + " = '"
+						+ StringUtil.TASK_PENDING + "'";
+				tasknames.addAll(util.getItemNamesForQuery(taskquery));
+			}
+			friendnames = getIntent().getExtras().getStringArrayList(
+					StringUtil.FRIEND_INFO);
+			if (friendnames == null) {
+				String frdquery = "select * from "
+						+ SimpleDbUtil.getCurrentUser() + " where "
+						+ StringUtil.FRIEND_STATUS + " = '"
+						+ StringUtil.FRIEND_PENDING + "'";
+				friendnames.addAll(util.getItemNamesForQuery(frdquery));
+			}
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 		taskButton = (Button) findViewById(R.id.newtask_button);
 		friendButton = (Button) findViewById(R.id.newfriend_button);

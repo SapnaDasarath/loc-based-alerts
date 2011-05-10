@@ -22,8 +22,8 @@ import com.sunysb.edu.util.StringUtil;
 
 public class EditTask extends Activity{
 
-	SimpleDbUtil util;
-	TextView name = null;
+	private SimpleDbUtil util;
+	private TextView name;
 	private int transition;
 
 	@Override
@@ -41,10 +41,8 @@ public class EditTask extends Activity{
 				.get(StringUtil.TRANSITION);
 		List<String> taskids = new ArrayList<String>();
 
+		//This is only to set the UI labels
 		switch (transition) {
-		case StringUtil.CREATE:
-			break;
-
 		case StringUtil.EDIT:
 			try {
 				taskids.addAll(util.getTasksForUser(SimpleDbUtil
@@ -61,9 +59,6 @@ public class EditTask extends Activity{
 			taskids.addAll(this.getIntent().getExtras()
 					.getStringArrayList(StringUtil.TASK_INFO));
 			break;
-
-		case StringUtil.DELETE:
-			break;
 		}
 		drawUI(taskids);
 	}
@@ -71,6 +66,7 @@ public class EditTask extends Activity{
 	private void drawUI(List<String> taskids) {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
 		table.removeAllViews();
+		
 		for (String id : taskids) {
 			HashMap<String, String> taskattributes;
 			try {
@@ -78,6 +74,18 @@ public class EditTask extends Activity{
 						SimpleDbUtil.getCurrentUser(), id);
 
 				TableRow tr = new TableRow(this);
+				tr.setTag(id);
+				tr.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						String id = (String) v.getTag();
+						Log.e("LBA", "TableRow clicked!");
+						Intent intent = new Intent(EditTask.this,
+								TaskScreen.class);
+						intent.putExtra(StringUtil.TRANSITION, transition);
+						intent.putExtra(StringUtil.TASK_ID, id);
+						startActivity(intent);
+					}
+				});	
 				tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 						LayoutParams.WRAP_CONTENT));
 
@@ -92,22 +100,9 @@ public class EditTask extends Activity{
 				prior.setTextColor(Color.YELLOW);
 				tr.addView(prior);
 
-				tr.setTag(id);
-
 				table.addView(tr, new TableLayout.LayoutParams(
 						LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
-				tr.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View v) {
-						String id = (String) v.getTag();
-						Log.e("LBA", "TableRow clicked!");
-						Intent intent = new Intent(EditTask.this,
-								TaskScreen.class);
-						intent.putExtra(StringUtil.TRANSITION, transition);
-						intent.putExtra(StringUtil.TASK_ID, id);
-						startActivity(intent);
-					}
-				});
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
