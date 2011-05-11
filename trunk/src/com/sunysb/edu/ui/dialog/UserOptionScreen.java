@@ -128,6 +128,10 @@ public class UserOptionScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
+			
+			editor.putString(StringUtil.USRNAME, "");
+			editor.commit();
+			
 			startActivity(new Intent(UserOptionScreen.this,
 					LocationBasedAlerts.class));
 			return true;
@@ -146,10 +150,22 @@ public class UserOptionScreen extends Activity {
 		return MenuChoice(item);
 	}
 
-	@Override
 	public void onBackPressed() {
-		startActivity(new Intent(UserOptionScreen.this,
-				LocationBasedAlerts.class));
+		SharedPreferences app_preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean appstate = app_preferences.getBoolean(StringUtil.TASK_INFO,
+				false);
+		if (appstate)// already logged in go home else if signed out go to amin
+						// screen
+		{
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+			startMain.addCategory(Intent.CATEGORY_HOME);
+			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(startMain);
+		} else {
+			startActivity(new Intent(UserOptionScreen.this,
+					LocationBasedAlerts.class));
+		}
 		return;
 	}
 }
