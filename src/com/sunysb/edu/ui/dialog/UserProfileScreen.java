@@ -121,6 +121,7 @@ public class UserProfileScreen extends Activity {
 					Toast.LENGTH_LONG).show();
 		}
 	}
+
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
 	}
@@ -149,5 +150,11 @@ public class UserProfileScreen extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		startActivity(new Intent(UserProfileScreen.this, UserOptionScreen.class));
+		return;
 	}
 }

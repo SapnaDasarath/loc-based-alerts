@@ -200,6 +200,7 @@ public class NewUserScreen extends Activity {
 		}
 		return true;
 	}
+
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
 	}
@@ -228,5 +229,10 @@ public class NewUserScreen extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
+	}
+
+	public void onBackPressed() {
+		startActivity(new Intent(NewUserScreen.this, UserOptionScreen.class));
+		return;
 	}
 }

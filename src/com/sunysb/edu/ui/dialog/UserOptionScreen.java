@@ -145,4 +145,11 @@ public class UserOptionScreen extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
 	}
+
+	@Override
+	public void onBackPressed() {
+		startActivity(new Intent(UserOptionScreen.this,
+				LocationBasedAlerts.class));
+		return;
+	}
 }

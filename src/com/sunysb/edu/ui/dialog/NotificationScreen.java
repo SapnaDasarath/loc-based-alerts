@@ -132,4 +132,9 @@ public class NotificationScreen extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
 	}
+	
+	public void onBackPressed() {
+		startActivity(new Intent(NotificationScreen.this, UserOptionScreen.class));
+		return;
+	}
 }

@@ -163,4 +163,9 @@ public class FriendListScreen extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
 	}
+	
+	public void onBackPressed() {
+		startActivity(new Intent(FriendListScreen.this, UserOptionScreen.class));
+		return;
+	}
 }

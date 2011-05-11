@@ -257,14 +257,15 @@ public class NewFriendScreen extends Activity {
 
 			// update other guys friend status too..
 			String otherfrnd = friendname.replace(StringUtil.FRIEND_INFO, "");
-			util.updateAttributesForItem(otherfrnd, StringUtil.FRIEND_INFO+domain, attrListToUpdate);
+			util.updateAttributesForItem(otherfrnd, StringUtil.FRIEND_INFO
+					+ domain, attrListToUpdate);
 
 			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_SHORT)
 					.show();
 
 			// send notification to user
-			HashMap<String, String> attr = util.getAttributesForItem(
-					otherfrnd, StringUtil.USER_INFO);
+			HashMap<String, String> attr = util.getAttributesForItem(otherfrnd,
+					StringUtil.USER_INFO);
 			sendto = attr.get(StringUtil.EMAIL);
 
 		} catch (Exception e) {
@@ -339,7 +340,7 @@ public class NewFriendScreen extends Activity {
 			return;
 		}
 	}
-	
+
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
 	}
@@ -368,5 +369,26 @@ public class NewFriendScreen extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		switch (transition) {
+		case StringUtil.CREATE:
+		case StringUtil.EDIT:
+			Intent intent = new Intent(NewFriendScreen.this, FriendScreen.class);
+			intent.putExtra(StringUtil.TRANSITION, transition);
+			intent.putExtra(StringUtil.FRIEND_NAME, friendname);
+			startActivity(intent);
+			break;
+		case StringUtil.NOTIFY:
+			Intent intent1 = new Intent(NewFriendScreen.this,
+					NotificationScreen.class);
+			intent1.putExtra(StringUtil.TRANSITION, transition);
+			intent1.putExtra(StringUtil.FRIEND_NAME, friendname);
+			startActivity(intent1);
+			break;
+		}
+		return;
 	}
 }
