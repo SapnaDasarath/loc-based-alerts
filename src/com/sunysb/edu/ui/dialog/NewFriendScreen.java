@@ -3,6 +3,7 @@ package com.sunysb.edu.ui.dialog;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.AWSEmail;
 import com.sunysb.edu.db.SimpleDbUtil;
@@ -10,8 +11,12 @@ import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -91,7 +96,7 @@ public class NewFriendScreen extends Activity {
 				case StringUtil.NOTIFY:
 					declineFriendRequest(friendname);
 					break;
-				case StringUtil.DELETE:
+				case StringUtil.EDIT:
 					removeFriend(friendname);
 					break;
 				}
@@ -333,5 +338,35 @@ public class NewFriendScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+	}
+	
+	private void CreateMenu(Menu menu) {
+		menu.add(0, 0, 0, "Sign out");
+	}
+
+	private boolean MenuChoice(MenuItem item) {
+		switch (item.getItemId()) {
+		case 0:
+			SharedPreferences app_preferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = app_preferences.edit();
+			editor.putBoolean(StringUtil.TASK_INFO, false);
+			editor.commit();
+			startActivity(new Intent(NewFriendScreen.this,
+					LocationBasedAlerts.class));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		CreateMenu(menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return MenuChoice(item);
 	}
 }
