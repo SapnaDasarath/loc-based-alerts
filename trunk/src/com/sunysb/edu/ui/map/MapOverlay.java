@@ -43,7 +43,7 @@ public class MapOverlay extends com.google.android.maps.Overlay {
 
 		return true;
 	}
-
+/*
 	@Override
 	public boolean onTouchEvent(MotionEvent event, MapView mapView) {
 		// ---when user lifts his finger---
@@ -69,5 +69,5 @@ public class MapOverlay extends com.google.android.maps.Overlay {
 			return true;
 		} else
 			return false;
-	}
+	} */
 }

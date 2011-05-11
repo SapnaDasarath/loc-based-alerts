@@ -44,6 +44,8 @@ public class Map extends MapActivity {
 	private double lng = 0;
 	public GeoPoint initGeoPoint;
 
+	//Get current loc of user. Update lat and lng. 
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,14 +118,16 @@ public class Map extends MapActivity {
 		try {
 			Geocoder g = new Geocoder(this, Locale.getDefault());
 
-			java.util.List<android.location.Address> result = g.getFromLocationName(area, 1);
+			java.util.List<android.location.Address> result = g.getFromLocationName(area, 3);//area,5 gives 5 suggestions
 			if (result.size() > 0) {
 				lat = result.get(0).getLatitude();
 				lng = result.get(0).getLongitude();
+				Log.e("LBA", "Found lat and lng in ChangeMap");
 			} else {
 				return;
 			}
 		} catch (IOException io) {
+			
 			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT).show();
 		}
 		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
