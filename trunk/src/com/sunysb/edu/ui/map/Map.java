@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +49,12 @@ public class Map extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.loadmap);
+		
+		//LocationManager locationManager;
+	    //locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+	    //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		
+	    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,(LocationListener) this);
 
 		btnSearch = (Button) findViewById(R.id.search_icon);
 		btnSearch.setOnClickListener(new View.OnClickListener() {
