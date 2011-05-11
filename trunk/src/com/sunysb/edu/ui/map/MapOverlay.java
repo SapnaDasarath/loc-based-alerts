@@ -32,14 +32,14 @@ public class MapOverlay extends com.google.android.maps.Overlay {
 		super.draw(canvas, mapView, shadow);
 
 		// ---translate the GeoPoint to screen pixels---
-		if (p != null) {
+		/*if (p != null) {
 			Point screenPts = new Point();
 			mapView.getProjection().toPixels(p, screenPts);
 
 			// ---add the marker---
 			Bitmap bmp = BitmapFactory.decodeResource(map.getResources(),	R.drawable.pushpin);
 			canvas.drawBitmap(bmp, screenPts.x, screenPts.y - 50, null);
-		}
+		} */
 
 		return true;
 	}
