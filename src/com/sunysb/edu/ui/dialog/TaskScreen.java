@@ -169,6 +169,56 @@ public class TaskScreen extends Activity {
 		});
 	}
 
+	/**
+	 * This method should be called when user selects a task in the table
+	 * 
+	 * 
+	 * @param taskid
+	 */
+	private void updateUIforTask(String taskid) {
+		Log.e("LBA", "update Task from DB");
+
+		String domain = SimpleDbUtil.getCurrentUser();
+
+		HashMap<String, String> attrList;
+		try {
+			attrList = util.getAttributesForItem(domain, taskid);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		String nameStr = attrList.get(StringUtil.TASK_NAME);
+		String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
+		String priorityStr = attrList.get(StringUtil.TASK_PRIORITY);
+
+		if (nameStr != null) {
+			nameEditText.setText(nameStr);
+		}
+
+		if (descriptionStr != null) {
+			descriptionEditText.setText(descriptionStr);
+		}
+
+		if (priorityStr != null) {
+			prioritySpinner.setSelection(getPosition(priorityStr));
+		}
+	}
+
+	private int getPosition(String val) {
+		int retval = 0;
+		if (val.equals(StringUtil.PRIOR_LOW)) {
+			retval = 0;
+		} else if (val.equals(StringUtil.PRIOR_MED)) {
+			retval = 1;
+		} else if (val.equals(StringUtil.PRIOR_HIGH)) {
+			retval = 2;
+		}
+		return retval;
+	}
+
 	private void createNewTaskInDB() {
 		Log.e("LBA", "update DB from task");
 
@@ -199,7 +249,7 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
 		taskInfoMap.put(StringUtil.TASK_PRIORITY, priorityStr);
 		taskInfoMap.put(StringUtil.TASK_OWNER, SimpleDbUtil.getCurrentUser());
-		taskInfoMap.put(StringUtil.TASK_OWNER_ID, taskid);
+		taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, taskid);
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
 
@@ -298,8 +348,7 @@ public class TaskScreen extends Activity {
 		String domain = SimpleDbUtil.getCurrentUser();
 		try {
 			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
-			Toast.makeText(this, "Task Accepted.",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Task Accepted.", Toast.LENGTH_SHORT).show();
 			return;
 		} catch (Exception e) {
 			Toast.makeText(this,
@@ -308,79 +357,32 @@ public class TaskScreen extends Activity {
 			return;
 		}
 	}
-
-	/**
-	 * This method should be called when user selects a task in the table
-	 * 
-	 * 
-	 * @param taskid
-	 */
-	private void updateUIforTask(String taskid) {
-		Log.e("LBA", "update Task from DB");
-
-		String domain = SimpleDbUtil.getCurrentUser();
-
-		HashMap<String, String> attrList;
-		try {
-			attrList = util.getAttributesForItem(domain, taskid);
-		} catch (Exception e) {
-			Toast.makeText(this,
-					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		String nameStr = attrList.get(StringUtil.TASK_NAME);
-		String descriptionStr = attrList.get(StringUtil.TASK_DESCRIPTION);
-		String priorityStr = attrList.get(StringUtil.TASK_PRIORITY);
-
-		if (nameStr != null) {
-			nameEditText.setText(nameStr);
-		}
-
-		if (descriptionStr != null) {
-			descriptionEditText.setText(descriptionStr);
-		}
-
-		if (priorityStr != null) {
-			prioritySpinner.setSelection(getPosition(priorityStr));
-		}
-	}
-
-	private int getPosition(String val) {
-		int retval = 0;
-		if (val.equals(StringUtil.PRIOR_LOW)) {
-			retval = 0;
-		} else if (val.equals(StringUtil.PRIOR_MED)) {
-			retval = 1;
-		} else if (val.equals(StringUtil.PRIOR_HIGH)) {
-			retval = 2;
-		}
-		return retval;
-	}
-
-	// If user selects delete task remove it from UI and DB and if the task is a
-	// shared task
-	// remove it from the person who has the task too
-	// public boolean removeTask(String taskId) {
-	// Log.e("LBA ", "In removeTask " + taskId);
-	/*
-	 * List<String> tasks = util.getTaskAcceptedFriends(taskId);
-	 * 
-	 * if (tasks.size() > 0) { // for each user name send the task id to be
-	 * deleted. }
-	 */
-	// util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-	// drawUI();
-	// return true;
-	// }
 
 	protected void declineTaskFromFriend(String taskId) {
-		// remove task from your list
+		// remove task from your list only
+		// also remove this task as shared with in the original user
 		try {
-			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-			Toast.makeText(this, "Task Declined.",
-					Toast.LENGTH_SHORT).show();
+			String currentuser = SimpleDbUtil.getCurrentUser();
+			HashMap<String, String> currentuserattr = util
+					.getAttributesForItem(currentuser, taskId);
+
+			String taskowner = currentuserattr.get(StringUtil.TASK_OWNER);
+			String taskownerId = currentuserattr
+					.get(StringUtil.TASK_OWNER_TASK_ID);
+			HashMap<String, String> otheruserattr = util.getAttributesForItem(
+					taskowner, taskownerId);
+			String frndsnames = otheruserattr
+					.get(StringUtil.TASK_FRIENDS_NAMES);
+			List<String> frnds = util.getFriendsFromString(frndsnames);
+			frnds.remove(currentuser);
+
+			String newfrnds = util.getStringFromList(frnds);
+			HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+			attrListToUpdate.put(StringUtil.TASK_FRIENDS_NAMES, newfrnds);
+			util.updateAttributesForItem(taskowner, taskownerId, attrListToUpdate);
+
+			util.deleteItem(currentuser, taskId);
+			Toast.makeText(this, "Task Declined.", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",

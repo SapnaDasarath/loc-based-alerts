@@ -54,21 +54,34 @@ public class FriendScreen extends Activity {
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(FriendScreen.this, TaskScreen.class);
-				intent.putExtra(StringUtil.TRANSITION, transition);
-				startActivity(intent);
+				switch (transition) {
+				case StringUtil.EDIT:
+					Intent intent = new Intent(FriendScreen.this,
+							TaskScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.TASK_ID, taskId);
+					startActivity(intent);
+					break;
+				case StringUtil.NOTIFY:
+					Intent intent1 = new Intent(FriendScreen.this,
+							NotificationScreen.class);
+					intent1.putExtra(StringUtil.TRANSITION, transition);
+					intent1.putExtra(StringUtil.TASK_ID, taskId);
+					startActivity(intent1);
+					break;
+				}
 			}
 		});
 	}
 
 	private void sendtask() {
-		
+
 		if (nameEditText.getText() == null) {
 			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
 					.show();
 			return;
 		}
-		
+
 		try {
 			if (!util.doesDomainExist(nameEditText.getText().toString())) {
 				Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
@@ -81,21 +94,19 @@ public class FriendScreen extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
 		addTaskToFriend(nameEditText.getText().toString(), taskId);
-		Intent intent = new Intent(FriendScreen.this, TaskScreen.class);
-		intent.putExtra(StringUtil.TRANSITION, transition);
-		startActivity(intent);
 	}
 
 	private void addTaskToFriend(String friendname, String taskid) {
-
 		String currentuser = SimpleDbUtil.getCurrentUser();
-		String domain = friendname;
-		String newtaskid = String.valueOf(System.currentTimeMillis());
-
-		HashMap<String, String> oldattr = new HashMap<String, String>();
+		String sendto = null;
 		try {
+
+			String domain = friendname;
+			String newtaskid = String.valueOf(System.currentTimeMillis());
+
+			HashMap<String, String> oldattr = new HashMap<String, String>();
 			oldattr.putAll(util.getAttributesForItem(currentuser, taskid));
 
 			String existingFrndNames = oldattr
@@ -122,52 +133,52 @@ public class FriendScreen extends Activity {
 			HashMap<String, String> taskInfoMap = new HashMap<String, String>();
 			taskInfoMap.put(StringUtil.TASK_NAME,
 					oldattr.get(StringUtil.TASK_NAME));
-			
+
 			taskInfoMap.put(StringUtil.TASK_DESCRIPTION,
 					oldattr.get(StringUtil.TASK_DESCRIPTION));
-			
+
 			taskInfoMap.put(StringUtil.TASK_PRIORITY,
 					oldattr.get(StringUtil.TASK_PRIORITY));
-			
+
 			taskInfoMap.put(StringUtil.TASK_OWNER,
 					oldattr.get(StringUtil.TASK_NAME));
-			
+
 			taskInfoMap.put(StringUtil.TASK_LAT,
 					oldattr.get(StringUtil.TASK_LAT));
-			
+
 			taskInfoMap.put(StringUtil.TASK_LONG,
 					oldattr.get(StringUtil.TASK_LONG));
-			
-			taskInfoMap.put(StringUtil.TASK_OWNER_ID, newtaskid);
+
+			taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, newtaskid);
 			taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
-			
+
 			util.createItem(domain, taskid, taskInfoMap);
 
 			HashMap<String, String> attr = util.getAttributesForItem(
 					friendname, StringUtil.USER_INFO);
-			String sendto = attr.get(StringUtil.EMAIL);
-			LinkedList<String> recipients = new LinkedList<String>();
-			recipients.add(sendto);
+			sendto = attr.get(StringUtil.EMAIL);
 
-			StringBuffer body = new StringBuffer();
-			body.append("Hi ").append(friendname).append(",\n");
-			body.append(currentuser).append(" has sent the following task\n");
-			body.append("Task Name: ")
-					.append(oldattr.get(StringUtil.TASK_NAME)).append("\n");
-			body.append("Task Description: ")
-					.append(oldattr.get(StringUtil.TASK_DESCRIPTION))
-					.append("\n");
-			body.append("Please check notifications to accept or decline task")
-					.append("\n");
-
-			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-					StringUtil.SUBJECT_TASK_NOTICE, body.toString());
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-	}
 
+		try {
+			LinkedList<String> recipients = new LinkedList<String>();
+			recipients.add(sendto);
+
+			StringBuffer body = new StringBuffer();
+			body.append("Hi ").append(friendname).append(",\n");
+			body.append(currentuser).append(" has sent the following task\n");
+			body.append("Please check notifications to accept or decline task")
+					.append("\n");
+
+			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+					StringUtil.SUBJECT_TASK_NOTICE, body.toString());
+		} catch (Exception e) {
+			return;
+		}
+	}
 }

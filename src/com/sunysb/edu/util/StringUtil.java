@@ -37,7 +37,7 @@ public class StringUtil {
 	public static final String TASK_LONG = "longitude";
 
 	public static final String TASK_OWNER = "Owner";
-	public static final String TASK_OWNER_ID = "OwnerTaskID";
+	public static final String TASK_OWNER_TASK_ID = "OwnerTaskID";
 	public static final String TASK_FRIENDS_NAMES = "OwnerSharedID";
 
 	public static final String TASK_STATUS = "taskstatus";

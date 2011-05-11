@@ -39,6 +39,9 @@ public class EditTask extends Activity{
 
 		transition = (Integer) this.getIntent().getExtras()
 				.get(StringUtil.TRANSITION);
+		//this list contains the task ids to be displayed on ui
+		//for edit put ids from db
+		//for notify get it from user
 		List<String> taskids = new ArrayList<String>();
 
 		//This is only to set the UI labels
