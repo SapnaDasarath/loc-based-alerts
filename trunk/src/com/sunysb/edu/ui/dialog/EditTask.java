@@ -6,9 +6,13 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -16,11 +20,12 @@ import android.widget.Toast;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
-public class EditTask extends Activity{
+public class EditTask extends Activity {
 
 	private SimpleDbUtil util;
 	private TextView name;
@@ -39,12 +44,12 @@ public class EditTask extends Activity{
 
 		transition = (Integer) this.getIntent().getExtras()
 				.get(StringUtil.TRANSITION);
-		//this list contains the task ids to be displayed on ui
-		//for edit put ids from db
-		//for notify get it from user
+		// this list contains the task ids to be displayed on ui
+		// for edit put ids from db
+		// for notify get it from user
 		List<String> taskids = new ArrayList<String>();
 
-		//This is only to set the UI labels
+		// This is only to set the UI labels
 		switch (transition) {
 		case StringUtil.EDIT:
 			try {
@@ -69,7 +74,7 @@ public class EditTask extends Activity{
 	private void drawUI(List<String> taskids) {
 		TableLayout table = (TableLayout) findViewById(R.id.edittask);
 		table.removeAllViews();
-		
+
 		for (String id : taskids) {
 			HashMap<String, String> taskattributes;
 			try {
@@ -88,7 +93,7 @@ public class EditTask extends Activity{
 						intent.putExtra(StringUtil.TASK_ID, id);
 						startActivity(intent);
 					}
-				});	
+				});
 				tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 						LayoutParams.WRAP_CONTENT));
 
@@ -113,5 +118,35 @@ public class EditTask extends Activity{
 				return;
 			}
 		}
+	}
+
+	private void CreateMenu(Menu menu) {
+		menu.add(0, 0, 0, "Sign out");
+	}
+
+	private boolean MenuChoice(MenuItem item) {
+		switch (item.getItemId()) {
+		case 0:
+			SharedPreferences app_preferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = app_preferences.edit();
+			editor.putBoolean(StringUtil.TASK_INFO, false);
+			editor.commit();
+			startActivity(new Intent(EditTask.this,
+					LocationBasedAlerts.class));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		CreateMenu(menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return MenuChoice(item);
 	}
 }

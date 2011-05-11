@@ -11,7 +11,9 @@ import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,30 +31,43 @@ public class LocationBasedAlerts extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		
 		usernameEditText = (EditText) findViewById(R.id.username_EditText);
 		passwordEditText = (EditText) findViewById(R.id.password_EditText);
 
 		loginButton = (Button) findViewById(R.id.login_button);
 		registerButton = (Button) findViewById(R.id.register_button);
 
-		loginButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (authenticate()) {
-					startLocationManagerServices();
-					startActivity(new Intent(LocationBasedAlerts.this,
-							UserOptionScreen.class));
+		SharedPreferences app_preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean appstate = app_preferences.getBoolean(StringUtil.TASK_INFO,
+				false);
+		if (appstate) {
+			// already logged in
+			startLocationManagerServices();
+			startActivity(new Intent(LocationBasedAlerts.this,
+					UserOptionScreen.class));
+			return;
+		} else {
+			loginButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (authenticate()) {
+						startLocationManagerServices();
+						startActivity(new Intent(LocationBasedAlerts.this,
+								UserOptionScreen.class));
+					}
 				}
-			}
-		});
+			});
 
-		registerButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(LocationBasedAlerts.this, NewUserScreen.class));
-			}
-		});
+			registerButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(LocationBasedAlerts.this,
+							NewUserScreen.class));
+				}
+			});
+		}
 	}
 
 	private boolean authenticate() {
@@ -93,14 +108,13 @@ public class LocationBasedAlerts extends Activity {
 
 		HashMap<String, String> userinfo;
 		try {
-			
-			if(!util.doesDomainExist(username))
-			{
+
+			if (!util.doesDomainExist(username)) {
 				Toast.makeText(this, "Enter valid username and password",
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			
+
 			userinfo = util
 					.getAttributesForItem(username, StringUtil.USER_INFO);
 			if (userinfo == null || userinfo.size() == 0) {
@@ -136,6 +150,12 @@ public class LocationBasedAlerts extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}
+
+		SharedPreferences app_preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = app_preferences.edit();
+		editor.putBoolean(StringUtil.TASK_INFO, true);
+		editor.commit(); // Very important
 		return true;
 	}
 
