@@ -19,7 +19,8 @@
 				android:layout_height="40px" />
 
 			<EditText android:id="@+id/search_box"
-				android:layout_column="2" android:gravity="left" />
+				android:layout_column="2" android:gravity="left"
+				android:layout_width="200sp" />
 
 			<Button android:id="@+id/search_icon" android:text="Search"
 				android:layout_column="3" android:gravity="left"

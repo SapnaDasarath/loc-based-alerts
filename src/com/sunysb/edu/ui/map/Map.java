@@ -69,13 +69,10 @@ public class Map extends MapActivity {
 
 		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-			lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-					.getLatitude();
-			lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-					.getLongitude();
+			lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
+			lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
 		}
-		initGeoPoint = new GeoPoint((int) (lat * 1000000),
-				(int) (lng * 1000000));
+		initGeoPoint = new GeoPoint((int) (lat * 1000000),(int) (lng * 1000000));
 
 		MapOverlay mapOverlay = new MapOverlay(this);
 		List<Overlay> listOfOverlays = mapView.getOverlays();
@@ -111,8 +108,7 @@ public class Map extends MapActivity {
 		try {
 			Geocoder g = new Geocoder(this, Locale.getDefault());
 
-			java.util.List<android.location.Address> result = g
-					.getFromLocationName(area, 1);
+			java.util.List<android.location.Address> result = g.getFromLocationName(area, 1);
 			if (result.size() > 0) {
 				lat = result.get(0).getLatitude();
 				lng = result.get(0).getLongitude();
@@ -120,8 +116,7 @@ public class Map extends MapActivity {
 				return;
 			}
 		} catch (IOException io) {
-			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT).show();
 		}
 		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 
@@ -136,7 +131,6 @@ public class Map extends MapActivity {
 		mc.animateTo(myLocation);
 		mc.setZoom(10);
 		mapView.invalidate(); // is it required?
-
 	}
 
 	@Override

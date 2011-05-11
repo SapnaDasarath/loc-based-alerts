@@ -153,6 +153,9 @@ public class FriendScreen extends Activity {
 			taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
 
 			util.createItem(domain, taskid, taskInfoMap);
+			Toast.makeText(this,
+					"Task sent successfully",
+					Toast.LENGTH_SHORT).show();
 
 			HashMap<String, String> attr = util.getAttributesForItem(
 					friendname, StringUtil.USER_INFO);
