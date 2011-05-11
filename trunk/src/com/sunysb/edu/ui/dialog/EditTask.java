@@ -132,8 +132,7 @@ public class EditTask extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			startActivity(new Intent(EditTask.this,
-					LocationBasedAlerts.class));
+			startActivity(new Intent(EditTask.this, LocationBasedAlerts.class));
 			return true;
 		}
 		return false;
@@ -148,5 +147,10 @@ public class EditTask extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
+	}
+
+	public void onBackPressed() {
+		startActivity(new Intent(EditTask.this, UserOptionScreen.class));
+		return;
 	}
 }

@@ -260,8 +260,8 @@ public class TaskScreen extends Activity {
 
 		try {
 			util.createItem(domain, taskid, taskInfoMap);
-			Toast.makeText(this, "New Task added successfully", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, "New Task added successfully",
+					Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
@@ -298,7 +298,9 @@ public class TaskScreen extends Activity {
 		try {
 			attrList = util.getAttributesForItem(domain, taskid);
 		} catch (Exception e) {
-			Toast.makeText(this, "Unable to connect to server. Try again later..", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -381,7 +383,8 @@ public class TaskScreen extends Activity {
 			String newfrnds = util.getStringFromList(frnds);
 			HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
 			attrListToUpdate.put(StringUtil.TASK_FRIENDS_NAMES, newfrnds);
-			util.updateAttributesForItem(taskowner, taskownerId, attrListToUpdate);
+			util.updateAttributesForItem(taskowner, taskownerId,
+					attrListToUpdate);
 
 			util.deleteItem(currentuser, taskId);
 			Toast.makeText(this, "Task Declined.", Toast.LENGTH_SHORT).show();
@@ -456,7 +459,7 @@ public class TaskScreen extends Activity {
 			return false;
 		}
 	}
-	
+
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
 	}
@@ -469,8 +472,7 @@ public class TaskScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			startActivity(new Intent(TaskScreen.this,
-					LocationBasedAlerts.class));
+			startActivity(new Intent(TaskScreen.this, LocationBasedAlerts.class));
 			return true;
 		}
 		return false;
@@ -485,5 +487,10 @@ public class TaskScreen extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
+	}
+
+	public void onBackPressed() {
+		startActivity(new Intent(TaskScreen.this, UserOptionScreen.class));
+		return;
 	}
 }
