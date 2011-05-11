@@ -71,16 +71,17 @@ public class Map extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapView);
 		LinearLayout zoomLayout = (LinearLayout) findViewById(R.id.zoom);
 		View zoomView = mapView.getZoomControls();
-		zoomLayout.addView(zoomView, new LinearLayout.LayoutParams(
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		zoomLayout.addView(zoomView, new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
 		mapView.displayZoomControls(true);
 		Log.e("LBA", "Zoom control display");
 
 		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
+			
 			lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
 			lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
+			Log.e("LBA", "GotLastKnownLocation latitude "+String.valueOf(lat)+" longitude is "+String.valueOf(lng));
 		}
 		initGeoPoint = new GeoPoint((int) (lat * 1000000),(int) (lng * 1000000));
 
@@ -90,6 +91,10 @@ public class Map extends MapActivity {
 		listOfOverlays.add(mapOverlay);
 
 		mapView.invalidate();
+		
+		mapView.getController().animateTo(initGeoPoint);
+		mapView.getController().setZoom(15);
+			
 
 		addTaskButton = (Button) findViewById(R.id.add_Task);
 
@@ -122,7 +127,7 @@ public class Map extends MapActivity {
 			if (result.size() > 0) {
 				lat = result.get(0).getLatitude();
 				lng = result.get(0).getLongitude();
-				Log.e("LBA", "Found lat and lng in ChangeMap");
+				Log.e("LBA", "Found lat and lng in ChangeMap"+String.valueOf(lat)+" lng is"+String.valueOf(lng));
 			} else {
 				return;
 			}
@@ -141,7 +146,7 @@ public class Map extends MapActivity {
 		mapOverlays.add(itemizedOverlay);
 
 		mc.animateTo(myLocation);
-		mc.setZoom(10);
+		mc.setZoom(16);
 		mapView.invalidate(); // is it required?
 	}
 
