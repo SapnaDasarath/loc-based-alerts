@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 public class LocationBasedAlerts extends Activity {
 
+	private SimpleDbUtil util = null;
 	private EditText usernameEditText;
 	private EditText passwordEditText;
 
@@ -31,7 +32,7 @@ public class LocationBasedAlerts extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		usernameEditText = (EditText) findViewById(R.id.username_EditText);
 		passwordEditText = (EditText) findViewById(R.id.password_EditText);
 
@@ -44,9 +45,18 @@ public class LocationBasedAlerts extends Activity {
 				false);
 		if (appstate) {
 			// already logged in
-			startLocationManagerServices();
-			startActivity(new Intent(LocationBasedAlerts.this,
-					UserOptionScreen.class));
+			try {
+				startLocationManagerServices();
+				String user = app_preferences.getString(StringUtil.USRNAME, "");
+				util = new SimpleDbUtil(user);
+				startActivity(new Intent(LocationBasedAlerts.this,
+						UserOptionScreen.class));
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Not able to connect to server, Try again..",
+						Toast.LENGTH_LONG).show();
+				return;
+			}
 			return;
 		} else {
 			loginButton.setOnClickListener(new View.OnClickListener() {
@@ -97,9 +107,15 @@ public class LocationBasedAlerts extends Activity {
 		}
 
 		// validate username and password in db now
-		SimpleDbUtil util = null;
+
 		try {
 			util = new SimpleDbUtil(username);
+			SharedPreferences app_preferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = app_preferences.edit();
+			editor.putString(StringUtil.USRNAME, username);
+			editor.commit();
+
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();

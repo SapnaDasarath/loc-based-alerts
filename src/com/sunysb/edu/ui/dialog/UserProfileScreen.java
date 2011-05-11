@@ -134,6 +134,10 @@ public class UserProfileScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
+			
+			editor.putString(StringUtil.USRNAME, "");
+			editor.commit();
+			
 			startActivity(new Intent(UserProfileScreen.this,
 					LocationBasedAlerts.class));
 			return true;

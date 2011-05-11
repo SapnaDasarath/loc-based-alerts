@@ -11,21 +11,16 @@ public class SimpleDbInterface {
 
 	private static AmazonSimpleDB sdb = null;
 	private static BasicAWSCredentials credentials = null;
-	private static String userName = null;
 	private static String currentUser = null;
 
 	/**
 	 * This method is called when a db instance is instantiated for the first time
 	 * @param uname current user name
 	 */ 
-	public SimpleDbInterface(String uname) {
-		userName = uname;
+	public SimpleDbInterface(String userName) {
+		currentUser = userName;
 		if (credentials == null) {
 			getCredentials();
-		}
-		else
-		{
-			currentUser = userName;
 		}
 	}
 
@@ -53,7 +48,6 @@ public class SimpleDbInterface {
 		if (sdb == null && credentials != null) {
 			sdb = new AmazonSimpleDBClient(credentials);
 			sdb.setEndpoint("https://sdb.amazonaws.com:443");
-			currentUser = userName;
 		}
 		return sdb;
 	}
