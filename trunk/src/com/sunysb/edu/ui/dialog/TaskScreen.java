@@ -472,6 +472,10 @@ public class TaskScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
+			
+			editor.putString(StringUtil.USRNAME, "");
+			editor.commit();
+			
 			startActivity(new Intent(TaskScreen.this, LocationBasedAlerts.class));
 			return true;
 		}

@@ -181,6 +181,11 @@ public class NewUserScreen extends Activity {
 
 		// Create a new domain with the user name
 		SimpleDbUtil.setCurrentUser(userName);
+		SharedPreferences app_preferences = PreferenceManager
+		.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = app_preferences.edit();
+		editor.putString(StringUtil.USRNAME, userName);
+		editor.commit();
 		try {
 			util.createDomain(userName);
 
@@ -213,6 +218,10 @@ public class NewUserScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
+			
+			editor.putString(StringUtil.USRNAME, "");
+			editor.commit();
+			
 			startActivity(new Intent(NewUserScreen.this,
 					LocationBasedAlerts.class));
 			return true;
