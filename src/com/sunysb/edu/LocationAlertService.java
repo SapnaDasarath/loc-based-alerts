@@ -75,7 +75,7 @@ public class LocationAlertService extends IntentService implements LocationListe
 		SimpleDbUtil util = null;
 		try {
 			
-			if(lat != latitude && lng != longitude){
+			if(lat != latitude || lng != longitude){ // is this correct? longitude doesn't change often
 				util = new SimpleDbUtil();
 				String domain = SimpleDbUtil.getCurrentUser();
 				String latituteUpper = Double.toString(latitude + 100);
