@@ -53,6 +53,7 @@ public class StringUtil {
 	public static final String FRIEND_STATUS = "status";
 
 	// key will be friend name. value will be status of friend request.
+	public static final String FRIEND_REQ_SENT = "reqsent";
 	public static final String FRIEND_PENDING = "pending";
 	public static final String FRIEND_CONFIRMED = "confirmed";
 	

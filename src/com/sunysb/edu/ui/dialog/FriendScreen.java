@@ -83,11 +83,32 @@ public class FriendScreen extends Activity {
 		}
 
 		try {
-			if (!util.doesDomainExist(nameEditText.getText().toString())) {
+			String username = nameEditText.getText().toString();
+			if (!util.doesDomainExist(username)) {
 				Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
 						.show();
 				return;
 			}
+
+			// is this user a confirmed friend
+			List<String> allfriends = util.getFriendsForUser(SimpleDbUtil
+					.getCurrentUser());
+			if (!allfriends.contains(username)) {
+				Toast.makeText(this, "User name not in friend list",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+
+			String frndname = StringUtil.FRIEND_INFO + username;
+			HashMap<String, String> attrs = util.getAttributesForItem(
+					SimpleDbUtil.getCurrentUser(), frndname);
+			String status = attrs.get(StringUtil.FRIEND_STATUS);
+			if (!status.equals(StringUtil.FRIEND_CONFIRMED)) {
+				Toast.makeText(this, "User not confirmed as friend",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
@@ -102,9 +123,6 @@ public class FriendScreen extends Activity {
 		String currentuser = SimpleDbUtil.getCurrentUser();
 		String sendto = null;
 		try {
-
-			String domain = friendname;
-			String newtaskid = String.valueOf(System.currentTimeMillis());
 
 			HashMap<String, String> oldattr = new HashMap<String, String>();
 			oldattr.putAll(util.getAttributesForItem(currentuser, taskid));
@@ -131,6 +149,7 @@ public class FriendScreen extends Activity {
 			util.updateAttributesForItem(currentuser, taskid, attributes);
 
 			HashMap<String, String> taskInfoMap = new HashMap<String, String>();
+
 			taskInfoMap.put(StringUtil.TASK_NAME,
 					oldattr.get(StringUtil.TASK_NAME));
 
@@ -141,7 +160,7 @@ public class FriendScreen extends Activity {
 					oldattr.get(StringUtil.TASK_PRIORITY));
 
 			taskInfoMap.put(StringUtil.TASK_OWNER,
-					oldattr.get(StringUtil.TASK_NAME));
+					SimpleDbUtil.getCurrentUser());
 
 			taskInfoMap.put(StringUtil.TASK_LAT,
 					oldattr.get(StringUtil.TASK_LAT));
@@ -149,10 +168,11 @@ public class FriendScreen extends Activity {
 			taskInfoMap.put(StringUtil.TASK_LONG,
 					oldattr.get(StringUtil.TASK_LONG));
 
-			taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, newtaskid);
+			taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, taskid);
 			taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
 
-			util.createItem(domain, taskid, taskInfoMap);
+			String newtaskid = String.valueOf(System.currentTimeMillis());
+			util.createItem(friendname, newtaskid, taskInfoMap);
 			Toast.makeText(this,
 					"Task sent successfully",
 					Toast.LENGTH_SHORT).show();
