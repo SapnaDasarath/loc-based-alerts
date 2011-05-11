@@ -98,6 +98,8 @@ public class LocationAlertService extends IntentService implements LocationListe
 					+ Double.toString(longitude) + "`";
 
 				taskids = util.getItemNamesForQuery(matchingQuery);
+				lat = latitude;
+				lng = longitude;
 			}
 			
 			if(taskids.size() > 0){
