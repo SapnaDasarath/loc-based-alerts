@@ -101,16 +101,19 @@ public class NewFriendScreen extends Activity {
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				switch (transition) {
+				case StringUtil.CREATE:
 				case StringUtil.EDIT:
 					Intent intent = new Intent(NewFriendScreen.this,
-							TaskScreen.class);
+							FriendScreen.class);
 					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.FRIEND_NAME, friendname);
 					startActivity(intent);
 					break;
 				case StringUtil.NOTIFY:
 					Intent intent1 = new Intent(NewFriendScreen.this,
 							NotificationScreen.class);
 					intent1.putExtra(StringUtil.TRANSITION, transition);
+					intent1.putExtra(StringUtil.FRIEND_NAME, friendname);
 					startActivity(intent1);
 					break;
 				}
@@ -193,17 +196,11 @@ public class NewFriendScreen extends Activity {
 		String email = emailEditText.getText().toString();
 		String sendto = null;
 
-		HashMap<String, String> friendmap = new HashMap<String, String>();
-		friendmap.put(StringUtil.FRIEND_NAME, username);
-		friendmap.put(StringUtil.EMAIL, email);
-		friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_PENDING);
-
 		try {
-
-			HashMap<String, String> attr = util.getAttributesForItem(username,
-					StringUtil.FRIEND_INFO);
-			sendto = attr.get(StringUtil.EMAIL);
-
+			HashMap<String, String> friendmap = new HashMap<String, String>();
+			friendmap.put(StringUtil.FRIEND_NAME, username);
+			friendmap.put(StringUtil.EMAIL, email);
+			friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_REQ_SENT);
 			util.createItem(SimpleDbUtil.getCurrentUser(),
 					StringUtil.FRIEND_INFO + username, friendmap);
 
@@ -211,12 +208,13 @@ public class NewFriendScreen extends Activity {
 			HashMap<String, String> otherfriendmap = new HashMap<String, String>();
 			otherfriendmap.put(StringUtil.FRIEND_NAME,
 					SimpleDbUtil.getCurrentUser());
+			HashMap<String, String> attr = util.getAttributesForItem(username,
+					StringUtil.USER_INFO);
+			sendto = attr.get(StringUtil.EMAIL);
+			otherfriendmap.put(StringUtil.EMAIL, sendto);
 			otherfriendmap.put(StringUtil.FRIEND_STATUS,
 					StringUtil.FRIEND_PENDING);
-			otherfriendmap.put(StringUtil.EMAIL, sendto);
-
-			String dom = username.replace(StringUtil.FRIEND_INFO, "");
-			util.createItem(dom,
+			util.createItem(username,
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 					otherfriendmap);
 
@@ -254,14 +252,14 @@ public class NewFriendScreen extends Activity {
 
 			// update other guys friend status too..
 			String otherfrnd = friendname.replace(StringUtil.FRIEND_INFO, "");
-			util.updateAttributesForItem(otherfrnd, domain, attrListToUpdate);
+			util.updateAttributesForItem(otherfrnd, StringUtil.FRIEND_INFO+domain, attrListToUpdate);
 
 			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_SHORT)
 					.show();
 
 			// send notification to user
 			HashMap<String, String> attr = util.getAttributesForItem(
-					friendname, StringUtil.FRIEND_INFO);
+					otherfrnd, StringUtil.USER_INFO);
 			sendto = attr.get(StringUtil.EMAIL);
 
 		} catch (Exception e) {

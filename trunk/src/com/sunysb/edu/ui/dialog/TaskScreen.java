@@ -253,11 +253,10 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
 
-		Toast.makeText(this, "New Task added successfully", Toast.LENGTH_SHORT)
-				.show();
-
 		try {
 			util.createItem(domain, taskid, taskInfoMap);
+			Toast.makeText(this, "New Task added successfully", Toast.LENGTH_SHORT)
+					.show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
