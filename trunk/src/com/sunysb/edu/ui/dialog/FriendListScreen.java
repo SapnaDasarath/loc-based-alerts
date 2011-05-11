@@ -24,7 +24,7 @@ public class FriendListScreen extends Activity {
 
 	private SimpleDbUtil util;
 	private int transition;
-	
+
 	private Button addFriendButton;
 
 	@Override
@@ -38,15 +38,20 @@ public class FriendListScreen extends Activity {
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
-		
-		transition = (Integer)this.getIntent().getExtras().get(StringUtil.TRANSITION);
+
+		transition = (Integer) this.getIntent().getExtras()
+				.get(StringUtil.TRANSITION);
+		// this list contains the task ids to be displayed on ui
+		// for edit put ids from db
+		// for notify get it from user
 		List<String> friendlist = new ArrayList<String>();
 
 		switch (transition) {
 
 		case StringUtil.EDIT:
 			try {
-				friendlist.addAll(util.getFriendsForUser(SimpleDbUtil.getCurrentUser()));
+				friendlist.addAll(util.getFriendsForUser(SimpleDbUtil
+						.getCurrentUser()));
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
@@ -56,8 +61,24 @@ public class FriendListScreen extends Activity {
 			break;
 
 		case StringUtil.NOTIFY:
-			friendlist.addAll(this.getIntent().getExtras()
-					.getStringArrayList(StringUtil.FRIEND_INFO));
+			ArrayList<String> friendnames = getIntent().getExtras()
+					.getStringArrayList(StringUtil.FRIEND_INFO);
+			if (friendnames == null) {
+				String frdquery = "select * from "
+						+ SimpleDbUtil.getCurrentUser() + " where "
+						+ StringUtil.FRIEND_STATUS + " = '"
+						+ StringUtil.FRIEND_PENDING + "'";
+				try {
+					friendlist.addAll(util.getItemNamesForQuery(frdquery));
+				} catch (Exception e) {
+					Toast.makeText(this,
+							"Unable to connect to server. Try again later..",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+			} else {
+				friendlist.addAll(friendnames);
+			}
 			break;
 		}
 		drawUI(friendlist);
@@ -67,10 +88,23 @@ public class FriendListScreen extends Activity {
 
 		TableLayout table = (TableLayout) findViewById(R.id.friendTableList);
 		table.removeAllViews();
-		
+
 		for (String namestr : friendlist) {
 
 			TableRow tr = new TableRow(this);
+			tr.setTag(namestr);
+			tr.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					String namestr = (String) v.getTag();
+					Log.e("LBA", "TableRow clicked!");
+					Intent intent = new Intent(FriendListScreen.this,
+							NewFriendScreen.class);
+					intent.putExtra(StringUtil.TRANSITION, transition);
+					intent.putExtra(StringUtil.FRIEND_NAME, namestr);
+					startActivity(intent);
+				}
+			});
+
 			tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 					LayoutParams.WRAP_CONTENT));
 
@@ -79,19 +113,6 @@ public class FriendListScreen extends Activity {
 			name.setText(newStr);
 			name.setTextColor(Color.YELLOW);
 			tr.addView(name);
-			
-			tr.setTag(namestr);
-			
-			tr.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					String namestr = (String) v.getTag();
-					Log.e("LBA", "TableRow clicked!");
-					Intent intent = new Intent(FriendListScreen.this, NewFriendScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.FRIEND_NAME, namestr);
-					startActivity(intent);
-				}
-			});
 
 			table.addView(tr, new TableLayout.LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
@@ -101,7 +122,8 @@ public class FriendListScreen extends Activity {
 		addFriendButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(FriendListScreen.this,NewFriendScreen.class);
+				Intent intent = new Intent(FriendListScreen.this,
+						NewFriendScreen.class);
 				intent.putExtra(StringUtil.TRANSITION, StringUtil.CREATE);
 				startActivity(intent);
 			}

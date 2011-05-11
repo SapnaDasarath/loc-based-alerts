@@ -119,10 +119,11 @@ public class NewFriendScreen extends Activity {
 	}
 
 	private void updateUIwithFriendInfo(String friendname) {
-		Log.e("LBA", "update Task from DB");
+
+		if (friendname == null)
+			return;
 
 		String domain = SimpleDbUtil.getCurrentUser();
-
 		HashMap<String, String> attrList = new HashMap<String, String>();
 		try {
 			attrList.putAll(util.getAttributesForItem(domain, friendname));
@@ -147,6 +148,7 @@ public class NewFriendScreen extends Activity {
 
 	private boolean validateFriend() {
 		String username = null;
+		String email = null;
 
 		Object usernameObj = newfriendEditText.getText();
 		if (usernameObj != null) {
@@ -159,10 +161,21 @@ public class NewFriendScreen extends Activity {
 			return false;
 		}
 
+		Object emailnameObj = emailEditText.getText();
+		if (emailnameObj != null) {
+			email = emailnameObj.toString().trim();
+		}
+
+		if (email == null || email.equals("")) {
+			Toast.makeText(this, "Enter valid email id", Toast.LENGTH_SHORT)
+					.show();
+			return false;
+		}
+
 		// check if user name already exists
 		try {
-			if (util.doesDomainExist(StringUtil.FRIEND_INFO + username)) {
-				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
+			if (!util.doesDomainExist(username)) {
+				Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT)
 						.show();
 				return false;
 			}
@@ -177,12 +190,20 @@ public class NewFriendScreen extends Activity {
 
 	private void addNewFriend() {
 		String username = newfriendEditText.getText().toString();
+		String email = emailEditText.getText().toString();
+		String sendto = null;
 
 		HashMap<String, String> friendmap = new HashMap<String, String>();
 		friendmap.put(StringUtil.FRIEND_NAME, username);
+		friendmap.put(StringUtil.EMAIL, email);
 		friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_PENDING);
 
 		try {
+
+			HashMap<String, String> attr = util.getAttributesForItem(username,
+					StringUtil.FRIEND_INFO);
+			sendto = attr.get(StringUtil.EMAIL);
+
 			util.createItem(SimpleDbUtil.getCurrentUser(),
 					StringUtil.FRIEND_INFO + username, friendmap);
 
@@ -192,42 +213,48 @@ public class NewFriendScreen extends Activity {
 					SimpleDbUtil.getCurrentUser());
 			otherfriendmap.put(StringUtil.FRIEND_STATUS,
 					StringUtil.FRIEND_PENDING);
-			util.createItem(username,
+			otherfriendmap.put(StringUtil.EMAIL, sendto);
+
+			String dom = username.replace(StringUtil.FRIEND_INFO, "");
+			util.createItem(dom,
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 					otherfriendmap);
 
 			Toast.makeText(this, "Friend request sent.", Toast.LENGTH_SHORT)
 					.show();
-
-			// send notification to user
-			HashMap<String, String> attr = util.getAttributesForItem(username,
-					StringUtil.FRIEND_INFO);
-			String sendto = attr.get(StringUtil.EMAIL);
-
-			LinkedList<String> recipients = new LinkedList<String>();
-			recipients.add(sendto);
-
-			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-					StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+
+		try {
+			if (sendto != null) {
+				// send notification to user
+				LinkedList<String> recipients = new LinkedList<String>();
+				recipients.add(sendto);
+
+				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+						StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
+			}
+		} catch (Exception e) {
+			return;
+		}
 	}
 
 	protected void acceptFriendRequest(String friendname) {
 		String domain = SimpleDbUtil.getCurrentUser();
-		HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
-		attrListToUpdate.put(StringUtil.FRIEND_STATUS,
-				StringUtil.FRIEND_CONFIRMED);
-
+		String sendto = null;
 		try {
+			HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+			attrListToUpdate.put(StringUtil.FRIEND_STATUS,
+					StringUtil.FRIEND_CONFIRMED);
 			util.updateAttributesForItem(domain, friendname, attrListToUpdate);
 
 			// update other guys friend status too..
-			util.updateAttributesForItem(friendname, domain, attrListToUpdate);
+			String otherfrnd = friendname.replace(StringUtil.FRIEND_INFO, "");
+			util.updateAttributesForItem(otherfrnd, domain, attrListToUpdate);
 
 			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_SHORT)
 					.show();
@@ -235,19 +262,26 @@ public class NewFriendScreen extends Activity {
 			// send notification to user
 			HashMap<String, String> attr = util.getAttributesForItem(
 					friendname, StringUtil.FRIEND_INFO);
-			String sendto = attr.get(StringUtil.EMAIL);
-			LinkedList<String> recipients = new LinkedList<String>();
-			recipients.add(sendto);
-			StringBuffer sb = new StringBuffer();
-			sb.append("Hello ").append(friendname).append(",\n");
-			sb.append(domain).append(" has accepted your friend request");
+			sendto = attr.get(StringUtil.EMAIL);
 
-			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-					StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
 					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		try {
+			if (sendto != null) {
+				LinkedList<String> recipients = new LinkedList<String>();
+				recipients.add(sendto);
+				StringBuffer sb = new StringBuffer();
+				sb.append("Hello ").append(friendname).append(",\n");
+				sb.append(domain).append(" has accepted your friend request");
+				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+						StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
+			}
+		} catch (Exception e) {
 			return;
 		}
 	}
@@ -255,7 +289,11 @@ public class NewFriendScreen extends Activity {
 	private void declineFriendRequest(String name) {
 		try {
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
-			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+
+			String dom = name.replace(StringUtil.FRIEND_INFO, "");
+			String item = StringUtil.FRIEND_INFO
+					+ SimpleDbUtil.getCurrentUser();
+			util.deleteItem(dom, item);
 			Toast.makeText(this, "Friend request Declined.", Toast.LENGTH_SHORT)
 					.show();
 
@@ -284,7 +322,11 @@ public class NewFriendScreen extends Activity {
 		// remove from current user
 		try {
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), name);
-			util.deleteItem(name, SimpleDbUtil.getCurrentUser());
+
+			String dom = name.replace(StringUtil.FRIEND_INFO, "");
+			String item = StringUtil.FRIEND_INFO
+					+ SimpleDbUtil.getCurrentUser();
+			util.deleteItem(dom, item);
 			Toast.makeText(this, "Friend deleted.", Toast.LENGTH_SHORT).show();
 
 		} catch (Exception e) {
