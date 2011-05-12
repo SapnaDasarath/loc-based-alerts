@@ -87,6 +87,13 @@ public class TaskScreen extends Activity {
 			tempButton.setText("Decline");
 			delButton.setVisibility(View.INVISIBLE);
 			break;
+
+		case StringUtil.NOTIFICATION:
+			updateUIforTask(taskId);
+			tempButton.setVisibility(View.INVISIBLE);
+			delButton.setVisibility(View.INVISIBLE);
+			closeButton.setVisibility(View.INVISIBLE);
+			break;
 		}
 
 		// There will be 4 buttons - ok/accept task, send to friend/decline ,
@@ -106,6 +113,10 @@ public class TaskScreen extends Activity {
 
 				case StringUtil.NOTIFY:
 					acceptTaskFromFriend(taskId);
+					break;
+
+				case StringUtil.NOTIFICATION:
+					markAsCompleted(taskId);
 					break;
 				}
 			}
@@ -253,6 +264,7 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_NAME, nameStr);
 		taskInfoMap.put(StringUtil.TASK_DESCRIPTION, descriptionStr);
 		taskInfoMap.put(StringUtil.TASK_PRIORITY, priorityStr);
+		taskInfoMap.put(StringUtil.TASK_NOTIFY, StringUtil.TASK_NOTIFY_NO);
 		taskInfoMap.put(StringUtil.TASK_OWNER, SimpleDbUtil.getCurrentUser());
 		taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, taskid);
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
@@ -362,6 +374,14 @@ public class TaskScreen extends Activity {
 		}
 	}
 
+	protected void markAsCompleted(String taskid) {
+		removeTask(taskid);
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
+	}
+
 	protected void declineTaskFromFriend(String taskId) {
 		// remove task from your list only
 		// also remove this task as shared with in the original user
@@ -426,9 +446,13 @@ public class TaskScreen extends Activity {
 					// get every task.. check if the task shared id matches this
 					// if it foes delete it
 					// better way of doing this write query
-					String usertaskId = null;
 					// TODO get usertaskid using db query
-					util.deleteItem(user, usertaskId);
+					//get from a task whose shared task id -= id;
+					String query = "select * from " + user + " where "
+					+ StringUtil.TASK_OWNER_TASK_ID + " = " + "'"
+					+ taskId + "'";
+					List<String> items = util.getItemNamesForQuery(query);
+					util.deleteItem(user, items.get(0));
 
 					// send notification of delete.
 					HashMap<String, String> attr = util.getAttributesForItem(
@@ -444,8 +468,8 @@ public class TaskScreen extends Activity {
 							.append(",\n");
 					msg.append(body.toString());
 
-					new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-							StringUtil.SUBJECT_TASK_DELETE, msg.toString());
+					//new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+					//		StringUtil.SUBJECT_TASK_DELETE, msg.toString());
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
@@ -472,10 +496,10 @@ public class TaskScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			startActivity(new Intent(TaskScreen.this, LocationBasedAlerts.class));
 			return true;
 		}

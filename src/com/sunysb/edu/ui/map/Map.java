@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -77,12 +78,27 @@ public class Map extends MapActivity {
 		mapView.displayZoomControls(true);
 		Log.e("LBA", "Zoom control display");
 
-		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		if (lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		criteria.setPowerRequirement(Criteria.POWER_LOW);
+		criteria.setAltitudeRequired(false);
+		criteria.setBearingRequired(false);
+		criteria.setSpeedRequired(false);
+		criteria.setCostAllowed(true);
+		String locationContext = Context.LOCATION_SERVICE;
+		LocationManager locationManager = (LocationManager) getSystemService(locationContext);
+		String provider = locationManager.getBestProvider(criteria, true);
+		Location location = locationManager.getLastKnownLocation(provider);
+		if (location != null) {
 			
-			lat = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
-			lng = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
+			lat = location.getLatitude();
+			lng = location.getLongitude();
 			Log.e("LBA", "GotLastKnownLocation latitude "+String.valueOf(lat)+" longitude is "+String.valueOf(lng));
+		}
+		else
+		{
+			Toast.makeText(this, "Unable to get current location",
+					Toast.LENGTH_LONG).show();
 		}
 		initGeoPoint = new GeoPoint((int) (lat * 1000000),(int) (lng * 1000000));
 

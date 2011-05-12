@@ -41,7 +41,7 @@ public class StringUtil {
 	public static final String TASK_FRIENDS_NAMES = "OwnerSharedID";
 
 	public static final String TASK_STATUS = "taskstatus";
-
+	
 	public static final String TASK_ACCEPTED = "accepted";
 	public static final String TASK_PENDING = "taskpending";
 
@@ -63,5 +63,10 @@ public class StringUtil {
 	public static final int CREATE = 2;
 	public static final int NOTIFY = 3;
 	public static final int DELETE = 4;
+	public static final int NOTIFICATION = 5;
+	
+	public static final String TASK_NOTIFY = "tasknotify";
+	public static final String TASK_NOTIFY_YES = "tasknotify_yes";
+	public static final String TASK_NOTIFY_NO = "tasknotify_no";
 
 }
