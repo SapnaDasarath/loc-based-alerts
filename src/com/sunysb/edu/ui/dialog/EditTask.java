@@ -87,8 +87,7 @@ public class EditTask extends Activity {
 					public void onClick(View v) {
 						String id = (String) v.getTag();
 						Log.e("LBA", "TableRow clicked!");
-						Intent intent = new Intent(EditTask.this,
-								TaskScreen.class);
+						Intent intent = new Intent(EditTask.this, TaskScreen.class);
 						intent.putExtra(StringUtil.TRANSITION, transition);
 						intent.putExtra(StringUtil.TASK_ID, id);
 						startActivity(intent);

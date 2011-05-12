@@ -46,7 +46,7 @@ public class LocationBasedAlerts extends Activity {
 		if (appstate) {
 			// already logged in
 			try {
-				startLocationManagerServices();
+				// startLocationManagerServices();
 				String user = app_preferences.getString(StringUtil.USRNAME, "");
 				util = new SimpleDbUtil(user);
 				startActivity(new Intent(LocationBasedAlerts.this,
@@ -176,10 +176,16 @@ public class LocationBasedAlerts extends Activity {
 	}
 
 	private void startLocationManagerServices() {
-		// startActivity(new Intent(LocationBasedAlerts.this,
-		// LocationAlert.class));
 		Log.e("LBA", "Entered startLocationManagerService() method");
 		Intent intent = new Intent(this, LocationAlertService.class);
 		startService(intent);
+	}
+
+	public void onBackPressed() {
+		Intent startMain = new Intent(Intent.ACTION_MAIN);
+		startMain.addCategory(Intent.CATEGORY_HOME);
+		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(startMain);
+		return;
 	}
 }
