@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -95,6 +96,17 @@ public class Map extends MapActivity {
 		mapView.getController().animateTo(initGeoPoint);
 		mapView.getController().setZoom(15);
 			
+		/*mapView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.e("LBA", "mapView clicked ");
+				MapOverlay mapOverlay = new MapOverlay(Map.this);
+				List<Overlay> listOfOverlays = mapView.getOverlays();
+				listOfOverlays.clear();
+				listOfOverlays.add(mapOverlay);
+			}
+		}); */
 
 		addTaskButton = (Button) findViewById(R.id.add_Task);
 
