@@ -163,6 +163,9 @@ public class FriendScreen extends Activity {
 
 			taskInfoMap.put(StringUtil.TASK_PRIORITY,
 					oldattr.get(StringUtil.TASK_PRIORITY));
+			
+			taskInfoMap.put(StringUtil.TASK_NOTIFY,
+					oldattr.get(StringUtil.TASK_NOTIFY));
 
 			taskInfoMap.put(StringUtil.TASK_OWNER,
 					SimpleDbUtil.getCurrentUser());

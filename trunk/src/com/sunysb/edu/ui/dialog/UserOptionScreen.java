@@ -132,6 +132,7 @@ public class UserOptionScreen extends Activity {
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
 			
+			//stop service
 			startActivity(new Intent(UserOptionScreen.this,
 					LocationBasedAlerts.class));
 			return true;
