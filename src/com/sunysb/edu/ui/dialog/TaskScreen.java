@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
-import com.sunysb.edu.db.AWSEmail;
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.ui.map.Map;
 import com.sunysb.edu.util.StringUtil;
@@ -447,10 +446,10 @@ public class TaskScreen extends Activity {
 					// if it foes delete it
 					// better way of doing this write query
 					// TODO get usertaskid using db query
-					//get from a task whose shared task id -= id;
+					// get from a task whose shared task id -= id;
 					String query = "select * from " + user + " where "
-					+ StringUtil.TASK_OWNER_TASK_ID + " = " + "'"
-					+ taskId + "'";
+							+ StringUtil.TASK_OWNER_TASK_ID + " = " + "'"
+							+ taskId + "'";
 					List<String> items = util.getItemNamesForQuery(query);
 					util.deleteItem(user, items.get(0));
 
@@ -468,8 +467,8 @@ public class TaskScreen extends Activity {
 							.append(",\n");
 					msg.append(body.toString());
 
-					//new AWSEmail().SendMail(StringUtil.SENDER, recipients,
-					//		StringUtil.SUBJECT_TASK_DELETE, msg.toString());
+					// new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+					// StringUtil.SUBJECT_TASK_DELETE, msg.toString());
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);

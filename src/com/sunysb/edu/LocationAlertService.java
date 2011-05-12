@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.sunysb.edu.db.SimpleDbUtil;
-import com.sunysb.edu.ui.dialog.EditTask;
 import com.sunysb.edu.ui.dialog.TaskScreen;
 import com.sunysb.edu.util.StringUtil;
 
@@ -15,6 +14,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -137,7 +137,6 @@ public class LocationAlertService extends Service {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 		}
-
 	}
 
 	@Override
@@ -165,10 +164,10 @@ public class LocationAlertService extends Service {
 							.getAttributesForItem(domain, id);
 					String taskstate = taskattributes
 							.get(StringUtil.TASK_NOTIFY);
-					if(taskstate == null)
-						break;
+					if (taskstate == null)
+						continue;
 					if (taskstate.equals(StringUtil.TASK_NOTIFY_YES)) {
-						break;
+						continue;
 					}
 
 					String taskid = taskattributes.get(StringUtil.TASK_ID);
@@ -177,10 +176,12 @@ public class LocationAlertService extends Service {
 							.get(StringUtil.TASK_DESCRIPTION);
 
 					Intent intent = new Intent(this, TaskScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, StringUtil.NOTIFICATION);
+					intent.putExtra(StringUtil.TRANSITION,
+							StringUtil.NOTIFICATION);
 					intent.putExtra(StringUtil.TASK_ID, taskid);
-					intent.putExtra(StringUtil.TASK_STATUS, StringUtil.TASK_ACCEPTED);
-					
+					intent.putExtra(StringUtil.TASK_STATUS,
+							StringUtil.TASK_ACCEPTED);
+
 					Notification notification = new Notification(
 							R.drawable.icon, "Notification!!",
 							System.currentTimeMillis());
@@ -189,9 +190,16 @@ public class LocationAlertService extends Service {
 									.getActivity(this.getBaseContext(), 0,
 											intent,
 											PendingIntent.FLAG_NO_CREATE));
-					
+					notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+					notification.ledARGB = Color.CYAN;
+					notification.ledOnMS = 500;
+					notification.ledOffMS = 500;
+					notification.vibrate = new long[] { 100, 200, 200, 200, 200, 200,
+							1000, 200, 200, 200, 1000, 200 };
+
 					NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					myNotificationManager.notify(NOTIFICATION_ID +1, notification);
+					myNotificationManager.notify(NOTIFICATION_ID + 1,
+							notification);
 
 					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
 					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
