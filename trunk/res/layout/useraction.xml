@@ -6,7 +6,7 @@
 	<Button android:id="@+id/add_Task_button" android:text="Add New Task"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
-	<Button android:id="@+id/edit_Task_button" android:text="View/Edit Tasks"
+	<Button android:id="@+id/edit_Task_button" android:text="View Tasks"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
 	<Button android:id="@+id/notifications_button" android:text="Notifications"

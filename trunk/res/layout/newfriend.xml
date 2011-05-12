@@ -3,7 +3,7 @@
 	android:id="@+id/addFriend" android:orientation="vertical"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-	<TextView android:id="@+id/newfriend_TextView" android:text="user name"
+	<TextView android:id="@+id/newfriend_TextView" android:text="User name"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 
 	<EditText android:id="@+id/newfriend_EditText"
