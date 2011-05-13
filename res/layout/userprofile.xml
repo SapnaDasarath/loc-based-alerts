@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/tasklayout" android:orientation="vertical"
 	android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<TextView android:id="@+id/usr_TextView" android:text="User: "
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 	<TextView android:id="@+id/changepwd_TextView" android:text="Enter new Password"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 	<EditText android:id="@+id/changepwd_EditText"
