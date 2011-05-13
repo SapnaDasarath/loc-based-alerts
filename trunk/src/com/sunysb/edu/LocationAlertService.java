@@ -14,7 +14,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -170,41 +169,39 @@ public class LocationAlertService extends Service {
 						continue;
 					}
 
-					String taskid = taskattributes.get(StringUtil.TASK_ID);
 					String nameStrDb = taskattributes.get(StringUtil.TASK_NAME);
 					String descriptionStrDb = taskattributes
 							.get(StringUtil.TASK_DESCRIPTION);
-
-					Intent intent = new Intent(this, TaskScreen.class);
-					intent.putExtra(StringUtil.TRANSITION,
-							StringUtil.NOTIFICATION);
-					intent.putExtra(StringUtil.TASK_ID, taskid);
-					intent.putExtra(StringUtil.TASK_STATUS,
-							StringUtil.TASK_ACCEPTED);
-
-					Notification notification = new Notification(
-							R.drawable.icon, "Notification!!",
-							System.currentTimeMillis());
-					notification.setLatestEventInfo(LocationAlertService.this,
-							nameStrDb, descriptionStrDb, PendingIntent
-									.getActivity(this.getBaseContext(), 0,
-											intent,
-											PendingIntent.FLAG_NO_CREATE));
-					notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-					notification.ledARGB = Color.CYAN;
-					notification.ledOnMS = 500;
-					notification.ledOffMS = 500;
-					notification.vibrate = new long[] { 100, 200, 200, 200, 200, 200,
-							1000, 200, 200, 200, 1000, 200 };
-
-					NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					myNotificationManager.notify(NOTIFICATION_ID + 1,
-							notification);
-
+					
 					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
 					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
 							StringUtil.TASK_NOTIFY_NO);
 					util.updateAttributesForItem(domain, id, attrListToUpdate);
+					
+					String ns = Context.NOTIFICATION_SERVICE;
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+					
+					int icon = R.drawable.pushpin;
+					CharSequence tickerText = nameStrDb;
+					long when = System.currentTimeMillis();
+					Notification notification = new Notification(icon, tickerText, when);
+					notification.defaults |= Notification.DEFAULT_SOUND;
+					long[] vibrate = {0,100,200,300};
+					notification.vibrate = vibrate;
+					notification.defaults |= Notification.DEFAULT_LIGHTS;
+					
+					Context context = getApplicationContext();
+					CharSequence contentTitle = nameStrDb;
+					CharSequence contentText = descriptionStrDb;
+					Intent notificationIntent = new Intent(this, TaskScreen.class);
+					notificationIntent.putExtra(StringUtil.TRANSITION,
+							StringUtil.NOTIFICATION);
+					notificationIntent.putExtra(StringUtil.TASK_ID, id);
+					notificationIntent.putExtra(StringUtil.TASK_STATUS,
+							StringUtil.TASK_ACCEPTED);
+					PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+					notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+					mNotificationManager.notify(nameStrDb, NOTIFICATION_ID, notification);
 
 				} catch (Exception e) {
 					Toast.makeText(this, "Not able to connect to server",

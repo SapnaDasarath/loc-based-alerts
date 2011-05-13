@@ -11,6 +11,8 @@ import com.sunysb.edu.ui.map.Map;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,6 +43,8 @@ public class TaskScreen extends Activity {
 	private Button tempButton;
 	private Button closeButton;
 	private Button delButton;
+	
+	public static int NOTIFICATION_ID = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -375,6 +379,7 @@ public class TaskScreen extends Activity {
 
 	protected void markAsCompleted(String taskid) {
 		removeTask(taskid);
+	
 		Intent startMain = new Intent(Intent.ACTION_MAIN);
 		startMain.addCategory(Intent.CATEGORY_HOME);
 		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -424,7 +429,7 @@ public class TaskScreen extends Activity {
 		HashMap<String, String> currentuserattr;
 		try {
 			currentuserattr = util.getAttributesForItem(currentuser, taskId);
-
+			String taskname = currentuserattr.get(StringUtil.TASK_NAME);
 			StringBuffer body = new StringBuffer();
 			body.append(currentuser)
 					.append(" has removed the following task\n");
@@ -472,6 +477,11 @@ public class TaskScreen extends Activity {
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
+			
+			//clear alerts
+			String ns = Context.NOTIFICATION_SERVICE;
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+			mNotificationManager.cancel(taskname,NOTIFICATION_ID); 
 			Toast.makeText(this, "Task deleted successfully",
 					Toast.LENGTH_SHORT).show();
 			return true;
