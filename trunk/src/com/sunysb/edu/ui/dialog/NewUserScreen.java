@@ -12,6 +12,8 @@ import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -221,6 +223,9 @@ public class NewUserScreen extends Activity {
 			
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
+			
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.cancelAll();
 			
 			startActivity(new Intent(NewUserScreen.this,
 					LocationBasedAlerts.class));

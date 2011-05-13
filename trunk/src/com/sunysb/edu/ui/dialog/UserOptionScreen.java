@@ -3,6 +3,8 @@ package com.sunysb.edu.ui.dialog;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -131,6 +133,9 @@ public class UserOptionScreen extends Activity {
 			
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
+			
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.cancelAll();
 			
 			//stop service
 			startActivity(new Intent(UserOptionScreen.this,

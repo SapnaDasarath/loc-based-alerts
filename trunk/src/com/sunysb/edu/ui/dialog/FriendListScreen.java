@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -149,6 +151,9 @@ public class FriendListScreen extends Activity {
 			
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
+			
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.cancelAll();
 			
 			startActivity(new Intent(FriendListScreen.this,
 					LocationBasedAlerts.class));

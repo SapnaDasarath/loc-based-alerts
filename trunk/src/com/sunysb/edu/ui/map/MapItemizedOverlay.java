@@ -12,8 +12,6 @@ import com.google.android.maps.OverlayItem;
 public class MapItemizedOverlay extends ItemizedOverlay {
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	private Context mContext;
-	private Map MapObj;
 	
 	public MapItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
@@ -21,7 +19,6 @@ public class MapItemizedOverlay extends ItemizedOverlay {
 	
 	public MapItemizedOverlay(Drawable defaultMarker, Context context) {
 		  super(defaultMarker);
-		  mContext = context;
 		}
 
 	public void addOverlay(OverlayItem overlay) {
