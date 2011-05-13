@@ -74,6 +74,7 @@ public class LocationBasedAlerts extends Activity {
 			registerButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					startLocationManagerServices();
 					startActivity(new Intent(LocationBasedAlerts.this,
 							NewUserScreen.class));
 				}
@@ -112,10 +113,9 @@ public class LocationBasedAlerts extends Activity {
 		try {
 			util = new SimpleDbUtil(username);
 //			List<String> doms = util.getDomainNames();
-//			for (String domainName : doms)
-//   		  {
+//			for (String domainName : doms) {
 //				util.deleteDomain(domainName);
-//			}	
+//			}
 			SharedPreferences app_preferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = app_preferences.edit();
