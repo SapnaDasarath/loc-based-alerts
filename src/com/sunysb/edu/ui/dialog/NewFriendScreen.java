@@ -84,10 +84,14 @@ public class NewFriendScreen extends Activity {
 				case StringUtil.CREATE:
 					if (validateFriend()) {
 						addNewFriend();
+						startActivity(new Intent(NewFriendScreen.this,
+								UserOptionScreen.class));
 					}
 					break;
 				case StringUtil.NOTIFY:
 					acceptFriendRequest(friendname);
+					startActivity(new Intent(NewFriendScreen.this,
+							UserOptionScreen.class));
 					break;
 				}
 			}
@@ -99,9 +103,13 @@ public class NewFriendScreen extends Activity {
 				switch (transition) {
 				case StringUtil.NOTIFY:
 					declineFriendRequest(friendname);
+					startActivity(new Intent(NewFriendScreen.this,
+							UserOptionScreen.class));
 					break;
 				case StringUtil.EDIT:
 					removeFriend(friendname);
+					startActivity(new Intent(NewFriendScreen.this,
+							UserOptionScreen.class));
 					break;
 				}
 			}
