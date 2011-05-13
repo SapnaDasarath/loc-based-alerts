@@ -161,7 +161,7 @@ public class Map extends MapActivity {
 			}
 		} catch (IOException io) {
 			
-			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_SHORT).show();
+			Toast.makeText(Map.this, "Connection Error", Toast.LENGTH_LONG).show();
 		}
 		myLocation = new GeoPoint((int) (lat * 1E6), (int) (lng * 1E6));
 

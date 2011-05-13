@@ -7,7 +7,6 @@ import java.util.List;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
-import com.sunysb.edu.ui.map.Map;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
@@ -218,7 +217,7 @@ public class TaskScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -290,11 +289,11 @@ public class TaskScreen extends Activity {
 			util.createItem(domain, taskid, taskInfoMap);
 			taskId = taskid;
 			Toast.makeText(this, "New Task added successfully",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -329,7 +328,7 @@ public class TaskScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -361,12 +360,12 @@ public class TaskScreen extends Activity {
 			try {
 				util.updateAttributesForItem(domain, taskid, attrListToUpdate);
 				Toast.makeText(this, "Task updated successfully",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 		}
@@ -381,12 +380,12 @@ public class TaskScreen extends Activity {
 		String domain = SimpleDbUtil.getCurrentUser();
 		try {
 			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
-			Toast.makeText(this, "Task Accepted.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Task Accepted.", Toast.LENGTH_LONG).show();
 			return;
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -410,7 +409,7 @@ public class TaskScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -440,11 +439,11 @@ public class TaskScreen extends Activity {
 					attrListToUpdate);
 
 			util.deleteItem(currentuser, taskId);
-			Toast.makeText(this, "Task Declined.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Task Declined.", Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -506,12 +505,12 @@ public class TaskScreen extends Activity {
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
 			Toast.makeText(this, "Task deleted successfully",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return true;
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 	}

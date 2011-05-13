@@ -80,7 +80,7 @@ public class FriendScreen extends Activity {
 	private void sendtask() {
 
 		if (nameEditText.getText() == null) {
-			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid username", Toast.LENGTH_LONG)
 					.show();
 			return;
 		}
@@ -88,7 +88,7 @@ public class FriendScreen extends Activity {
 		try {
 			String username = nameEditText.getText().toString();
 			if (!util.doesDomainExist(username)) {
-				Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "Enter valid username", Toast.LENGTH_LONG)
 						.show();
 				return;
 			}
@@ -99,7 +99,7 @@ public class FriendScreen extends Activity {
 			String frndname = StringUtil.FRIEND_INFO + username;
 			if (!allfriends.contains(frndname)) {
 				Toast.makeText(this, "User name not in friend list",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 	
@@ -108,14 +108,14 @@ public class FriendScreen extends Activity {
 			String status = attrs.get(StringUtil.FRIEND_STATUS);
 			if (!status.equals(StringUtil.FRIEND_CONFIRMED)) {
 				Toast.makeText(this, "User not confirmed as friend",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -179,7 +179,7 @@ public class FriendScreen extends Activity {
 
 			String newtaskid = String.valueOf(System.currentTimeMillis());
 			util.createItem(friendname, newtaskid, taskInfoMap);
-			Toast.makeText(this, "Task sent successfully", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Task sent successfully", Toast.LENGTH_LONG)
 					.show();
 
 			HashMap<String, String> attr = util.getAttributesForItem(
@@ -189,7 +189,7 @@ public class FriendScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 

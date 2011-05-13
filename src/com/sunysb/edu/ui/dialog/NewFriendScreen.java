@@ -140,7 +140,7 @@ public class NewFriendScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -166,7 +166,7 @@ public class NewFriendScreen extends Activity {
 		}
 
 		if (username == null || username.equals("")) {
-			Toast.makeText(this, "Enter valid username", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid username", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
@@ -177,7 +177,7 @@ public class NewFriendScreen extends Activity {
 		}
 
 		if (email == null || email.equals("")) {
-			Toast.makeText(this, "Enter valid email id", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid email id", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
@@ -185,14 +185,14 @@ public class NewFriendScreen extends Activity {
 		// check if user name already exists
 		try {
 			if (!util.doesDomainExist(username)) {
-				Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG)
 						.show();
 				return false;
 			}
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 		return true;
@@ -225,12 +225,12 @@ public class NewFriendScreen extends Activity {
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 					otherfriendmap);
 
-			Toast.makeText(this, "Friend request sent.", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Friend request sent.", Toast.LENGTH_LONG)
 					.show();
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -262,7 +262,7 @@ public class NewFriendScreen extends Activity {
 			util.updateAttributesForItem(otherfrnd, StringUtil.FRIEND_INFO
 					+ domain, attrListToUpdate);
 
-			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Friend request Accepted.", Toast.LENGTH_LONG)
 					.show();
 
 			// send notification to user
@@ -273,7 +273,7 @@ public class NewFriendScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 
@@ -300,13 +300,13 @@ public class NewFriendScreen extends Activity {
 			String item = StringUtil.FRIEND_INFO
 					+ SimpleDbUtil.getCurrentUser();
 			util.deleteItem(dom, item);
-			Toast.makeText(this, "Friend request Declined.", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Friend request Declined.", Toast.LENGTH_LONG)
 					.show();
 
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}
@@ -333,12 +333,12 @@ public class NewFriendScreen extends Activity {
 			String item = StringUtil.FRIEND_INFO
 					+ SimpleDbUtil.getCurrentUser();
 			util.deleteItem(dom, item);
-			Toast.makeText(this, "Friend deleted.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Friend deleted.", Toast.LENGTH_LONG).show();
 
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 	}

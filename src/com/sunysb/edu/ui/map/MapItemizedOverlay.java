@@ -2,30 +2,21 @@ package com.sunysb.edu.ui.map;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
-
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
 
-
-
-
+@SuppressWarnings("rawtypes")
 public class MapItemizedOverlay extends ItemizedOverlay {
 
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	Context mContext;
-	
-	Map MapObj;
-	
-	
+	private Context mContext;
+	private Map MapObj;
 	
 	public MapItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenterBottom(defaultMarker));
-		// TODO Auto-generated constructor stub
 	}
 	
 	public MapItemizedOverlay(Drawable defaultMarker, Context context) {
@@ -47,20 +38,4 @@ public class MapItemizedOverlay extends ItemizedOverlay {
 	public int size() {
 		return mOverlays.size();
 	}
-	
-	/*
-	@Override
-	protected boolean onTap(int index) {
-	  OverlayItem item = mOverlays.get(index);
-	  //AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-	  AlertDialog.Builder dialog = new AlertDialog.Builder(MapObj);
-	  dialog.setTitle(item.getTitle());
-	  Log.e("LBA", "onTap: "+item.getTitle().toString());
-	  dialog.setMessage(item.getSnippet());
-	  Log.e("LBA", "onTap: "+item.getSnippet().toString());
-	  dialog.show();
-	  return true;
-	}*/
-	
-
 }
