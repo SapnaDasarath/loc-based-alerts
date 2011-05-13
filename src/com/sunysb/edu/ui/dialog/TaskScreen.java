@@ -140,6 +140,18 @@ public class TaskScreen extends Activity {
 					startActivity(intent);
 					break;
 
+				case StringUtil.CREATE:
+					// send task to friend
+					// show send to friend screen from here.
+					if(taskId == null)
+						return;
+					Intent intent2 = new Intent(TaskScreen.this,
+							FriendScreen.class);
+					intent2.putExtra(StringUtil.TRANSITION, transition);
+					intent2.putExtra(StringUtil.TASK_ID, taskId);
+					startActivity(intent2);
+					break;
+
 				case StringUtil.NOTIFY:
 					// remove task from current user list
 					declineTaskFromFriend(taskId);
@@ -276,6 +288,7 @@ public class TaskScreen extends Activity {
 
 		try {
 			util.createItem(domain, taskid, taskInfoMap);
+			taskId = taskid;
 			Toast.makeText(this, "New Task added successfully",
 					Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
