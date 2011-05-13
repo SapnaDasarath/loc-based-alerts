@@ -96,13 +96,13 @@ public class FriendScreen extends Activity {
 			// is this user a confirmed friend
 			List<String> allfriends = util.getFriendsForUser(SimpleDbUtil
 					.getCurrentUser());
-			if (!allfriends.contains(username)) {
+			String frndname = StringUtil.FRIEND_INFO + username;
+			if (!allfriends.contains(frndname)) {
 				Toast.makeText(this, "User name not in friend list",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-
-			String frndname = StringUtil.FRIEND_INFO + username;
+	
 			HashMap<String, String> attrs = util.getAttributesForItem(
 					SimpleDbUtil.getCurrentUser(), frndname);
 			String status = attrs.get(StringUtil.FRIEND_STATUS);
