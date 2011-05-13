@@ -70,7 +70,7 @@ public class UserOptionScreen extends Activity {
 		addTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(UserOptionScreen.this, Map.class));
+				startActivity(new Intent(getBaseContext(), Map.class));
 			}
 		});
 

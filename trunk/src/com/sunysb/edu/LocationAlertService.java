@@ -21,7 +21,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class LocationAlertService extends Service {
 
@@ -78,7 +77,7 @@ public class LocationAlertService extends Service {
 
 			}
 		};
-		locationManager.requestLocationUpdates(provider, 10000, 100f, listner);
+		locationManager.requestLocationUpdates(provider, 0, 0f, listner);
 	}
 
 	protected void updatelocation(Location location) {
@@ -133,8 +132,7 @@ public class LocationAlertService extends Service {
 			}
 
 		} catch (Exception e) {
-			Toast.makeText(this, "Not able to connect to server, Try again..",
-					Toast.LENGTH_LONG).show();
+			Log.e("LBA",e.getStackTrace().toString());
 		}
 	}
 
@@ -175,7 +173,7 @@ public class LocationAlertService extends Service {
 					
 					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
 					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
-							StringUtil.TASK_NOTIFY_NO);
+							StringUtil.TASK_NOTIFY_YES);
 					util.updateAttributesForItem(domain, id, attrListToUpdate);
 					
 					String ns = Context.NOTIFICATION_SERVICE;
@@ -185,10 +183,10 @@ public class LocationAlertService extends Service {
 					CharSequence tickerText = nameStrDb;
 					long when = System.currentTimeMillis();
 					Notification notification = new Notification(icon, tickerText, when);
-					notification.defaults |= Notification.DEFAULT_SOUND;
+					//notification.defaults |= Notification.DEFAULT_SOUND;
 					long[] vibrate = {0,100,200,300};
 					notification.vibrate = vibrate;
-					notification.defaults |= Notification.DEFAULT_LIGHTS;
+					//notification.defaults |= Notification.DEFAULT_LIGHTS;
 					
 					Context context = getApplicationContext();
 					CharSequence contentTitle = nameStrDb;
@@ -204,13 +202,11 @@ public class LocationAlertService extends Service {
 					mNotificationManager.notify(nameStrDb, NOTIFICATION_ID, notification);
 
 				} catch (Exception e) {
-					Toast.makeText(this, "Not able to connect to server",
-							Toast.LENGTH_LONG).show();
+					Log.e("LBA",e.getStackTrace().toString());
 				}
 			}
 		} catch (Exception e1) {
-			Toast.makeText(this, "Not able to connect to server, Try again..",
-					Toast.LENGTH_LONG).show();
+			Log.e("LBA",e1.getStackTrace().toString());
 		}
 	}
 }
