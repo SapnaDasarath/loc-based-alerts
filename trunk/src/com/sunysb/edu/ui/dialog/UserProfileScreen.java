@@ -1,5 +1,6 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.net.SocketImpl;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -16,11 +17,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class UserProfileScreen extends Activity {
@@ -28,12 +31,16 @@ public class UserProfileScreen extends Activity {
 	private EditText passwdEditText;
 	private EditText reenterpwdEditText;
 
+	private TextView nameEditText;
 	private Button okButton;
 	private Button closeButton;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.userprofile);
+			
+		nameEditText = (TextView) findViewById(R.id.usr_TextView);
+		nameEditText.setText(nameEditText.getText() + SimpleDbUtil.getCurrentUser());
 
 		passwdEditText = (EditText) findViewById(R.id.changepwd_EditText);
 		reenterpwdEditText = (EditText) findViewById(R.id.reenterpwd_EditText);
