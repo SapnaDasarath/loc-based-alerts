@@ -58,7 +58,7 @@ public class EditTask extends Activity {
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 			break;
@@ -113,7 +113,7 @@ public class EditTask extends Activity {
 			} catch (Exception e) {
 				Toast.makeText(this,
 						"Unable to connect to server. Try again later..",
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 		}

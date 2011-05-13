@@ -104,24 +104,24 @@ public class NewUserScreen extends Activity {
 
 		if (username == null || password == null || repassword == null) {
 			Toast.makeText(this, "Enter valid username and password",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 
 		if (email == null) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
 
 		if (username.equals("") || password.equals("") || repassword.equals("")) {
 			Toast.makeText(this, "Enter valid username and password",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 
 		if (email.equals("")) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
@@ -131,13 +131,13 @@ public class NewUserScreen extends Activity {
 		Matcher m = p.matcher(email);
 
 		if (!m.matches()) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
 
 		if (!password.equals(repassword)) {
-			Toast.makeText(this, "Password's don't match", Toast.LENGTH_SHORT)
+			Toast.makeText(this, "Password's don't match", Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
@@ -145,14 +145,14 @@ public class NewUserScreen extends Activity {
 		// check if user name already exists
 		try {
 			if (util.doesDomainExist(username)) {
-				Toast.makeText(this, "User Name Exists", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "User Name Exists", Toast.LENGTH_LONG)
 						.show();
 				return false;
 			}
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 		return true;
@@ -200,7 +200,7 @@ public class NewUserScreen extends Activity {
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 		return true;
