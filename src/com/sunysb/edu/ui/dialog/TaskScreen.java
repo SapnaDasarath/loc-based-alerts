@@ -295,6 +295,7 @@ public class TaskScreen extends Activity {
 		taskInfoMap.put(StringUtil.TASK_OWNER_TASK_ID, taskid);
 		taskInfoMap.put(StringUtil.TASK_LAT, latitude);
 		taskInfoMap.put(StringUtil.TASK_LONG, longitude);
+		taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_ACCEPTED);
 
 		try {
 			util.createItem(domain, taskid, taskInfoMap);

@@ -127,7 +127,7 @@ public class LocationAlertService extends Service {
 
 			List<String> taskids = new ArrayList<String>();
 			taskids.addAll(latitudeTasks);
-			//taskids.retainAll(longitudeTasks);
+			// taskids.retainAll(longitudeTasks);
 
 			latmin = latitude - 0.000000000000100;
 			lngmin = longitude - 0.00000000000010;
@@ -167,11 +167,19 @@ public class LocationAlertService extends Service {
 				try {
 					HashMap<String, String> taskattributes = util
 							.getAttributesForItem(domain, id);
+
 					String taskstate = taskattributes
 							.get(StringUtil.TASK_NOTIFY);
+
 					if (taskstate == null)
 						continue;
 					if (taskstate.equals(StringUtil.TASK_NOTIFY_YES)) {
+						continue;
+					}
+
+					String taskpending = taskattributes
+							.get(StringUtil.TASK_STATUS);
+					if (taskpending.equals(StringUtil.TASK_PENDING)) {
 						continue;
 					}
 
@@ -192,10 +200,10 @@ public class LocationAlertService extends Service {
 					long when = System.currentTimeMillis();
 					Notification notification = new Notification(icon,
 							tickerText, when);
-					// notification.defaults |= Notification.DEFAULT_SOUND;
+					notification.defaults |= Notification.DEFAULT_SOUND;
 					long[] vibrate = { 0, 100, 200, 300 };
 					notification.vibrate = vibrate;
-					// notification.defaults |= Notification.DEFAULT_LIGHTS;
+					notification.defaults |= Notification.DEFAULT_LIGHTS;
 
 					Context context = getApplicationContext();
 					CharSequence contentTitle = nameStrDb;
@@ -203,7 +211,7 @@ public class LocationAlertService extends Service {
 					Intent notificationIntent = new Intent(this,
 							TaskScreen.class);
 					notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+							| Intent.FLAG_ACTIVITY_NEW_TASK);
 					notificationIntent.putExtra(StringUtil.TRANSITION,
 							StringUtil.NOTIFICATION);
 					notificationIntent.putExtra(StringUtil.TASK_ID, id);
