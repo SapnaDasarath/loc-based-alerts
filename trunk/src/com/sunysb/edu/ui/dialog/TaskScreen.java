@@ -1,5 +1,6 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -142,7 +143,7 @@ public class TaskScreen extends Activity {
 				case StringUtil.CREATE:
 					// send task to friend
 					// show send to friend screen from here.
-					if(taskId == null)
+					if (taskId == null)
 						return;
 					Intent intent2 = new Intent(TaskScreen.this,
 							FriendScreen.class);
@@ -401,7 +402,7 @@ public class TaskScreen extends Activity {
 			String ns = Context.NOTIFICATION_SERVICE;
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
 			mNotificationManager.cancel(taskname, NOTIFICATION_ID);
-			
+
 			Intent startMain = new Intent(Intent.ACTION_MAIN);
 			startMain.addCategory(Intent.CATEGORY_HOME);
 			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -504,8 +505,8 @@ public class TaskScreen extends Activity {
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-			Toast.makeText(this, "Task deleted successfully",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Task deleted successfully", Toast.LENGTH_LONG)
+					.show();
 			return true;
 		} catch (Exception e) {
 			Toast.makeText(this,
@@ -530,9 +531,28 @@ public class TaskScreen extends Activity {
 
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
+
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
 
 			startActivity(new Intent(TaskScreen.this, LocationBasedAlerts.class));
 			return true;

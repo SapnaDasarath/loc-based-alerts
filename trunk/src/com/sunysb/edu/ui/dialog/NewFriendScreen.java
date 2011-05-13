@@ -1,7 +1,9 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
@@ -107,7 +109,8 @@ public class NewFriendScreen extends Activity {
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				startActivity(new Intent(NewFriendScreen.this, UserOptionScreen.class));
+				startActivity(new Intent(NewFriendScreen.this,
+						UserOptionScreen.class));
 				return;
 			}
 		});
@@ -340,13 +343,32 @@ public class NewFriendScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
-			
+
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
+
 			startActivity(new Intent(NewFriendScreen.this,
 					LocationBasedAlerts.class));
 			return true;

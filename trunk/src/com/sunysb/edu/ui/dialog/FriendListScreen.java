@@ -1,6 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -135,12 +136,12 @@ public class FriendListScreen extends Activity {
 				startActivity(intent);
 			}
 		});
-		
-		if(transition == StringUtil.NOTIFY)
-		{
+
+		if (transition == StringUtil.NOTIFY) {
 			addFriendButton.setVisibility(View.INVISIBLE);
 		}
 	}
+
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
 	}
@@ -153,13 +154,32 @@ public class FriendListScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
-			
+
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
+
 			startActivity(new Intent(FriendListScreen.this,
 					LocationBasedAlerts.class));
 			return true;
@@ -177,7 +197,7 @@ public class FriendListScreen extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuChoice(item);
 	}
-	
+
 	public void onBackPressed() {
 		startActivity(new Intent(FriendListScreen.this, UserOptionScreen.class));
 		return;
