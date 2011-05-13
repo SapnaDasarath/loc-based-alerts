@@ -7,8 +7,7 @@
 	<EditText android:id="@+id/frndname_EditText"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 	<Button android:id="@+id/frndsend_To_Friend_button" android:text="Send"
-		android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 	<Button android:id="@+id/frndclose_Task_button" android:text="Close"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 </LinearLayout>

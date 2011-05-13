@@ -2,20 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-
 	<Button android:id="@+id/add_Task_button" android:text="Add New Task"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 	<Button android:id="@+id/edit_Task_button" android:text="View Tasks"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 	<Button android:id="@+id/notifications_button" android:text="Notifications"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 	<Button android:id="@+id/organize_Friends_button" android:text="Organize Friends"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 	<Button android:id="@+id/edit_Profile_button" android:text="Edit Profile"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-
 </LinearLayout>
