@@ -7,7 +7,7 @@
 		android:id="@+id/mapView" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:clickable="true"
 		android:enabled="true" android:visibility="visible"
-		android:apiKey="0c6LaqK3rUWIjkvTmCh7VNEDa0-XwHd2HgSoa9g" />
+		android:apiKey="02idfUKnjtlAjV2XV4GPtsiVk3mTnJxZQ7TMvBQ" />
 
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:background="#FFFFFF" android:layout_width="fill_parent"
@@ -29,7 +29,7 @@
 		</TableRow>
 	</TableLayout>
 
-	<Button android:id="@+id/add_Task" android:text="AddTask"
+	<Button android:id="@+id/add_Task" android:text="Add Task"
 		android:layout_width="wrap_content" android:layout_alignParentBottom="true"
 		android:layout_height="wrap_content" />
 
