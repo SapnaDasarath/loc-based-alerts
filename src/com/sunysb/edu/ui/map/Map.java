@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -54,12 +52,6 @@ public class Map extends MapActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.loadmap);
 		
-		//LocationManager locationManager;
-	    //locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-	    //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		
-	    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,(LocationListener) this);
-
 		btnSearch = (Button) findViewById(R.id.search_icon);
 		btnSearch.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -112,18 +104,6 @@ public class Map extends MapActivity {
 		mapView.getController().animateTo(initGeoPoint);
 		mapView.getController().setZoom(15);
 			
-		/*mapView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Log.e("LBA", "mapView clicked ");
-				MapOverlay mapOverlay = new MapOverlay(Map.this);
-				List<Overlay> listOfOverlays = mapView.getOverlays();
-				listOfOverlays.clear();
-				listOfOverlays.add(mapOverlay);
-			}
-		}); */
-
 		addTaskButton = (Button) findViewById(R.id.add_Task);
 
 		addTaskButton.setOnClickListener(new View.OnClickListener() {

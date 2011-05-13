@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -87,7 +89,8 @@ public class EditTask extends Activity {
 					public void onClick(View v) {
 						String id = (String) v.getTag();
 						Log.e("LBA", "TableRow clicked!");
-						Intent intent = new Intent(EditTask.this, TaskScreen.class);
+						Intent intent = new Intent(EditTask.this,
+								TaskScreen.class);
 						intent.putExtra(StringUtil.TRANSITION, transition);
 						intent.putExtra(StringUtil.TASK_ID, id);
 						startActivity(intent);
@@ -131,10 +134,13 @@ public class EditTask extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.cancelAll();
+
 			startActivity(new Intent(EditTask.this, LocationBasedAlerts.class));
 			return true;
 		}

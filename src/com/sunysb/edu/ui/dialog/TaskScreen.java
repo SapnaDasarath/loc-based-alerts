@@ -530,6 +530,9 @@ public class TaskScreen extends Activity {
 
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
+			
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.cancelAll();
 
 			startActivity(new Intent(TaskScreen.this, LocationBasedAlerts.class));
 			return true;
