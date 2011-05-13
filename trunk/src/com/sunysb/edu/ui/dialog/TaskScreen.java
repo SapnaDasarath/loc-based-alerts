@@ -215,6 +215,16 @@ public class TaskScreen extends Activity {
 		HashMap<String, String> attrList;
 		try {
 			attrList = util.getAttributesForItem(domain, taskid);
+			
+//			if(transition == StringUtil.NOTIFICATION)
+//			{
+//				if(attrList == null || attrList.size() == 0)
+//				{
+//					startActivity(new Intent(TaskScreen.this,
+//							UserOptionScreen.class));
+//					return;
+//				}
+//			}
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
