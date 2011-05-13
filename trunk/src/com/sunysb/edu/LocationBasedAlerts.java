@@ -111,11 +111,11 @@ public class LocationBasedAlerts extends Activity {
 
 		try {
 			util = new SimpleDbUtil(username);
-			List<String> doms = util.getDomainNames();
-			for (String domainName : doms)
-			{
-				util.deleteDomain(domainName);
-			}	
+//			List<String> doms = util.getDomainNames();
+//			for (String domainName : doms)
+//			{
+//				util.deleteDomain(domainName);
+//			}	
 			SharedPreferences app_preferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = app_preferences.edit();
