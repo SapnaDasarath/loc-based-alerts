@@ -43,7 +43,7 @@ public class TaskScreen extends Activity {
 	private Button tempButton;
 	private Button closeButton;
 	private Button delButton;
-	
+
 	public static int NOTIFICATION_ID = 1;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -155,35 +155,36 @@ public class TaskScreen extends Activity {
 		delButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				removeTask(taskId);
-				Intent intent = new Intent(TaskScreen.this, EditTask.class);
-				intent.putExtra(StringUtil.TRANSITION, transition);
-				startActivity(intent);
+				startActivity(new Intent(TaskScreen.this,
+						UserOptionScreen.class));
 			}
 		});
 
 		// close transition back to different screens can be different
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				switch (transition) {
-				case StringUtil.CREATE:
-					Intent intent = new Intent(TaskScreen.this, Map.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					startActivity(intent);
-					break;
-
-				case StringUtil.EDIT:
-					Intent intent1 = new Intent(TaskScreen.this, EditTask.class);
-					intent1.putExtra(StringUtil.TRANSITION, transition);
-					startActivity(intent1);
-					break;
-
-				case StringUtil.NOTIFY:
-					Intent intent2 = new Intent(TaskScreen.this,
-							NotificationScreen.class);
-					intent2.putExtra(StringUtil.TRANSITION, transition);
-					startActivity(intent2);
-					break;
-				}
+				startActivity(new Intent(TaskScreen.this,
+						UserOptionScreen.class));
+				// switch (transition) {
+				// case StringUtil.CREATE:
+				// Intent intent = new Intent(TaskScreen.this, Map.class);
+				// intent.putExtra(StringUtil.TRANSITION, transition);
+				// startActivity(intent);
+				// break;
+				//
+				// case StringUtil.EDIT:
+				// Intent intent1 = new Intent(TaskScreen.this, EditTask.class);
+				// intent1.putExtra(StringUtil.TRANSITION, transition);
+				// startActivity(intent1);
+				// break;
+				//
+				// case StringUtil.NOTIFY:
+				// Intent intent2 = new Intent(TaskScreen.this,
+				// NotificationScreen.class);
+				// intent2.putExtra(StringUtil.TRANSITION, transition);
+				// startActivity(intent2);
+				// break;
+				// }
 			}
 		});
 	}
@@ -378,12 +379,27 @@ public class TaskScreen extends Activity {
 	}
 
 	protected void markAsCompleted(String taskid) {
-		removeTask(taskid);
-	
-		Intent startMain = new Intent(Intent.ACTION_MAIN);
-		startMain.addCategory(Intent.CATEGORY_HOME);
-		startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(startMain);
+		String currentuser = SimpleDbUtil.getCurrentUser();
+		HashMap<String, String> currentuserattr;
+		try {
+			currentuserattr = util.getAttributesForItem(currentuser, taskId);
+			String taskname = currentuserattr.get(StringUtil.TASK_NAME);
+			removeTask(taskid);
+			// clear alerts
+			String ns = Context.NOTIFICATION_SERVICE;
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+			mNotificationManager.cancel(taskname, NOTIFICATION_ID);
+			
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+			startMain.addCategory(Intent.CATEGORY_HOME);
+			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(startMain);
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 	}
 
 	protected void declineTaskFromFriend(String taskId) {
@@ -429,7 +445,6 @@ public class TaskScreen extends Activity {
 		HashMap<String, String> currentuserattr;
 		try {
 			currentuserattr = util.getAttributesForItem(currentuser, taskId);
-			String taskname = currentuserattr.get(StringUtil.TASK_NAME);
 			StringBuffer body = new StringBuffer();
 			body.append(currentuser)
 					.append(" has removed the following task\n");
@@ -477,11 +492,6 @@ public class TaskScreen extends Activity {
 				}
 			}
 			util.deleteItem(SimpleDbUtil.getCurrentUser(), taskId);
-			
-			//clear alerts
-			String ns = Context.NOTIFICATION_SERVICE;
-			NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-			mNotificationManager.cancel(taskname,NOTIFICATION_ID); 
 			Toast.makeText(this, "Task deleted successfully",
 					Toast.LENGTH_SHORT).show();
 			return true;

@@ -26,7 +26,6 @@ import com.sunysb.edu.util.StringUtil;
 public class FriendScreen extends Activity {
 
 	private SimpleDbUtil util;
-	private int transition;
 	private String taskId;
 
 	private EditText nameEditText;
@@ -43,8 +42,6 @@ public class FriendScreen extends Activity {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
 		}
-		transition = (Integer) this.getIntent().getExtras()
-				.get(StringUtil.TRANSITION);
 		taskId = (String) this.getIntent().getExtras().get(StringUtil.TASK_ID);
 
 		nameEditText = (EditText) findViewById(R.id.frndname_EditText);
@@ -59,22 +56,23 @@ public class FriendScreen extends Activity {
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				switch (transition) {
-				case StringUtil.EDIT:
-					Intent intent = new Intent(FriendScreen.this,
-							TaskScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.TASK_ID, taskId);
-					startActivity(intent);
-					break;
-				case StringUtil.NOTIFY:
-					Intent intent1 = new Intent(FriendScreen.this,
-							NotificationScreen.class);
-					intent1.putExtra(StringUtil.TRANSITION, transition);
-					intent1.putExtra(StringUtil.TASK_ID, taskId);
-					startActivity(intent1);
-					break;
-				}
+//				switch (transition) {
+//				case StringUtil.EDIT:
+//					Intent intent = new Intent(FriendScreen.this,
+//							TaskScreen.class);
+//					intent.putExtra(StringUtil.TRANSITION, transition);
+//					intent.putExtra(StringUtil.TASK_ID, taskId);
+//					startActivity(intent);
+//					break;
+//				case StringUtil.NOTIFY:
+//					Intent intent1 = new Intent(FriendScreen.this,
+//							NotificationScreen.class);
+//					intent1.putExtra(StringUtil.TRANSITION, transition);
+//					intent1.putExtra(StringUtil.TASK_ID, taskId);
+//					startActivity(intent1);
+//					break;
+//				}
+				startActivity(new Intent(FriendScreen.this, UserOptionScreen.class));
 			}
 		});
 	}

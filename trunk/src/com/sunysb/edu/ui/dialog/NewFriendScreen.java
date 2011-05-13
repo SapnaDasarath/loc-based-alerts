@@ -105,23 +105,25 @@ public class NewFriendScreen extends Activity {
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				switch (transition) {
-				case StringUtil.CREATE:
-				case StringUtil.EDIT:
-					Intent intent = new Intent(NewFriendScreen.this,
-							FriendScreen.class);
-					intent.putExtra(StringUtil.TRANSITION, transition);
-					intent.putExtra(StringUtil.FRIEND_NAME, friendname);
-					startActivity(intent);
-					break;
-				case StringUtil.NOTIFY:
-					Intent intent1 = new Intent(NewFriendScreen.this,
-							NotificationScreen.class);
-					intent1.putExtra(StringUtil.TRANSITION, transition);
-					intent1.putExtra(StringUtil.FRIEND_NAME, friendname);
-					startActivity(intent1);
-					break;
-				}
+				startActivity(new Intent(NewFriendScreen.this, UserOptionScreen.class));
+				return;
+//				switch (transition) {
+//				case StringUtil.CREATE:
+//				case StringUtil.EDIT:
+//					Intent intent = new Intent(NewFriendScreen.this,
+//							FriendScreen.class);
+//					intent.putExtra(StringUtil.TRANSITION, transition);
+//					intent.putExtra(StringUtil.FRIEND_NAME, friendname);
+//					startActivity(intent);
+//					break;
+//				case StringUtil.NOTIFY:
+//					Intent intent1 = new Intent(NewFriendScreen.this,
+//							NotificationScreen.class);
+//					intent1.putExtra(StringUtil.TRANSITION, transition);
+//					intent1.putExtra(StringUtil.FRIEND_NAME, friendname);
+//					startActivity(intent1);
+//					break;
+//				}
 			}
 		});
 	}
@@ -377,22 +379,7 @@ public class NewFriendScreen extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		switch (transition) {
-		case StringUtil.CREATE:
-		case StringUtil.EDIT:
-			Intent intent = new Intent(NewFriendScreen.this, FriendScreen.class);
-			intent.putExtra(StringUtil.TRANSITION, transition);
-			intent.putExtra(StringUtil.FRIEND_NAME, friendname);
-			startActivity(intent);
-			break;
-		case StringUtil.NOTIFY:
-			Intent intent1 = new Intent(NewFriendScreen.this,
-					NotificationScreen.class);
-			intent1.putExtra(StringUtil.TRANSITION, transition);
-			intent1.putExtra(StringUtil.FRIEND_NAME, friendname);
-			startActivity(intent1);
-			break;
-		}
+		startActivity(new Intent(NewFriendScreen.this, UserOptionScreen.class));
 		return;
 	}
 }
