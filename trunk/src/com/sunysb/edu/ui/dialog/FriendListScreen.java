@@ -135,6 +135,11 @@ public class FriendListScreen extends Activity {
 				startActivity(intent);
 			}
 		});
+		
+		if(transition == StringUtil.NOTIFY)
+		{
+			addFriendButton.setVisibility(View.INVISIBLE);
+		}
 	}
 	private void CreateMenu(Menu menu) {
 		menu.add(0, 0, 0, "Sign out");
