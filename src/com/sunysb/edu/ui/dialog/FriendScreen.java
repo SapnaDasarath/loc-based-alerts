@@ -53,6 +53,8 @@ public class FriendScreen extends Activity {
 		sendButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				sendtask();
+				startActivity(new Intent(FriendScreen.this,
+						UserOptionScreen.class));
 			}
 		});
 
@@ -150,7 +152,7 @@ public class FriendScreen extends Activity {
 					oldattr.get(StringUtil.TASK_PRIORITY));
 
 			taskInfoMap.put(StringUtil.TASK_NOTIFY,
-					oldattr.get(StringUtil.TASK_NOTIFY));
+					StringUtil.TASK_NOTIFY_NO);
 
 			taskInfoMap.put(StringUtil.TASK_OWNER,
 					SimpleDbUtil.getCurrentUser());
