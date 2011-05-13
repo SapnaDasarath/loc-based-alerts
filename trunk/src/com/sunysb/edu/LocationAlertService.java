@@ -29,13 +29,13 @@ public class LocationAlertService extends Service {
 
 	public static int NOTIFICATION_ID = 1;
 
+	public static int counter = 0;
+
 	private double latmin = 0;
 	private double lngmin = 0;
 
 	private double latmax = 0;
 	private double lngmax = 0;
-
-	private static int counter = 0;
 
 	public LocationAlertService() {
 
@@ -87,6 +87,12 @@ public class LocationAlertService extends Service {
 		try {
 			double latitude = location.getLatitude();
 			double longitude = location.getLongitude();
+			//
+			// boolean ret = (latitude > latmin && latitude < latmax)
+			// && (longitude > lngmin && longitude < lngmax);
+			//
+			// if (ret)
+			// return;
 
 			// boolean ret = (latitude > latmin && latitude < latmax)
 			// && (longitude > lngmin && longitude < lngmax);
