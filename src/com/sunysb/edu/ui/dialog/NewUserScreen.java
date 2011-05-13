@@ -2,7 +2,9 @@ package com.sunysb.edu.ui.dialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,8 +113,7 @@ public class NewUserScreen extends Activity {
 		}
 
 		if (email == null) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG).show();
 			return false;
 		}
 
@@ -123,8 +124,7 @@ public class NewUserScreen extends Activity {
 		}
 
 		if (email.equals("")) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG).show();
 			return false;
 		}
 
@@ -133,8 +133,7 @@ public class NewUserScreen extends Activity {
 		Matcher m = p.matcher(email);
 
 		if (!m.matches()) {
-			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(this, "Enter valid email", Toast.LENGTH_LONG).show();
 			return false;
 		}
 
@@ -184,7 +183,7 @@ public class NewUserScreen extends Activity {
 		// Create a new domain with the user name
 		SimpleDbUtil.setCurrentUser(userName);
 		SharedPreferences app_preferences = PreferenceManager
-		.getDefaultSharedPreferences(this);
+				.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editor = app_preferences.edit();
 		editor.putString(StringUtil.USRNAME, userName);
 		editor.commit();
@@ -220,13 +219,32 @@ public class NewUserScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
-			
+
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
+
 			startActivity(new Intent(NewUserScreen.this,
 					LocationBasedAlerts.class));
 			return true;

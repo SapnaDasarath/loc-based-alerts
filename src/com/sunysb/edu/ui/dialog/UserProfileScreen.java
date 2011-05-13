@@ -1,9 +1,10 @@
 package com.sunysb.edu.ui.dialog;
 
-import java.net.SocketImpl;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
@@ -17,7 +18,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 public class UserProfileScreen extends Activity {
 
+	private SimpleDbUtil util;
 	private EditText passwdEditText;
 	private EditText reenterpwdEditText;
 
@@ -38,9 +39,19 @@ public class UserProfileScreen extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.userprofile);
-			
+
+		try {
+			util = new SimpleDbUtil();
+		} catch (Exception e) {
+			Toast.makeText(this,
+					"Unable to connect to server. Try again later..",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+
 		nameEditText = (TextView) findViewById(R.id.usr_TextView);
-		nameEditText.setText(nameEditText.getText() + SimpleDbUtil.getCurrentUser());
+		nameEditText.setText(nameEditText.getText()
+				+ SimpleDbUtil.getCurrentUser());
 
 		passwdEditText = (EditText) findViewById(R.id.changepwd_EditText);
 		reenterpwdEditText = (EditText) findViewById(R.id.reenterpwd_EditText);
@@ -118,7 +129,6 @@ public class UserProfileScreen extends Activity {
 				return;
 			}
 
-			SimpleDbUtil util = new SimpleDbUtil();
 			HashMap<String, String> newattrset = new HashMap<String, String>();
 			newattrset.put(StringUtil.PASSWD, pwd);
 			util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
@@ -143,13 +153,31 @@ public class UserProfileScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
-			
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
+
 			startActivity(new Intent(UserProfileScreen.this,
 					LocationBasedAlerts.class));
 			return true;

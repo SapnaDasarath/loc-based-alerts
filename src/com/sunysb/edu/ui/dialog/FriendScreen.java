@@ -58,23 +58,8 @@ public class FriendScreen extends Activity {
 
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-//				switch (transition) {
-//				case StringUtil.EDIT:
-//					Intent intent = new Intent(FriendScreen.this,
-//							TaskScreen.class);
-//					intent.putExtra(StringUtil.TRANSITION, transition);
-//					intent.putExtra(StringUtil.TASK_ID, taskId);
-//					startActivity(intent);
-//					break;
-//				case StringUtil.NOTIFY:
-//					Intent intent1 = new Intent(FriendScreen.this,
-//							NotificationScreen.class);
-//					intent1.putExtra(StringUtil.TRANSITION, transition);
-//					intent1.putExtra(StringUtil.TASK_ID, taskId);
-//					startActivity(intent1);
-//					break;
-//				}
-				startActivity(new Intent(FriendScreen.this, UserOptionScreen.class));
+				startActivity(new Intent(FriendScreen.this,
+						UserOptionScreen.class));
 			}
 		});
 	}
@@ -104,7 +89,7 @@ public class FriendScreen extends Activity {
 						Toast.LENGTH_LONG).show();
 				return;
 			}
-	
+
 			HashMap<String, String> attrs = util.getAttributesForItem(
 					SimpleDbUtil.getCurrentUser(), frndname);
 			String status = attrs.get(StringUtil.FRIEND_STATUS);
@@ -163,7 +148,7 @@ public class FriendScreen extends Activity {
 
 			taskInfoMap.put(StringUtil.TASK_PRIORITY,
 					oldattr.get(StringUtil.TASK_PRIORITY));
-			
+
 			taskInfoMap.put(StringUtil.TASK_NOTIFY,
 					oldattr.get(StringUtil.TASK_NOTIFY));
 
@@ -224,13 +209,32 @@ public class FriendScreen extends Activity {
 			SharedPreferences.Editor editor = app_preferences.edit();
 			editor.putBoolean(StringUtil.TASK_INFO, false);
 			editor.commit();
-			
+
 			editor.putString(StringUtil.USRNAME, "");
 			editor.commit();
-			
+
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.cancelAll();
-			
+
+			String query = "select * from " + SimpleDbUtil.getCurrentUser()
+					+ " where " + StringUtil.TASK_NOTIFY + " = '"
+					+ StringUtil.TASK_NOTIFY_YES + "'";
+			try {
+				List<String> tasklist = new ArrayList<String>();
+				tasklist.addAll(util.getItemNamesForQuery(query));
+				for (String itemid : tasklist) {
+					HashMap<String, String> attrListToUpdate = new HashMap<String, String>();
+					attrListToUpdate.put(StringUtil.TASK_NOTIFY,
+							StringUtil.TASK_NOTIFY_NO);
+					util.updateAttributesForItem(SimpleDbUtil.getCurrentUser(),
+							itemid, attrListToUpdate);
+				}
+			} catch (Exception e) {
+				Toast.makeText(this,
+						"Unable to connect to server. Try again later..",
+						Toast.LENGTH_LONG).show();
+			}
+
 			startActivity(new Intent(FriendScreen.this,
 					LocationBasedAlerts.class));
 			return true;
