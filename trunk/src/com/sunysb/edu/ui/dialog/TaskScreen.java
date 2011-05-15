@@ -362,7 +362,7 @@ public class TaskScreen extends Activity {
 			}
 		}
 
-		if (priorityStrDb != priorityStr) {
+		if (!priorityStrDb.equals(priorityStr)) {
 			if (priorityStr != null) {
 				attrListToUpdate.put(StringUtil.TASK_PRIORITY, priorityStr);
 			}

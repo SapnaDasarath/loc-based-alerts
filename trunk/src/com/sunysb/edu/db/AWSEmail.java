@@ -1,6 +1,7 @@
 package com.sunysb.edu.db;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Properties;
 
@@ -20,7 +21,7 @@ import com.amazonaws.services.simpleemail.model.SendEmailResult;
 
 public class AWSEmail {
 
-	public  void SendMail(String sender, LinkedList<String> recipients,
+	public void sendMail(String sender, LinkedList<String> recipients,
 			String subject, String body) {
 		Destination destination = new Destination(recipients);
 
@@ -43,11 +44,20 @@ public class AWSEmail {
 	 */
 	private AWSCredentials getCredentials() {
 		Properties properties = new Properties();
+		InputStream stream = null;
 		try {
-			properties.load(getClass().getResourceAsStream(
-					"AwsCredentials.properties"));
+			stream = getClass()
+					.getResourceAsStream("AwsCredentials.properties");
+			properties.load(stream);
 		} catch (IOException e) {
 			Log.e("LBA", "Not able to access key files");
+		} finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		String accessKeyId = properties.getProperty("accessKey");

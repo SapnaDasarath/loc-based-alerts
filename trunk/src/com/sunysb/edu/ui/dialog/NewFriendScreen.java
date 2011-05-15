@@ -236,10 +236,11 @@ public class NewFriendScreen extends Activity {
 				LinkedList<String> recipients = new LinkedList<String>();
 				recipients.add(sendto);
 
-				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+				new AWSEmail().sendMail(StringUtil.SENDER, recipients,
 						StringUtil.SUBJECT_FRDREQ, StringUtil.BODY_FRDREQ);
 			}
 		} catch (Exception e) {
+			Log.e("LBA", e.getMessage());
 			return;
 		}
 	}
@@ -280,10 +281,11 @@ public class NewFriendScreen extends Activity {
 				StringBuffer sb = new StringBuffer();
 				sb.append("Hello ").append(friendname).append(",\n");
 				sb.append(domain).append(" has accepted your friend request");
-				new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+				new AWSEmail().sendMail(StringUtil.SENDER, recipients,
 						StringUtil.SUBJECT_FRDREQ_ACC, sb.toString());
 			}
 		} catch (Exception e) {
+			Log.e("LBA", e.getMessage());
 			return;
 		}
 	}

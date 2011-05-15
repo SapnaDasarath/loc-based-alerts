@@ -51,7 +51,8 @@ public class SimpleDbUtil {
 
 	// get all domain names in the db
 	public List<String> getDomainNames() throws Exception {
-		return dbInterface.getDB().listDomains().getDomainNames();
+		return (List<String>) dbInterface.getDB().listDomains()
+				.getDomainNames();
 	}
 
 	// to an existing domain add an item
@@ -77,7 +78,8 @@ public class SimpleDbUtil {
 		SelectRequest selectRequest = new SelectRequest(
 				"select itemName() from `" + domainName + "`")
 				.withConsistentRead(true);
-		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
+		List<Item> items = (List<Item>) dbInterface.getDB()
+				.select(selectRequest).getItems();
 
 		List<String> itemNames = new ArrayList<String>();
 		for (int i = 0; i < items.size(); i++) {
@@ -118,7 +120,8 @@ public class SimpleDbUtil {
 	public List<String> getItemNamesForQuery(String query) throws Exception {
 		SelectRequest selectRequest = new SelectRequest(query)
 				.withConsistentRead(true);
-		List<Item> items = dbInterface.getDB().select(selectRequest).getItems();
+		List<Item> items = (List<Item>) dbInterface.getDB()
+				.select(selectRequest).getItems();
 
 		List<String> itemNames = new ArrayList<String>();
 		for (int i = 0; i < items.size(); i++) {
