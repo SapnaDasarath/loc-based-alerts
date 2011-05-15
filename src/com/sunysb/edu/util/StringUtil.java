@@ -16,7 +16,7 @@ public class StringUtil {
 	public static final String BODY_FRDREQ = "You have a new friend request. Check notifications to accept request.";
 
 	public static final String TEMP_USER = "tempUser";
-	
+
 	public static final String SUBJECT_TASK_NOTICE = "Task Recieved";
 	public static final String SUBJECT_TASK_DELETE = "Task Deleted";
 
@@ -41,7 +41,7 @@ public class StringUtil {
 	public static final String TASK_FRIENDS_NAMES = "OwnerSharedID";
 
 	public static final String TASK_STATUS = "taskstatus";
-	
+
 	public static final String TASK_ACCEPTED = "accepted";
 	public static final String TASK_PENDING = "taskpending";
 
@@ -56,7 +56,7 @@ public class StringUtil {
 	public static final String FRIEND_REQ_SENT = "reqsent";
 	public static final String FRIEND_PENDING = "pending";
 	public static final String FRIEND_CONFIRMED = "confirmed";
-	
+
 	public static final String TRANSITION = "transition";
 
 	public static final int EDIT = 1;
@@ -64,9 +64,35 @@ public class StringUtil {
 	public static final int NOTIFY = 3;
 	public static final int DELETE = 4;
 	public static final int NOTIFICATION = 5;
-	
+
 	public static final String TASK_NOTIFY = "tasknotify";
 	public static final String TASK_NOTIFY_YES = "tasknotify_yes";
 	public static final String TASK_NOTIFY_NO = "tasknotify_no";
+	
+	public static final String PRIVATE_KEY = "private";
+	public static final String PUBLIC_KEY = "public";
+	public static final String LBA_PREF = "com.sunysb.edu.LBApreferences";
+
+	public static byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character
+					.digit(s.charAt(i + 1), 16));
+		}
+		return data;
+	}
+
+	//http://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
+	public static String byteArrayToHexString(byte[] byteData) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++) {
+			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16)
+					.substring(1));
+		}
+		return sb.toString();
+	}
+	
+
 
 }

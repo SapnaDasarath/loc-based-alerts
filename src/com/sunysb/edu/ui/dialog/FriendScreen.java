@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -192,9 +193,10 @@ public class FriendScreen extends Activity {
 			body.append("Please check notifications to accept or decline task")
 					.append("\n");
 
-			new AWSEmail().SendMail(StringUtil.SENDER, recipients,
+			new AWSEmail().sendMail(StringUtil.SENDER, recipients,
 					StringUtil.SUBJECT_TASK_NOTICE, body.toString());
 		} catch (Exception e) {
+			Log.e("LBA", e.getMessage());
 			return;
 		}
 	}

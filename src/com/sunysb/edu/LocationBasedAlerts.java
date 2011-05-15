@@ -3,7 +3,6 @@ package com.sunysb.edu;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 
 import com.sunysb.edu.db.SimpleDbUtil;
 import com.sunysb.edu.ui.dialog.NewUserScreen;
@@ -47,7 +46,6 @@ public class LocationBasedAlerts extends Activity {
 		if (appstate) {
 			// already logged in
 			try {
-				// startLocationManagerServices();
 				String user = app_preferences.getString(StringUtil.USRNAME, "");
 				util = new SimpleDbUtil(user);
 				startActivity(new Intent(LocationBasedAlerts.this,
@@ -74,7 +72,6 @@ public class LocationBasedAlerts extends Activity {
 			registerButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					startLocationManagerServices();
 					startActivity(new Intent(LocationBasedAlerts.this,
 							NewUserScreen.class));
 				}

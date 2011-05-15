@@ -1,13 +1,18 @@
 package com.sunysb.edu.ui.dialog;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sunysb.edu.LocationAlertService;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
@@ -18,6 +23,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -65,6 +71,10 @@ public class NewUserScreen extends Activity {
 			public void onClick(View v) {
 				if (validate()) {
 					addUserToDB();
+					// generate a private public key for this user. store the
+					// private key on phone locally and save the public one
+					startLocationManagerServices();
+					generateKeys();
 					startActivity(new Intent(NewUserScreen.this,
 							UserOptionScreen.class));
 				}
@@ -78,6 +88,33 @@ public class NewUserScreen extends Activity {
 						LocationBasedAlerts.class));
 			}
 		});
+	}
+
+	protected void generateKeys() {
+		// TODO Auto-generated method stub
+		KeyPairGenerator keyGen;
+		try {
+			keyGen = KeyPairGenerator.getInstance("RSA");
+			keyGen.initialize(1024);
+			KeyPair keypair = keyGen.genKeyPair();
+			PrivateKey privateKey = keypair.getPrivate();
+			byte[] key = privateKey.getEncoded();
+			String privStr = StringUtil.byteArrayToHexString(key);
+			
+			SharedPreferences pref = getApplicationContext()
+					.getSharedPreferences(StringUtil.LBA_PREF,
+							Activity.MODE_PRIVATE);
+			Editor prefsEditor = pref.edit();
+			prefsEditor.putString(StringUtil.PRIVATE_KEY, privStr);
+			prefsEditor.commit();
+
+			PublicKey publicKey = keypair.getPublic();
+			// add public key to server
+			
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private boolean validate() {
@@ -198,6 +235,10 @@ public class NewUserScreen extends Activity {
 			userInfoMap.put(StringUtil.PASSWD, pwd);
 			userInfoMap.put(StringUtil.EMAIL, email);
 			util.createItem(userName, StringUtil.USER_INFO, userInfoMap);
+
+			Toast.makeText(this, "Registration succesful.", Toast.LENGTH_LONG)
+					.show();
+
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",
@@ -250,6 +291,12 @@ public class NewUserScreen extends Activity {
 			return true;
 		}
 		return false;
+	}
+
+	private void startLocationManagerServices() {
+		Log.e("LBA", "Entered startLocationManagerService() method");
+		Intent intent = new Intent(this, LocationAlertService.class);
+		startService(intent);
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
