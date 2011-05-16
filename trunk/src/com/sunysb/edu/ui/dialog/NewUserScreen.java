@@ -1,11 +1,7 @@
 package com.sunysb.edu.ui.dialog;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +12,7 @@ import com.sunysb.edu.LocationAlertService;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.util.CryptoUtils;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
@@ -91,30 +88,28 @@ public class NewUserScreen extends Activity {
 	}
 
 	protected void generateKeys() {
-		// TODO Auto-generated method stub
-		KeyPairGenerator keyGen;
-		try {
-			keyGen = KeyPairGenerator.getInstance("RSA");
-			keyGen.initialize(1024);
-			KeyPair keypair = keyGen.genKeyPair();
-			PrivateKey privateKey = keypair.getPrivate();
-			byte[] key = privateKey.getEncoded();
-			String privStr = StringUtil.byteArrayToHexString(key);
-			
-			SharedPreferences pref = getApplicationContext()
-					.getSharedPreferences(StringUtil.LBA_PREF,
-							Activity.MODE_PRIVATE);
-			Editor prefsEditor = pref.edit();
-			prefsEditor.putString(StringUtil.PRIVATE_KEY, privStr);
-			prefsEditor.commit();
-
-			PublicKey publicKey = keypair.getPublic();
-			// add public key to server
-			
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		HashMap<String, String> map = CryptoUtils.generateKeyPair();
+		SharedPreferences pref = getApplicationContext().getSharedPreferences(
+				StringUtil.LBA_PREF, Activity.MODE_PRIVATE);
+		Editor prefsEditor = pref.edit();
+		prefsEditor.putString(StringUtil.SIGN_PRIVATE_KEY,
+				map.get(StringUtil.PRIVATE_KEY));
+		prefsEditor.commit();
+		
+		//TODO
+		//send public key to server
+	
+		HashMap<String, String> mapenc = CryptoUtils.generateKeyPair();
+		SharedPreferences prefenc = getApplicationContext()
+				.getSharedPreferences(StringUtil.LBA_PREF,
+						Activity.MODE_PRIVATE);
+		Editor prefsEditorenc = prefenc.edit();
+		prefsEditorenc.putString(StringUtil.ENCDEC_PRIVATE_KEY,
+				mapenc.get(StringUtil.PRIVATE_KEY));
+		prefsEditorenc.commit();
+		
+		//TODO
+		//send public key to server
 	}
 
 	private boolean validate() {
