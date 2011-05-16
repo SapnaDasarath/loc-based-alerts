@@ -47,7 +47,7 @@ public class LocationBasedAlerts extends Activity {
 			// already logged in
 			try {
 				String user = app_preferences.getString(StringUtil.USRNAME, "");
-				util = new SimpleDbUtil(user);
+				util = new SimpleDbUtil(this,user);
 				startActivity(new Intent(LocationBasedAlerts.this,
 						UserOptionScreen.class));
 			} catch (Exception e) {
@@ -108,7 +108,7 @@ public class LocationBasedAlerts extends Activity {
 		// validate username and password in db now
 
 		try {
-			util = new SimpleDbUtil(username);
+			util = new SimpleDbUtil(this,username);
 //			List<String> doms = util.getDomainNames();
 //			for (String domainName : doms) {
 //				util.deleteDomain(domainName);

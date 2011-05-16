@@ -37,7 +37,7 @@ public class NotificationScreen extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.notification);
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 			tasknames = getIntent().getExtras().getStringArrayList(
 					StringUtil.TASK_INFO);
 			if (tasknames == null) {

@@ -48,7 +48,7 @@ public class NewUserScreen extends Activity {
 		Log.e("LBA", "Loading New user screen");
 
 		try {
-			util = new SimpleDbUtil(StringUtil.TEMP_USER);
+			util = new SimpleDbUtil(this,StringUtil.TEMP_USER);
 
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
@@ -88,7 +88,9 @@ public class NewUserScreen extends Activity {
 	}
 
 	protected void generateKeys() {
+		String username = newuserEditText.getText().toString();
 		HashMap<String, String> map = CryptoUtils.generateKeyPair();
+		
 		SharedPreferences pref = getApplicationContext().getSharedPreferences(
 				StringUtil.LBA_PREF, Activity.MODE_PRIVATE);
 		Editor prefsEditor = pref.edit();
@@ -98,7 +100,14 @@ public class NewUserScreen extends Activity {
 		
 		//TODO
 		//send public key to server
-	
+		SharedPreferences prefpub = getApplicationContext().getSharedPreferences(
+				StringUtil.LBA_PREF, Activity.MODE_PRIVATE);
+		Editor prefsEditorpub = prefpub.edit();
+		prefsEditorpub.putString(StringUtil.SIGN_PUBLIC_KEY,
+				map.get(StringUtil.PUBLIC_KEY));
+		prefsEditorpub.commit();
+		util.addKeyToServer(username, StringUtil.SIGN_PUBLIC_KEY, map.get(StringUtil.PUBLIC_KEY));
+		
 		HashMap<String, String> mapenc = CryptoUtils.generateKeyPair();
 		SharedPreferences prefenc = getApplicationContext()
 				.getSharedPreferences(StringUtil.LBA_PREF,
@@ -110,6 +119,14 @@ public class NewUserScreen extends Activity {
 		
 		//TODO
 		//send public key to server
+		SharedPreferences prefpub1 = getApplicationContext().getSharedPreferences(
+				StringUtil.LBA_PREF, Activity.MODE_PRIVATE);
+		Editor prefsEditorpub1 = prefpub1.edit();
+		prefsEditorpub1.putString(StringUtil.SIGN_PUBLIC_KEY,
+				mapenc.get(StringUtil.PUBLIC_KEY));
+		prefsEditorpub1.commit();
+		
+		util.addKeyToServer(username, StringUtil.ENCDEC_PUBLIC_KEY, mapenc.get(StringUtil.PUBLIC_KEY));
 	}
 
 	private boolean validate() {

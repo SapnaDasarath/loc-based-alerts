@@ -41,7 +41,7 @@ public class UserProfileScreen extends Activity {
 		setContentView(R.layout.userprofile);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 		} catch (Exception e) {
 			Toast.makeText(this,
 					"Unable to connect to server. Try again later..",

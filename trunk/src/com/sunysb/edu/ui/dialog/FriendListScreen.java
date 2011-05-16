@@ -41,7 +41,7 @@ public class FriendListScreen extends Activity {
 		this.setContentView(R.layout.friendlist);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");

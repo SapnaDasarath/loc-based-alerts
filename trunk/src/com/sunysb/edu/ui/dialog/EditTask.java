@@ -39,7 +39,7 @@ public class EditTask extends Activity {
 		this.setContentView(R.layout.taskedit);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 		} catch (Exception e) {
 			Log.e("LBA", "Unable to connect to server");
 		}
