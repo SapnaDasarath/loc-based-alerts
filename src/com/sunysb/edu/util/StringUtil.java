@@ -69,6 +69,12 @@ public class StringUtil {
 	public static final String TASK_NOTIFY_YES = "tasknotify_yes";
 	public static final String TASK_NOTIFY_NO = "tasknotify_no";
 	
+	public static final String SIGN_PRIVATE_KEY = "private";
+	public static final String SIGN_PUBLIC_KEY = "public";
+	
+	public static final String ENCDEC_PRIVATE_KEY = "private";
+	public static final String ENCDEC_PUBLIC_KEY = "public";
+	
 	public static final String PRIVATE_KEY = "private";
 	public static final String PUBLIC_KEY = "public";
 	public static final String LBA_PREF = "com.sunysb.edu.LBApreferences";

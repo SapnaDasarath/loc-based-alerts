@@ -204,6 +204,11 @@ public class NewFriendScreen extends Activity {
 			friendmap.put(StringUtil.FRIEND_NAME, username);
 			friendmap.put(StringUtil.EMAIL, email);
 			friendmap.put(StringUtil.FRIEND_STATUS, StringUtil.FRIEND_REQ_SENT);
+			//send request to server to get B's public key for enc and for signature.
+			//domain, item, map in current user 
+			friendmap.put(StringUtil.ENCDEC_PUBLIC_KEY, "");
+			friendmap.put(StringUtil.SIGN_PUBLIC_KEY, "");
+			
 			util.createItem(SimpleDbUtil.getCurrentUser(),
 					StringUtil.FRIEND_INFO + username, friendmap);
 
@@ -217,6 +222,11 @@ public class NewFriendScreen extends Activity {
 			otherfriendmap.put(StringUtil.EMAIL, sendto);
 			otherfriendmap.put(StringUtil.FRIEND_STATUS,
 					StringUtil.FRIEND_PENDING);
+			//send request to server to get B's public key for enc and for signature.
+			//domain, item, map in user added as friend 
+			otherfriendmap.put(StringUtil.ENCDEC_PUBLIC_KEY, "");
+			otherfriendmap.put(StringUtil.SIGN_PUBLIC_KEY, "");
+			
 			util.createItem(username,
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
 					otherfriendmap);
