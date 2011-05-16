@@ -8,6 +8,7 @@ import java.util.List;
 import com.sunysb.edu.LocationBasedAlerts;
 import com.sunysb.edu.R;
 import com.sunysb.edu.db.SimpleDbUtil;
+import com.sunysb.edu.db.SqlLiteDbUtil;
 import com.sunysb.edu.util.StringUtil;
 
 import android.app.Activity;
@@ -30,6 +31,8 @@ import android.widget.Toast;
 public class TaskScreen extends Activity {
 
 	private SimpleDbUtil util;
+	private SqlLiteDbUtil sqlutil;
+	
 	private int transition;
 	private String taskId;
 	private String latitude;
@@ -45,21 +48,25 @@ public class TaskScreen extends Activity {
 	private Button delButton;
 
 	public static int NOTIFICATION_ID = 1;
-
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.task);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
+			 sqlutil = new SqlLiteDbUtil(this);
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again.",
 					Toast.LENGTH_LONG).show();
 		}
 
+		
 		transition = (Integer) this.getIntent().getExtras()
 				.get(StringUtil.TRANSITION);
 		taskId = getIntent().getExtras().getString(StringUtil.TASK_ID);
+		
+		//TODO encrypt and add
 		latitude = getIntent().getExtras().getString(StringUtil.TASK_LAT);
 		longitude = getIntent().getExtras().getString(StringUtil.TASK_LONG);
 
@@ -167,6 +174,7 @@ public class TaskScreen extends Activity {
 		delButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				removeTask(taskId);
+				sqlutil.deleteLocation(taskId);
 				startActivity(new Intent(TaskScreen.this,
 						UserOptionScreen.class));
 			}
@@ -300,6 +308,8 @@ public class TaskScreen extends Activity {
 		try {
 			util.createItem(domain, taskid, taskInfoMap);
 			taskId = taskid;
+			sqlutil.createLocation(taskid, latitude, longitude);
+			
 			Toast.makeText(this, "New Task added successfully",
 					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
@@ -392,6 +402,8 @@ public class TaskScreen extends Activity {
 		String domain = SimpleDbUtil.getCurrentUser();
 		try {
 			util.updateAttributesForItem(domain, taskid, attrListToUpdate);
+			
+			sqlutil.createLocation(taskid, latitude, longitude);
 			Toast.makeText(this, "Task Accepted.", Toast.LENGTH_LONG).show();
 			return;
 		} catch (Exception e) {

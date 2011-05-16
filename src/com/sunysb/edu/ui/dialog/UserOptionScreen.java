@@ -49,7 +49,7 @@ public class UserOptionScreen extends Activity {
 		editProfileButton = (Button) findViewById(R.id.edit_Profile_button);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 			String taskquery = "select * from " + SimpleDbUtil.getCurrentUser()
 					+ " where " + StringUtil.TASK_STATUS + " = '"
 					+ StringUtil.TASK_PENDING + "'";

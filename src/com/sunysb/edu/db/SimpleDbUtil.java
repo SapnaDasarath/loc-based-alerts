@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import android.content.Context;
+
 import com.amazonaws.services.simpledb.model.Attribute;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.DeleteAttributesRequest;
@@ -15,6 +17,7 @@ import com.amazonaws.services.simpledb.model.Item;
 import com.amazonaws.services.simpledb.model.PutAttributesRequest;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 import com.amazonaws.services.simpledb.model.SelectRequest;
+import com.sunysb.edu.util.CryptoUtils;
 import com.sunysb.edu.util.StringUtil;
 
 public class SimpleDbUtil {
@@ -24,9 +27,13 @@ public class SimpleDbUtil {
 	public SimpleDbUtil() throws Exception {
 		dbInterface = new SimpleDbInterface();
 	}
+	
+	public SimpleDbUtil(Context context) throws Exception {
+		dbInterface = new SimpleDbInterface(context);
+	}
 
-	public SimpleDbUtil(String userName) throws Exception {
-		dbInterface = new SimpleDbInterface(userName);
+	public SimpleDbUtil(Context context, String userName) throws Exception {
+		dbInterface = new SimpleDbInterface(context, userName);
 	}
 
 	public static String getCurrentUser() {
@@ -62,10 +69,31 @@ public class SimpleDbUtil {
 				attributes.size());
 
 		for (String attributeName : attributes.keySet()) {
-			replaceableAttributes
-					.add(new ReplaceableAttribute().withName(attributeName)
-							.withValue(attributes.get(attributeName))
-							.withReplace(true));
+			// Encrypt attribute value and store
+			String val = attributes.get(attributeName);
+			String encVal = CryptoUtils.getEncryptedMessage(val, dbInterface.enc_publickey);
+			replaceableAttributes.add(new ReplaceableAttribute()
+					.withName(attributeName).withValue(encVal)
+					.withReplace(true));
+		}
+		dbInterface.getDB().putAttributes(
+				new PutAttributesRequest(domainName, itemName,
+						replaceableAttributes));
+	}
+
+	// to an existing domain add an item
+	public void createItem(String domainName, String itemName,
+			HashMap<String, String> attributes, String key) throws Exception {
+		List<ReplaceableAttribute> replaceableAttributes = new ArrayList<ReplaceableAttribute>(
+				attributes.size());
+
+		for (String attributeName : attributes.keySet()) {
+			// Encrypt attribute value and store
+			String val = attributes.get(attributeName);
+			String encVal = CryptoUtils.getEncryptedMessage(val, key);
+			replaceableAttributes.add(new ReplaceableAttribute()
+					.withName(attributeName).withValue(encVal)
+					.withReplace(true));
 		}
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName,
@@ -136,16 +164,6 @@ public class SimpleDbUtil {
 				new DeleteAttributesRequest(domainName, itemName));
 	}
 
-	// to an existing domain and item add key value pairs
-	public void createAttributeForItem(String domainName, String itemName,
-			String attributeName, String attributeValue) throws Exception {
-		List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
-		attributes.add(new ReplaceableAttribute().withName(attributeName)
-				.withValue(attributeValue).withReplace(true));
-		dbInterface.getDB().putAttributes(
-				new PutAttributesRequest(domainName, itemName, attributes));
-	}
-
 	// for a give item replace all attributes with new attributes
 	public void updateAttributesForItem(String domainName, String itemName,
 			HashMap<String, String> attributes) throws Exception {
@@ -153,10 +171,11 @@ public class SimpleDbUtil {
 				attributes.size());
 
 		for (String attributeName : attributes.keySet()) {
-			replaceableAttributes
-					.add(new ReplaceableAttribute().withName(attributeName)
-							.withValue(attributes.get(attributeName))
-							.withReplace(true));
+			String val = attributes.get(attributeName);
+			String encVal = CryptoUtils.getEncryptedMessage(val, dbInterface.enc_publickey);
+			replaceableAttributes.add(new ReplaceableAttribute()
+					.withName(attributeName).withValue(encVal)
+					.withReplace(true));
 		}
 		dbInterface.getDB().putAttributes(
 				new PutAttributesRequest(domainName, itemName,
@@ -175,7 +194,10 @@ public class SimpleDbUtil {
 		for (Object attribute : getResult.getAttributes()) {
 			String name = ((Attribute) attribute).getName();
 			String value = ((Attribute) attribute).getValue();
-			attributes.put(name, value);
+
+			String decval = CryptoUtils.getDecryptedMessage(value,
+					dbInterface.enc_publickey);
+			attributes.put(name, decval);
 		}
 		return attributes;
 	}
@@ -184,7 +206,9 @@ public class SimpleDbUtil {
 		HashMap<String, String> attr = getAttributesForItem(
 				SimpleDbUtil.getCurrentUser(), taskid);
 		String taskOwner = attr.get(StringUtil.TASK_FRIENDS_NAMES);
-		return getFriendsFromString(taskOwner);
+		String decval = CryptoUtils.getDecryptedMessage(taskOwner,
+				dbInterface.enc_publickey);
+		return getFriendsFromString(decval);
 	}
 
 	public List<String> getFriendsFromString(String taskOwner) {
@@ -225,5 +249,15 @@ public class SimpleDbUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	public String getEncPublicKeyForUser(String username)
+	{
+		return null;
+	}
+	
+	public void addKeyToServer(String username,String type,  String key)
+	{
+		
 	}
 }

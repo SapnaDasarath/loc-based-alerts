@@ -40,7 +40,7 @@ public class FriendScreen extends Activity {
 		setContentView(R.layout.friend);
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
@@ -158,6 +158,7 @@ public class FriendScreen extends Activity {
 			taskInfoMap.put(StringUtil.TASK_OWNER,
 					SimpleDbUtil.getCurrentUser());
 
+			//TODO encrypt and add
 			taskInfoMap.put(StringUtil.TASK_LAT,
 					oldattr.get(StringUtil.TASK_LAT));
 
@@ -168,7 +169,8 @@ public class FriendScreen extends Activity {
 			taskInfoMap.put(StringUtil.TASK_STATUS, StringUtil.TASK_PENDING);
 
 			String newtaskid = String.valueOf(System.currentTimeMillis());
-			util.createItem(friendname, newtaskid, taskInfoMap);
+			//call server to get users key
+			util.createItem(friendname, newtaskid, taskInfoMap,util.getEncPublicKeyForUser(friendname));
 			Toast.makeText(this, "Task sent successfully", Toast.LENGTH_LONG)
 					.show();
 

@@ -45,7 +45,7 @@ public class NewFriendScreen extends Activity {
 		Log.e("LBA", "Loading Add New Friend screen");
 
 		try {
-			util = new SimpleDbUtil();
+			util = new SimpleDbUtil(this);
 		} catch (Exception e) {
 			Toast.makeText(this, "Not able to connect to server, Try again..",
 					Toast.LENGTH_LONG).show();
@@ -222,14 +222,10 @@ public class NewFriendScreen extends Activity {
 			otherfriendmap.put(StringUtil.EMAIL, sendto);
 			otherfriendmap.put(StringUtil.FRIEND_STATUS,
 					StringUtil.FRIEND_PENDING);
-			//send request to server to get B's public key for enc and for signature.
-			//domain, item, map in user added as friend 
-			otherfriendmap.put(StringUtil.ENCDEC_PUBLIC_KEY, "");
-			otherfriendmap.put(StringUtil.SIGN_PUBLIC_KEY, "");
 			
 			util.createItem(username,
 					StringUtil.FRIEND_INFO + SimpleDbUtil.getCurrentUser(),
-					otherfriendmap);
+					otherfriendmap, util.getEncPublicKeyForUser(username));
 
 			Toast.makeText(this, "Friend request sent.", Toast.LENGTH_LONG)
 					.show();
